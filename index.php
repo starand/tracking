@@ -25,16 +25,15 @@
 <div id='main' style='width:100%;'>
     <TABLE cellspacing='0' cellpadding='0' style='width:1024px;'>
         <TR>
-            <TD class='top-title'>
-                <div id='top-menu' style='width:100%;'><? include_once "top-panel.php"; ?></div>
+            <TD class='top-title' id='top-menu'>
+                <? include_once "top-panel.php"; ?>
             </TD>
         </TR>
-        <TR><TD>
+        <TR><TD id='content'>
             <? include_once $user ? "main.php" : "login.php"; ?>
         </TD></TR>
     </TABLE>
+
+    <BR><BR><BR><BR><BR><BR><BR><BR><BR>
+    <div style='$divStyle'><iframe name='submit_frame' src='' style='width: 0px; height: 0px;'></iframe></div>
 </div>
-
-
-<BR><BR><BR><BR><BR><BR><BR><BR><BR>
-<div style='$divStyle'><iframe name='submit_frame' src='' style='width: 0px; height: 0px;'></iframe></div>

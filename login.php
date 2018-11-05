@@ -1,5 +1,5 @@
 <?
-    if (!defined('TRACKING_ENGINE')) die();
+    include_once "common/headers.php";
 ?>
 
 <center>

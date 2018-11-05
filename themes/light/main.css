@@ -8,6 +8,10 @@ body {
 	MARGIN: 0px;
 }
 
+html {
+    overflow: scroll;
+}
+
 img {
 	border:none;
 }

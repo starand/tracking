@@ -20,7 +20,7 @@
 <script>
 $(document).ready(function() {
     $("#login").on("click", function() {
-        $("#main").load("login.php");
+        $("#content").load("login.php");
     });
     $("#logout").on("click", function() {
         $("#main").load("index.php?logout=");
