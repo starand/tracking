@@ -1,0 +1,419 @@
+body {
+	color: black;
+	background-color: #ffffff;
+	background-attachment: fixed;
+	font-family: "Trebuchet MS", Terminal;
+	font-size: 12px;
+	padding: 0px;
+	MARGIN: 0px;
+}
+
+img {
+	border:none;
+}
+
+input {
+	color: black;
+	background-color: #FFFFFF;
+	border-color: #111111;
+	border: solid 1px;
+	font-size:16px;
+}
+
+select {
+	color: black;
+	background-color: #FFFFFF;
+	border-color: #111111;
+	border: solid 1px;
+	font-size:16px;
+}
+
+textarea {
+	color: black;
+	background-color: #FFFFFF;
+	border-color: #111111;
+	border: solid 1px;
+	font-size:16px;
+}
+
+table.index {
+	width: 1024px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	background: #ebedef
+}
+
+table.left-menu {
+	width: 100%;
+}
+
+table.top {
+	width: 100%;
+	height: 100%
+}
+
+td.top-title {
+	background: #496992;
+	color: white;
+	text-align: center;
+	vertical-align: middle;
+}
+
+
+td.top-profile {
+	width: 70px;
+	text-align: center;
+	color: white;
+	vertical-align: middle;
+	font-size: 14px;
+}
+
+td.top-profile:hover {
+	background: #41608a;
+}
+
+div.top-profile {
+	width: 100%;
+	height: 100%;
+}
+
+td.left-menu {
+	vertical-align: top;
+	width: 180px;
+}
+
+td.cat-item {
+	font-size: 14px;
+}
+
+td.cat-item:hover {
+	background: white;
+}
+
+td.main {
+	vertical-align: top;
+	padding: 10px;
+}
+
+td.good-item {
+	vertical-align: top;
+	width: 260px;
+	background: #FFFFFF;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.good-item:hover {
+	background: #ccddff;
+}
+
+td.good-item-sold {
+	vertical-align: top;
+	width: 260px;
+	background: #f9987f;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+td.good-item-wait {
+	vertical-align: top;
+	width: 260px;
+	background: #fffb9e;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+td.good-item-wait:hover {
+	background: #ccddff;
+}
+
+div.top {
+	height:40px;
+	width: 1024px;
+}
+
+div.good-title {
+	font-size: 12px;
+	margin: 5px;
+}
+
+div.good-desc {
+	border: 1px #e1e2e6 solid;
+	background: white;
+	padding: 5px 10px 10px 10px;
+	font-size: 14px;
+}
+
+div.good-desc-title {
+	width: 100%;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+div.main-error {
+	color: red;
+	width: 100%;
+	text-align: center;
+}
+
+div.good-image {
+	border: 1px #e1e2e6 solid;
+	background: white;
+	padding: 10px;
+	display: inline-block;
+}
+
+td.top-logo {
+	width: 168px;
+}
+
+td.top-logo:hover {
+	background: #41608a;
+}
+
+div.top-logo {
+	height: 100%;
+	width: 100%;
+	font-size: 24px;
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+}
+
+span.green-msg {
+	color: #243025;
+}
+
+span.error-msg {
+	color: red;
+}
+
+
+a {
+	color: #254f7d;
+}
+
+a:hover {
+	cursor: pointer;
+}
+
+a.title {
+	color: #ffffff;
+}
+
+a.top-profile {
+	color: white;
+}
+
+a.category {
+	text-decoration: none;
+}
+
+a.good-item {
+	color: #000000;
+	text-decoration: none;
+}
+
+textarea.add-good {
+	width: 500px;
+	height: 300px;
+	color: gray;
+}
+
+hr.image-sep {
+	color: #ebedef;
+}
+
+span.edit {
+	font-size: 12px;
+	color: #254f7d;
+	cursor: pointer;
+}
+
+span.arrive {
+	font-size: 12px;
+	color: #254f7d;
+	cursor: pointer;
+}
+
+span.copy-good {
+	font-size: 12px;
+	color: #254f7d;
+	cursor: pointer;
+}
+
+div.add-dg-record {
+	border: solid 1px black;
+	background: white;
+	padding: 5px;
+}
+
+td.dg-header {
+	font-weight: bold;
+	background: #ebedef;
+	text-align: center;
+	font-size: 14px;
+}
+
+td.dg-row {
+	text-align: center;
+	font-size: 14px;
+}
+
+td.dg-row-basket {
+	text-align: center;
+	font-size: 14px;
+	background: #ebedef;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.dg-row-sold {
+	text-align: center;
+	font-size: 14px;
+	background: #ebedef;
+	text-decoration: line-through;
+}
+
+input.dg-rec {
+	width: 140px;
+}
+
+table.dg {
+	background: white;
+}
+
+table.list-content {
+	background: white;
+	border: solid 1px gray;
+}
+
+td.list-content-header {
+	font-weight: bold;
+	background: #ebedef;
+	text-align: center;
+	font-size: 14px;
+}
+
+td.list-content {
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+}
+
+td.list-content-sold {
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+	text-decoration: line-through;
+	background: #ebedef;
+}
+
+td.net-price {
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+}
+
+
+tr.list-content:hover {
+	background: #ebedef;
+}
+
+div.net-price {
+	width: 100%;
+	background: red;
+}
+
+input.edit-price {
+	width: 50px;
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+	font-family: "Trebuchet MS";
+}
+
+input.sell-price {
+	width: 50px;
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+	font-family: "Trebuchet MS";
+}
+
+img.good-list {
+	height: 40px;
+	width: 30px;
+}
+
+img.action {
+	width: 20px;
+}
+
+div.sold {
+	position: 'absolute';
+    top: bottomTop;
+    left: bottomLeft;
+    width: bottomWidth;
+    height: bottomHeight;
+	color: black;
+}
+
+a.prev-good {
+	font-weight: bold;
+}
+
+a.next-good {
+	font-weight: bold;
+}
+
+td.top-basket {
+	color:white;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	width: 120px;
+	text-align: center;
+}
+
+td.top-basket:hover {
+	background: #41608a;
+}
+
+input.add-basket {
+	font-size: 12px;
+	cursor: pointer;
+}
+
+input.add-basket:hover {
+	background: #ebedef;
+}
+
+td.remove-basket {
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.top-order {
+	color:white;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	width: 120px;
+	text-align: center;
+}
+
+td.top-order:hover {
+	background: #41608a;
+}
+
+table.form-table {
+	background:#ebedef;border: 1px black solid;
+}
