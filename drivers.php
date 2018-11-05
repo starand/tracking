@@ -16,9 +16,9 @@
                 <TD> &nbsp; Водіїв поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<td class='list-content-header'> &nbsp; ПІБ &nbsp; </td>
-                <td class='list-content-header'> &nbsp; Телефон &nbsp; </td>
-                <td class='list-content-header'> &nbsp; Маршрути &nbsp; </td>";
+        echo "<TD class='list-content-header'> &nbsp; ПІБ &nbsp; </TD>
+                <TD class='list-content-header'> &nbsp; Телефон &nbsp; </TD>
+                <TD class='list-content-header'> &nbsp; Маршрути &nbsp; </TD>";
         foreach($drivers as $driver) {
             $content = "";
             $routes = get_routes_by_driver($driver['d_id']);

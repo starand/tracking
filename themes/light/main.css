@@ -21,7 +21,7 @@ input {
 	background-color: #FFFFFF;
 	border-color: #111111;
 	border: solid 1px;
-	font-size:16px;
+	font-size:14px;
 }
 
 select {
@@ -326,6 +326,10 @@ td.net-price {
 	font-size: 14px;
 }
 
+td.edit-person {
+    font-size: 14px;
+    text-align:center;
+}
 
 tr.list-content:hover {
 	background: #ebedef;
@@ -420,4 +424,9 @@ td.top-order:hover {
 
 table.form-table {
 	background:#ebedef;border: 1px black solid;
+}
+
+img.icon {
+    height: 28px;
+    width: 28px;
 }

@@ -119,6 +119,13 @@ function get_routes($lid) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns routes by location
+function get_all_routes() {
+	$sql = "SELECT * FROM tracking_routes";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns route by id
 function get_route($rid) {
 	$rid = (int)$rid;
@@ -151,7 +158,8 @@ function get_drivers_by_route($rid) {
 function get_routes_by_driver($did) {
 	$did = (int)$did;
 
-	$sql = "SELECT * FROM tracking_routes, tracking_rates WHERE r_id=rate_rid AND rate_did=$did";
+	$sql = "SELECT * FROM tracking_routes, tracking_rates 
+			WHERE r_id=rate_rid AND rate_did=$did ORDER BY rate_id";
 	return res_to_array(uquery($sql));
 }
 
@@ -199,6 +207,76 @@ function get_driver($did) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Sets driver name
+function set_driver_name($did, $name) {
+	$did = (int)$did;
+	$name = addslashes($name);
+
+	$sql = "UPDATE tracking_drivers SET d_name='$name' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver phone
+function set_driver_phone($did, $phone) {
+	$did = (int)$did;
+	$phone = addslashes($phone);
+
+	$sql = "UPDATE tracking_drivers SET d_phone='$phone' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver stag
+function set_driver_stag($did, $stag) {
+	$did = (int)$did;
+	$stag = addslashes($stag);
+
+	$sql = "UPDATE tracking_drivers SET d_stag='$stag' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver address
+function set_driver_address($did, $address) {
+	$did = (int)$did;
+	$address = addslashes($address);
+
+	$sql = "UPDATE tracking_drivers SET d_address='$address' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver age
+function set_driver_age($did, $age) {
+	$did = (int)$did;
+	$age = (int)$age;
+
+	$sql = "UPDATE tracking_drivers SET d_age=$age WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver passport
+function set_driver_passport($did, $passport) {
+	$did = (int)$did;
+	$passport = addslashes($passport);
+
+	$sql = "UPDATE tracking_drivers SET d_passport='$passport' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver idcode
+function set_driver_idcode($did, $idcode) {
+	$did = (int)$did;
+	$idcode = addslashes($idcode);
+
+	$sql = "UPDATE tracking_drivers SET d_idcode='$idcode' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
 # Rate's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new rate for driver & route
@@ -208,6 +286,24 @@ function add_rate($did, $rid, $rate) {
 	$rate = (int)$rate;
 
 	$sql = "INSERT INTO tracking_rates VALUES(NULL, $did, $rid, $rate)";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns rate info
+function get_rate($rid) {
+	$rid = (int)$rid;
+
+	$sql = "SELECT * FROM tracking_rates WHERE rate_id=$rid";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Deletes rate
+function delete_rate($rid) {
+	$rid = (int)$rid;
+
+	$sql = "DELETE FROM tracking_rates WHERE rate_id=$rid";
 	return uquery($sql);
 }
 
