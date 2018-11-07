@@ -307,17 +307,8 @@ td.list-content-header {
 }
 
 td.list-content {
-	font-weight: bold;
 	text-align: center;
 	font-size: 14px;
-}
-
-td.list-content-sold {
-	font-weight: bold;
-	text-align: center;
-	font-size: 14px;
-	text-decoration: line-through;
-	background: #ebedef;
 }
 
 td.net-price {
@@ -326,7 +317,7 @@ td.net-price {
 	font-size: 14px;
 }
 
-td.edit-person {
+td.edit-item {
     font-size: 14px;
     text-align:center;
 }

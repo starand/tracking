@@ -26,9 +26,9 @@
             $content = "";
             foreach($drivers as $driver) {
                 if (strlen($content)) $content .= "<BR>";
-                $content .= "{$driver['d_name']}";
+                $content .= "<a class='driver' id='d{$driver['d_id']}'>{$driver['d_name']}</a>";
             }
-            echo "<TR class='list-content' style='height: 38px;'>
+            echo "<TR class='list-content'>
                     <TD class='list-content' id='{$route['r_id']}'> &nbsp; <b> {$route['r_name']} </b> &nbsp; </TD>
                     <TD class='list-content' id='{$route['r_id']}'> &nbsp; <b> {$route['r_desc']} </b> &nbsp; </TD>
                     <TD class='list-content' id='{$route['r_id']}'> &nbsp; $content &nbsp; </TD>
@@ -43,6 +43,13 @@ $(document).ready(function() {
     $("#add-route").on("click", function() {
         id = $(this).attr('id');
         $("#main_space").load("add-route.php?lid=<?=$lid;?>");
+    });
+
+    $(".driver").click(function() {
+        id = $(this).attr('id');
+        if (id.substr(0, 1) == 'd') {
+            $('#main_space').load("driver.php?did=" + id.substr(1));
+        }
     });
 });
 </script>

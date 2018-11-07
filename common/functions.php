@@ -76,7 +76,43 @@ function userHasPermission($permission) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# checks whether date format is valid
+function checkDateDMYFormat($date) {
+    $parts = explode(".", $date);
+
+    if (count($parts) != 3) return false;
+    if (!is_numeric($parts[0])) return false;
+    if (!is_numeric($parts[1])) return false;
+    if (!is_numeric($parts[2])) return false;
+
+    $day = (int)$parts[0];
+    $month = (int)$parts[1];
+    $year = (int)$parts[2];
+
+    if ($day < 1 || $day > 31) return false;
+    if ($month < 1 || $month > 12) return false;
+    if ($year < 1950 || $year > 2030) return false;
+
+    return true;
+}
+
 #---------------------------------------------------------------------------------------------------
+# checks whether date format is valid
+function checkPhoneCorrect($phone) {
+    if (strlen($phone) < 10) return false;
+    $phone = trim($phone);
+    if ($phone[0] === '+') $phone = substr($phone, 1);
+
+    if (!ctype_digit($phone)) return false;
+    if ($phone[0] == '3' && ($phone[1] != '8' || $phone[2] != '0')) return false;
+
+    return true;
+}
+
+#---------------------------------------------------------------------------------------------------
+function checkDMYDateExpired($date) {
+    return strtotime(date('d-m-Y')) >= strtotime($date);
+}
 #---------------------------------------------------------------------------------------------------
 
 ?>

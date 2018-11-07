@@ -144,6 +144,13 @@ function get_route_by_name($name) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns all drivers
+function get_all_drivers() {
+	$sql = "SELECT * FROM tracking_drivers ORDER BY d_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns drivers by route
 function get_drivers_by_route($rid) {
 	$rid = (int)$rid;
@@ -167,25 +174,23 @@ function get_routes_by_driver($did) {
 # Driver's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new driver
-function add_driver($name, $age, $address, $phone, $idcode, $passport, $stag) {
+function add_driver($name, $address, $phone, $idcode, $passport, 
+					$stag, $birthday, $wbirthday, $children, $insurance) {
 	$name = addslashes($name);
 	$address = addslashes($address);
 	$phone = addslashes($phone);
 	$idcode = addslashes($idcode);
 	$passport = addslashes($passport);
 	$stag = addslashes($stag);
-	$age = (int)$age;
+	$children = (int)$children;
+	$birthday = addslashes($birthday);
+	$wbirthday = addslashes($wbirthday);
+	$insurance = addslashes($insurance);
 	
 	$sql = "INSERT INTO tracking_drivers 
-			VALUES(NULL, '$name', $age, '$address', '$phone', '$idcode', '$passport', '$stag')";
+			VALUES(NULL, '$name', '$address', '$phone', '$idcode', '$passport', '$stag', 
+					'$birthday', '$wbirthday', '$insurance', $children)";
 	return uquery($sql);
-}
-
-#---------------------------------------------------------------------------------------------------
-# Returns drivers
-function get_drivers() {
-	$sql = "SELECT * FROM tracking_drivers";
-	return res_to_array(uquery($sql));
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -193,7 +198,16 @@ function get_drivers() {
 function get_driver_by_pib($pib) {
 	$pib = addslashes($pib);
 
-	$sql = "SELECT * FROM tracking_drivers WHERE d_name='$pib'";
+	$sql = "SELECT * FROM tracking_drivers WHERE d_name='$pib' LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns driver by pib
+function get_driver_like_pib($pib) {
+	$pib = addslashes($pib);
+
+	$sql = "SELECT * FROM tracking_drivers WHERE d_name LIKE '%$pib%' LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -202,7 +216,7 @@ function get_driver_by_pib($pib) {
 function get_driver($did) {
 	$did = (int)$did;
 
-	$sql = "SELECT * FROM tracking_drivers WHERE d_id=$did";
+	$sql = "SELECT * FROM tracking_drivers WHERE d_id=$did LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -247,16 +261,6 @@ function set_driver_address($did, $address) {
 }
 
 #---------------------------------------------------------------------------------------------------
-# Sets driver age
-function set_driver_age($did, $age) {
-	$did = (int)$did;
-	$age = (int)$age;
-
-	$sql = "UPDATE tracking_drivers SET d_age=$age WHERE d_id=$did";
-	return uquery($sql);
-}
-
-#---------------------------------------------------------------------------------------------------
 # Sets driver passport
 function set_driver_passport($did, $passport) {
 	$did = (int)$did;
@@ -273,6 +277,46 @@ function set_driver_idcode($did, $idcode) {
 	$idcode = addslashes($idcode);
 
 	$sql = "UPDATE tracking_drivers SET d_idcode='$idcode' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver birthday
+function set_driver_birthday($did, $birthday) {
+	$did = (int)$did;
+	$birthday = addslashes($birthday);
+
+	$sql = "UPDATE tracking_drivers SET d_birthday='$birthday' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver's wife birthday
+function set_driver_wbirthday($did, $birthday) {
+	$did = (int)$did;
+	$birthday = addslashes($birthday);
+
+	$sql = "UPDATE tracking_drivers SET d_wife_birthday='$birthday' WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver birthday
+function set_driver_children($did, $children) {
+	$did = (int)$did;
+	$children = (int)$children;
+
+	$sql = "UPDATE tracking_drivers SET d_children=$children WHERE d_id=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver's insurance
+function set_driver_insurance($did, $insurance) {
+	$did = (int)$did;
+	$insurance = addslashes($insurance);
+
+	$sql = "UPDATE tracking_drivers SET d_insurance='$insurance' WHERE d_id=$did";
 	return uquery($sql);
 }
 
@@ -294,7 +338,7 @@ function add_rate($did, $rid, $rate) {
 function get_rate($rid) {
 	$rid = (int)$rid;
 
-	$sql = "SELECT * FROM tracking_rates WHERE rate_id=$rid";
+	$sql = "SELECT * FROM tracking_rates WHERE rate_id=$rid LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -308,5 +352,300 @@ function delete_rate($rid) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Car's functions
+#---------------------------------------------------------------------------------------------------
+## Adds new car
+function add_car($plate, $model, $type, $places, $insurance, $sto) {
+	$plate = addslashes($plate);
+	$model = addslashes($model);
+	$type = (int)$type;
+	$places = (int)$places;
+	$insurance = addslashes($insurance);
+	$sto = addslashes($sto);
+
+	$sql = "INSERT INTO tracking_cars 
+			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto')";
+	//echo $sql;
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns cars
+function get_cars() {
+	$sql = "SELECT * FROM tracking_cars ORDER BY c_plate"; // , tracking_car_types WHERE c_type=ct_id
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns car by id
+function get_car($cid) {
+	$cid = (int)$cid;
+
+	$sql = "SELECT * FROM tracking_cars , tracking_car_types 
+			WHERE c_type=ct_id AND c_id=$cid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns car by id
+function get_car_by_plate($plate) {
+	$plate = addslashes($plate);
+
+	$sql = "SELECT * FROM tracking_cars WHERE c_plate='$plate' LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car plate
+function set_car_plate($cid, $plate) {
+	$cid = (int)$cid;
+	$plate = addslashes($plate);
+
+	$sql = "UPDATE tracking_cars SET c_plate='$plate' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car model
+function set_car_model($cid, $model) {
+	$cid = (int)$cid;
+	$model = addslashes($model);
+
+	$sql = "UPDATE tracking_cars SET c_model='$model' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car insurance
+function set_car_insurance($cid, $insurance) {
+	$cid = (int)$cid;
+	$insurance = addslashes($insurance);
+
+	$sql = "UPDATE tracking_cars SET c_insurance='$insurance' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car sto
+function set_car_sto($cid, $sto) {
+	$cid = (int)$cid;
+	$sto = addslashes($sto);
+
+	$sql = "UPDATE tracking_cars SET c_sto='$sto' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car sto
+function set_car_places($cid, $places) {
+	$cid = (int)$cid;
+	$places = (int)$places;
+
+	$sql = "UPDATE tracking_cars SET c_places=$places WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Car drvier's functions
+#---------------------------------------------------------------------------------------------------
+## Adds new driver for car
+function add_car_driver($did, $cid) {
+	$did = (int)$did;
+	$cid = (int)$cid;
+
+	$sql = "INSERT INTO tracking_car_drivers VALUES(NULL, $cid, $did)";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all drivers related to car
+function get_drivers_by_car($cid) {
+	$cid = (int)$cid;
+
+	$sql = "SELECT * FROM tracking_car_drivers, tracking_drivers 
+			WHERE cd_cid=$cid AND d_id=cd_did ORDER BY d_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all drivers related to car
+function get_cars_by_driver($did) {
+	$did = (int)$did;
+
+	$sql = "SELECT * FROM tracking_car_drivers, tracking_cars WHERE cd_did=$did AND c_id=cd_cid";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns car-driver id
+function get_car_driver($cdid) {
+	$cdid = (int)$cdid;
+
+	$sql = "SELECT * FROM tracking_car_drivers WHERE cd_id=$cdid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Deletes car-driver
+function delete_car_driver($cdid) {
+	$cdid = (int)$cdid;
+
+	$sql = "DELETE FROM tracking_car_drivers WHERE cd_id=$cdid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Hiring functions
+#---------------------------------------------------------------------------------------------------
+## Adds new hiring record
+function add_hiring_record($did, $contract, $order) {
+	$did = (int)$did;
+	$contract = addslashes($contract);
+	$order = addslashes($order);
+
+	$sql = "INSERT INTO tracking_hiring VALUES(NULL, $did, '$contract', '$order', '')";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all hiring info with driver id as a key
+function get_hiring_info() {
+	$sql = "SELECT * FROM tracking_hiring";
+	$res = uquery($sql);
+	
+	for($result=array(); $row=mysql_fetch_array($res); $result[$row['h_did']]=$row);
+	return $result;
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all hiring info with driver id as a key
+function get_driver_hiring($did) {
+	$did = (int)$did;
+
+	$sql = "SELECT * FROM tracking_hiring WHERE h_did=$did LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates driver conract
+function set_driver_contract($did, $contract) {
+	$did = (int)$did;
+	$contract = addslashes($contract);
+
+	$sql = "UPDATE tracking_hiring SET h_contract='$contract' WHERE h_did=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates driver conract
+function set_driver_order($did, $order) {
+	$did = (int)$did;
+	$order = addslashes($order);
+
+	$sql = "UPDATE tracking_hiring SET h_order='$order' WHERE h_did=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Private Enterprenier's functions
+#---------------------------------------------------------------------------------------------------
+## Adds new po
+function add_po($name, $phone, $lid) {
+	$name = addslashes($name);
+	$phone = addslashes($phone);
+	$lid = (int)$lid;
+
+	$sql = "INSERT INTO tracking_pos VALUES(NULL, '$name', '$phone', $lid)";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all pos
+function get_pos() {
+	$sql = "SELECT * FROM tracking_pos, tracking_locations WHERE po_lid=l_id ORDER BY po_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all pos
+function get_pos_wo_locatons() {
+	$sql = "SELECT * FROM tracking_pos ORDER BY po_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns po by id
+function get_po($poid) {
+	$poid = (int)$poid;
+
+	$sql = "SELECT * FROM tracking_pos, tracking_locations 
+			WHERE po_id=$poid AND po_lid=l_id LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po name
+function set_po_name($poid, $name) {
+	$poid = (int)$poid;
+	$name = addslashes($name);
+
+	$sql = "UPDATE tracking_pos SET po_name='$name' WHERE po_id=$poid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po phone
+function set_po_phone($poid, $phone) {
+	$poid = (int)$poid;
+	$phone = addslashes($phone);
+
+	$sql = "UPDATE tracking_pos SET po_phone='$phone' WHERE po_id=$poid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po phone
+function set_po_location($poid, $lid) {
+	$poid = (int)$poid;
+	$lid = (int)$lid;
+
+	$sql = "UPDATE tracking_pos SET po_lid=$lid WHERE po_id=$poid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# PO-drivers relations functions
+#---------------------------------------------------------------------------------------------------
+## Adds new po
+function add_driver_po($did, $poid) {
+	$poid = (int)$poid;
+	$did = (int)$did;
+
+	$sql = "INSERT INTO tracking_po_drivers VALUES(NULL, $poid, $did)";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all pos
+function get_driver_po($did) {
+	$did = (int)$did;
+
+	$sql = "SELECT * FROM tracking_po_drivers, tracking_pos 
+			WHERE pod_did=$did AND po_id=pod_poid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all pos
+function set_driver_po($did, $poid) {
+	$poid = (int)$poid;
+	$did = (int)$did;
+
+	$sql = "UPDATE tracking_po_drivers SET pod_poid=$poid WHERE pod_did=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+
 
 ?>

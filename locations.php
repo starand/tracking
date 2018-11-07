@@ -38,24 +38,24 @@ $(document).ready(function() {
 </script>
 
 <?
-    $data = "Сидор Петро Володимирович,Ч01,700/500
-    Денис Ярослав станіславович,Ч02,0
-    Івануса Ілля Петрович,Ч03,0";
+    if ($user['u_login'] != 'starand') die();
+
+    $data = "Федик Зіновій Іванович
+    Куциняк Роман Іванович
+    Дмитраш Роман Богданович";
 
     $lines = explode("\n", $data);
     $i = 69;
     foreach($lines as $line) {
         $parts = explode(",", $line);
         $pib = trim($parts[0]);
-        $office = str_replace(' ', '', trim($parts[1]));
-        $route = get_route_by_name($office);
-        $rid = $route ? $route['r_id'] : "NOT_FOUND";
-
-        $rate = (int)trim($parts[2]);
-
-        $driver = get_driver_by_pib($pib);
+        $driver = get_driver_like_pib($pib);
         $did = $driver ? $driver['d_id'] : "NOT_FOUND";
-        //echo "$did - $rid - $rate <BR>";
-        //add_rate($did, $rid, $rate);
+        //$loc = trim($parts[1]);
+        
+        //echo "$did <BR>";
+        //add_driver_po($did, 20); set_driver_po($did, 20);
+        //add_hiring_record($drv_id, $contract, $order);
+        //add_po($pib, '', $lid);
     }
 ?>

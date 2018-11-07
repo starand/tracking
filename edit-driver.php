@@ -16,19 +16,19 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_name']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='ename' value='{$driver['d_name']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='ename' value='{$driver['d_name']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_name']} &nbsp; ";
         }
     } elseif (isset($_GET['phone'])) {
         if (isset($_GET['set'])) {
             $phone = addslashes($_GET['phone']);
-            strlen($phone) > 0 or show_error("Не правильний формат номеру!");
+            checkPhoneCorrect($phone) or show_error("Не правильний формат номеру!");
             set_driver_phone($did, $phone) or show_error("Помилка бази даних!");
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_phone']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='ephone' value='{$driver['d_phone']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='ephone' value='{$driver['d_phone']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_phone']} &nbsp; ";
         }
@@ -40,7 +40,7 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_stag']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='estag' value='{$driver['d_stag']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='estag' value='{$driver['d_stag']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_stag']} &nbsp; ";
         }
@@ -52,21 +52,9 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_address']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='eaddress' value='{$driver['d_address']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='eaddress' value='{$driver['d_address']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_address']} &nbsp; ";
-        }
-    } elseif (isset($_GET['age'])) {
-        if (isset($_GET['set'])) {
-            $age = (int)$_GET['age'];
-            $age >= 18 or show_error("Введіть вік більше 18 років!");
-            set_driver_age($did, $age) or show_error("Помилка бази даних!");
-            $driver = get_driver($did);
-            echo " &nbsp; {$driver['d_age']} &nbsp; ";
-        } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='eage' value='{$driver['d_age']}' style='$style'>";
-        } else {
-            echo " &nbsp; {$driver['d_age']} &nbsp; ";
         }
     } elseif (isset($_GET['passport'])) {
         if (isset($_GET['set'])) {
@@ -76,7 +64,7 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_passport']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='epassport' value='{$driver['d_passport']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='epassport' value='{$driver['d_passport']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_passport']} &nbsp; ";
         }
@@ -88,20 +76,126 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_idcode']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-person' id='eidcode' value='{$driver['d_idcode']}' style='$style'>";
+            echo " <input type='text' class='edit-item' id='eidcode' value='{$driver['d_idcode']}' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_idcode']} &nbsp; ";
+        }
+    } elseif (isset($_GET['birthday'])) {
+        if (isset($_GET['set'])) {
+            $birthday = addslashes($_GET['birthday']);
+            strlen($birthday) == 10 or show_error("Дата повинна містити 10 символів (дд.мм.рррр)!");
+            set_driver_birthday($did, $birthday) or show_error("Помилка бази даних!");
+            $driver = get_driver($did);
+            echo " &nbsp; {$driver['d_birthday']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='ebirthday' value='{$driver['d_birthday']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$driver['d_birthday']} &nbsp; ";
+        }
+    } elseif (isset($_GET['wbirthday'])) {
+        if (isset($_GET['set'])) {
+            $wbirthday = addslashes($_GET['wbirthday']);
+            strlen($wbirthday) == 10 or show_error("Дата повинна містити 10 символів (дд.мм.рррр)!");
+            set_driver_wbirthday($did, $wbirthday) or show_error("Помилка бази даних!");
+            $driver = get_driver($did);
+            echo " &nbsp; {$driver['d_wife_birthday']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='ewbirthday' value='{$driver['d_wife_birthday']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$driver['d_wife_birthday']} &nbsp; ";
+        }
+    } elseif (isset($_GET['children'])) {
+        if (isset($_GET['set'])) {
+            $children = (int)$_GET['children'];
+            set_driver_children($did, $children) or show_error("Помилка бази даних!");
+            $driver = get_driver($did);
+            echo " &nbsp; {$driver['d_children']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='echildren' value='{$driver['d_children']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$driver['d_children']} &nbsp; ";
+        }
+    } elseif (isset($_GET['insurance'])) {
+        if (isset($_GET['set'])) {
+            $insurance = addslashes($_GET['insurance']);
+            strlen($insurance) == 10 or show_error("Дата повинна містити 10 символів (дд.мм.рррр)!");
+            set_driver_insurance($did, $insurance) or show_error("Помилка бази даних!");
+            $driver = get_driver($did);
+            echo " &nbsp; {$driver['d_insurance']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='einsurance' value='{$driver['d_insurance']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$driver['d_insurance']} &nbsp; ";
+        }
+    } elseif (isset($_GET['contract'])) {
+        $hiring = get_driver_hiring($did);
+        if (!$hiring) {
+            add_hiring_record($did, '', '');
+            $hiring = get_driver_hiring($did);
+        }
+
+        if (isset($_GET['set'])) {
+            $contract = addslashes($_GET['contract']);
+            strlen($contract) > 0 or show_error("Договір не може бути пустим!");
+            set_driver_contract($did, $contract) or show_error("Помилка бази даних!");
+            $hiring = get_driver_hiring($did);
+            echo " &nbsp; {$hiring['h_contract']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='econtract' value='{$hiring['h_contract']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$hiring['h_contract']} &nbsp; ";
+        }
+    } elseif (isset($_GET['order'])) {
+        $hiring = get_driver_hiring($did);
+        if (!$hiring) {
+            add_hiring_record($did, '', '');
+            $hiring = get_driver_hiring($did);
+        }
+
+        if (isset($_GET['set'])) {
+            $order = addslashes($_GET['order']);
+            strlen($order) > 0 or show_error("Договір не може бути пустим!");
+            set_driver_order($did, $order) or show_error("Помилка бази даних!");
+            $hiring = get_driver_hiring($did);
+            echo " &nbsp; {$hiring['h_order']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='eorder' value='{$hiring['h_order']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$hiring['h_order']} &nbsp; ";
+        }
+    } elseif (isset($_GET['poid'])) {
+        $po = get_driver_po($did);
+        if (!$po) {
+            add_driver_po($did, 22);
+            $po = get_driver_po($did);
+        }
+        if (isset($_GET['set'])) {
+            $poid = (int)$_GET['poid'];
+            get_po($poid) or show_error("Такий підприємець не існує!");
+            set_driver_po($did, $poid) or show_error("Помилка бази даних!");
+            $po = get_driver_po($did);
+            echo " &nbsp; {$po['po_name']} - {$po['po_phone']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            $pos = get_pos_wo_locatons();
+            echo "<SELECT class='edit-item' id='epoid' style='$style'>";
+            foreach ($pos as $po) {
+                $selected = $po['po_id']==22 ? 'selected' : '';
+                echo "<option value='{$po['po_id']}' $selected>{$po['po_name']}</option>";
+            }
+            echo "</SELECT>";
+        } else {
+            echo " &nbsp; {$po['po_name']} - {$po['po_phone']} &nbsp; ";
         }
     }
 ?>
 <script>
 $(document).ready(function() {
-    var edittables = ['name', 'phone', 'stag', 'address', 'age', 'passport', 'idcode'];
-    $(".edit-person")
+    var edittables = ['name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday',
+                        'wbirthday', 'children', 'insurance', 'contract', 'order', 'poid'];
+    $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();
-        })
-        .focusout(function() {
+        }).focusout(function() {
             id = $(this).attr('id').substr(1);
             if (edittables.indexOf(id) >= 0) {
                 url = 'edit-driver.php?' + id + '=&did=<?=$did;?>';

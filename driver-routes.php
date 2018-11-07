@@ -30,16 +30,16 @@
     if (count($routes)) {
         foreach ($routes as $route) {
             echo "<TR class='list-content' style='height:22px;'>
-                    <TD class='edit-person'> &nbsp; $i &nbsp; </TD>
-                    <TD class='edit-person' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>
-                    <TD class='edit-person' style='width:100px;'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
-                    <TD class='edit-person' style=''> &nbsp; <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>
+                    <TD class='edit-item'> &nbsp; $i &nbsp; </TD>
+                    <TD class='edit-item' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>
+                    <TD class='edit-item' style='width:100px;'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
+                    <TD class='edit-item' style=''> &nbsp; <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>
                 </TR>";
             $i++;
         }
     } else {
         echo "<TR class='list-content' style='height:22px;'>
-                <TD class='edit-person' colspan='4'> &nbsp; Маршрутів поки що не додано! &nbsp; </TD>
+                <TD class='edit-item' colspan='4'> &nbsp; Маршрутів поки що не додано! &nbsp; </TD>
             </TR>";
     }
 ?>

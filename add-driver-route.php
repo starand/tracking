@@ -8,7 +8,7 @@
         $rid = (int)$_POST['rid'];
         $route = get_route($rid) or show_error('Такий маршрут не існує!');
         $rate = (int)$_POST['rate'];
-        $rate > 0 or show_errpr("Не коректна ставка!");
+        $rate > 0 or show_error("Не коректна ставка!");
 
         if (add_rate($did, $rid, $rate)) {
             show_message("Маршрут <b>{$route['r_name']}</b> для водія <b>{$driver['d_name']}</b> додано!");
