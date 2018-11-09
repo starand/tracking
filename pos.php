@@ -4,9 +4,20 @@
 ?>
 <center>
 <h2>Приватні підприємці</h2>
-<a id='add-po'> Додати ПП </a>
 
-<TABLE class='list-content' style='width:450px;'>
+<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TR'>
+    <TD>
+        Пошук: <input type='text' id='query' style='width:300px;'/>
+        <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
+    </TD>
+    <TD> </TD>
+    <TD style='width:70px;'><a id='add-po'> Додати </a></TD>
+</TR>
+</TABLE>
+
+
+<TABLE class='list-content' style='width:500px;' id='tbl_pos'>
 <?
     $pos = get_pos();
 
@@ -50,5 +61,13 @@ $(document).ready(function() {
         }  
     });
 
+    $("#search").click(function() {
+        // drivers_tbl
+        value = $("#query").val().toLowerCase();
+
+        $("#tbl_pos tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 });
 </script>

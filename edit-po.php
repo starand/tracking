@@ -6,7 +6,7 @@
     $po = get_po((int)$_GET['poid']) or show_error("Такий підприємець не існує! '{$_GET['poid']}'");
     $poid = $po['po_id'];
 
-    $style='font-family:"Trebuchet MS",Terminal; font-size: 14px;border: 1px solid white; width:245px; text-align:center;';
+    $style='font-family:"Trebuchet MS",Terminal; font-size: 14px;border: 1px solid white; width:350px; text-align:center;';
 
     if (isset($_GET['name'])) {
         if (isset($_GET['set'])) {
@@ -40,11 +40,11 @@
             $po = get_po($poid);
             echo " &nbsp; {$po['l_name']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo "<SELECT class='edit-item' id='elocation' style='font-size:14px;' style='$style'>";
-            $locations = get_locations();
-            foreach ($locations as $loc) {
-                echo "<option value='{$loc['l_id']}'>{$loc['l_name']}</option>";
-            }
+            echo "<SELECT class='edit-item' id='elocation' style='$style'>";
+                $locations = get_locations();
+                foreach ($locations as $loc) {
+                    echo "<option value='{$loc['l_id']}'>{$loc['l_name']}</option>";
+                }
             echo "</SELECT>";         
         } else {
             echo " &nbsp; {$po['l_name']} &nbsp; ";

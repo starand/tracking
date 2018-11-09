@@ -32,7 +32,7 @@
             echo "<TR class='list-content' style='height:22px;'>
                     <TD class='edit-item'> &nbsp; $i &nbsp; </TD>
                     <TD class='edit-item' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>
-                    <TD class='edit-item' style='width:100px;'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
+                    <TD class='edit-item' style='width:100px;' id='rate{$route['rate_id']}'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
                     <TD class='edit-item' style=''> &nbsp; <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>
                 </TR>";
             $i++;
@@ -52,6 +52,13 @@ $(document).ready(function() {
         if (id.substr(0,3) == 'ddr') {
             url = "driver-routes.php?did=<?=$did;?>&ddr=" + id.substr(3);
             $("#add-route-content").load(url);
+        }
+    });
+    $(".edit-item").click(function() {
+        id = $(this).attr('id');
+        if (id.substr(0,4) == 'rate') {
+            url = "edit-driver.php?rate=&rid=" + id + "&edit=&did=<?=$did;?>";
+            $('#' + id).load(url);
         }
     });
 });

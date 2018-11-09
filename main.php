@@ -1,7 +1,7 @@
 <?
     if (!defined('TRACKING_ENGINE')) die();
 ?>
-<div id='main_error'></div>
+<div id='main_error' style='font-weight:bold; width:1024px; text-align:center;'></div>
 
 <TABLE cellspacing='0' cellpadding='0'>
     <TR>

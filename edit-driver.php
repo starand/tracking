@@ -127,42 +127,6 @@
         } else {
             echo " &nbsp; {$driver['d_insurance']} &nbsp; ";
         }
-    } elseif (isset($_GET['contract'])) {
-        $hiring = get_driver_hiring($did);
-        if (!$hiring) {
-            add_hiring_record($did, '', '');
-            $hiring = get_driver_hiring($did);
-        }
-
-        if (isset($_GET['set'])) {
-            $contract = addslashes($_GET['contract']);
-            strlen($contract) > 0 or show_error("Договір не може бути пустим!");
-            set_driver_contract($did, $contract) or show_error("Помилка бази даних!");
-            $hiring = get_driver_hiring($did);
-            echo " &nbsp; {$hiring['h_contract']} &nbsp; ";
-        } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-item' id='econtract' value='{$hiring['h_contract']}' style='$style'>";
-        } else {
-            echo " &nbsp; {$hiring['h_contract']} &nbsp; ";
-        }
-    } elseif (isset($_GET['order'])) {
-        $hiring = get_driver_hiring($did);
-        if (!$hiring) {
-            add_hiring_record($did, '', '');
-            $hiring = get_driver_hiring($did);
-        }
-
-        if (isset($_GET['set'])) {
-            $order = addslashes($_GET['order']);
-            strlen($order) > 0 or show_error("Договір не може бути пустим!");
-            set_driver_order($did, $order) or show_error("Помилка бази даних!");
-            $hiring = get_driver_hiring($did);
-            echo " &nbsp; {$hiring['h_order']} &nbsp; ";
-        } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-item' id='eorder' value='{$hiring['h_order']}' style='$style'>";
-        } else {
-            echo " &nbsp; {$hiring['h_order']} &nbsp; ";
-        }
     } elseif (isset($_GET['poid'])) {
         $po = get_driver_po($did);
         if (!$po) {
@@ -186,12 +150,26 @@
         } else {
             echo " &nbsp; {$po['po_name']} - {$po['po_phone']} &nbsp; ";
         }
+    } elseif (isset($_GET['rate'])) {
+        $rateId = addslashes($_GET['rid']);
+        $rid = (int)substr($rateId, 4);
+        get_rate($rid) or show_error("Така ставка не знайдена");
+        if (isset($_GET['set'])) {
+            $rate = (int)$_GET['rate'] or show_message("Ставка повинна бути більше нуля!");
+            set_route_rate($did, $rid, $rate) or show_error("Помилка бази даних!");
+            $rate = get_rate($rid);
+            echo " &nbsp; {$rate['rate_rate']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='e$rateId' value='{$rate['rate_rate']}' style='$style;width:100px;' name='$rid'>";
+        } else {
+            echo " &nbsp; {$rate['rate_rate']} &nbsp; ";
+        }
     }
 ?>
 <script>
 $(document).ready(function() {
     var edittables = ['name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday',
-                        'wbirthday', 'children', 'insurance', 'contract', 'order', 'poid'];
+                        'wbirthday', 'children', 'insurance', 'poid'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();
@@ -200,12 +178,19 @@ $(document).ready(function() {
             if (edittables.indexOf(id) >= 0) {
                 url = 'edit-driver.php?' + id + '=&did=<?=$did;?>';
                 $('#' + id).load(url);
+            } else if (id.substr(0, 4) == 'rate') {
+                url = 'edit-driver.php?rate=&did=<?=$did;?>&rid=<?=$rateId;?>';
+                $('#' + id).load(url);
             }
         }).change(function() {
             id = $(this).attr('id').substr(1);
             if (edittables.indexOf(id) >= 0) {
                 val = encodeURIComponent($(this).val().trim());
                 url = 'edit-driver.php?' + id + '=' + val + '&set=&did=<?=$did;?>';
+                $('#' + id).load(url);
+            } else if (id.substr(0, 4) == 'rate') {
+                val = encodeURIComponent($(this).val().trim());
+                url = 'edit-driver.php?rate=' + val + '&rid=<?=$rateId;?>&set=&did=<?=$did;?>';
                 $('#' + id).load(url);
             }
         }).focus().select();

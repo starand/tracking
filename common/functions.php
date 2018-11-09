@@ -110,9 +110,26 @@ function checkPhoneCorrect($phone) {
 }
 
 #---------------------------------------------------------------------------------------------------
+##
 function checkDMYDateExpired($date) {
     return strtotime(date('d-m-Y')) >= strtotime($date);
 }
+
+#---------------------------------------------------------------------------------------------------
+##
+function checkIsCurrentMonth($date) {
+    $parts = explode(".", $date);
+    if (count($parts) != 3) return false;
+    //echo date('m')." - ".$parts[1]."<BR>";
+    return date('m') == $parts[1];
+}
+
+#---------------------------------------------------------------------------------------------------
+##
+function debug($msg) {
+    echo "<script>alert(".addslashes($msg).");</script>";
+}
+
 #---------------------------------------------------------------------------------------------------
 
 ?>

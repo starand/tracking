@@ -12,23 +12,29 @@
 <TABLE class='list-content'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про машину </TD></TR>
     <TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; Номер: &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>Номер</b>: &nbsp; </TD>
         <TD class='edit-item' id='plate' style='width:350px;'> &nbsp; <?=$car['c_plate'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; Модель: &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>Модель</b>: &nbsp; </TD>
         <TD class='edit-item' id='model' style='width:350px;'>&nbsp; <?=$car['c_model'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; Страхівка: &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>Страхівка</b>: &nbsp; </TD>
         <TD class='edit-item' id='insurance' style='width:350px;'>&nbsp; <?=$car['c_insurance'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; СТО: &nbsp; </TD>
-        <TD class='edit-item' id='sto' style='width:350px;'>&nbsp; <?=$car['c_sto'];?> &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>СТО</b>: &nbsp; </TD>
+    <TD class='edit-item' id='sto' style='width:350px;'>&nbsp; <?=$car['c_sto'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; Місць: &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>Місць</b>: &nbsp; </TD>
         <TD class='edit-item' id='places' style='width:350px;'>&nbsp; <?=$car['c_places'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
-        <TD class='edit-item'> &nbsp; Тип: &nbsp; </TD>
+        <TD class='edit-item'> &nbsp; <b>Тип</b>: &nbsp; </TD>
         <TD class='edit-item' id='type' style='width:350px;'>&nbsp; <?=$car['ct_name'];?> &nbsp; </TD>
+    </TR><TR class='list-content' style='height:22px;'>
+        <TD class='edit-item'> &nbsp; <b>Власник</b>: &nbsp; </TD>
+        <TD class='edit-item' id='owner' style='width:350px;'>&nbsp; <?=$car['c_owner'];?> &nbsp; </TD>
+    </TR><TR class='list-content' style='height:22px;'>
+        <TD class='edit-item'> &nbsp; <b>Колір</b>: &nbsp; </TD>
+        <TD class='edit-item' id='color' style='width:350px;'>&nbsp; <?=$car['c_color'];?> &nbsp; </TD>
     </TR>
 </TABLE>
 <BR>
@@ -40,7 +46,7 @@
 
 <script>
 $(document).ready(function() {
-    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type'];
+    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'];
     $(".edit-item").click(function() {
         id = $(this).attr('id');
         if (edittables.indexOf(id) >= 0) {

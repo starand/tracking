@@ -417,6 +417,10 @@ table.form-table {
 	background:#ebedef;border: 1px black solid;
 }
 
+table.menu {
+	font-size: 14px;
+}
+
 img.icon {
     height: 28px;
     width: 28px;

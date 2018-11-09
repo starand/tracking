@@ -22,8 +22,8 @@
 <form action='add-po.php' method='post' target='submit_frame'>
 <table cellspacing='5' cellpadding='1' class='form-table'>
     <TR><TD colspan='2'><center><h2>Додати підприємця</h2></TD></TR>
-    <tr><td>ПІБ: &nbsp;</td><td><input type='text' name='name' style='width:250px;' value='<??>'></td></tr>
-    <tr><td>Телефон: &nbsp;</td><td><input type='text' name='phone' style='width:250px;' value='<??>'></td></tr>
+    <tr><td>ПІБ: &nbsp;</td><td><input type='text' name='name' style='width:250px;'></td></tr>
+    <tr><td>Телефон: &nbsp;</td><td><input type='text' name='phone' style='width:250px;'></td></tr>
     <tr><td>Локація: &nbsp;</td><td>
         <SELECT name='lid' style='width:250px; font-size:14px;'>
         <?

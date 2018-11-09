@@ -34,18 +34,19 @@ CREATE TABLE tracking_drivers (
     d_wife_birthday varchar(10) NOT NULL,
     d_insurance varchar(10) NOT NULL,
     d_children tinyint NOT NULL default 0,
+    d_state tinyint NOT NULL default 0,
     UNIQUE(d_phone),
     UNIQUE(d_name, d_address),
     PRIMARY KEY(d_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE tracking_rates (
-    r_id int unsigned NOT NULL AUTO_INCREMENT,
-    r_did int unsigned NOT NULL,
-    r_rid int unsigned NOT NULL,
-    r_rate smallint unsigned not NULL,
-    PRIMARY KEY(r_id),
-    UNIQUE(r_did, r_rid)
+    rate_id int unsigned NOT NULL AUTO_INCREMENT,
+    rate_did int unsigned NOT NULL,
+    rate_rid int unsigned NOT NULL,
+    rate_rate smallint unsigned not NULL,
+    PRIMARY KEY(rate_id),
+    UNIQUE(rate_did, rate_rid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE tracking_cars (
@@ -56,6 +57,8 @@ CREATE TABLE tracking_cars (
     c_places tinyint unsigned NOT NULL,
     c_insurance varchar(32) NOT NULL,
     c_sto varchar(32) NOT NULL,
+    c_owner varchar(32) NOT NULL,
+    c_color varchar(16) NOT NULL,
     UNIQUE(c_plate),
     PRIMARY KEY(c_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -80,6 +83,8 @@ CREATE TABLE tracking_hiring (
     h_contract varchar(32) NOT NULL,
     h_order varchar(32) NOT NULL,
     h_firing varchar(32) NOT NULL,
+    h_state tinyint NOT NULL default 0,
+    h_fire_reason varchar(64) NOT NULL,
     PRIMARY KEY(h_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -97,4 +102,14 @@ CREATE TABLE tracking_po_drivers (
     pod_did int unsigned NOT NULL,
     UNIQUE(pod_poid, pod_did),
     PRIMARY KEY(pod_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE tracking_route_data (
+    rd_id int unsigned NOT NULL AUTO_INCREMENT,
+    rd_rid int unsigned NOT NULL,
+    rd_url varchar(255) NOT NULL,
+    rd_length smallint NOT NULL,
+    rd_cost int NOT NULL,
+    rd_name varchar(32) NOT NULL,
+    PRIMARY KEY(rd_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

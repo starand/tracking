@@ -35,5 +35,5 @@
     </TABLE>
 
     <BR><BR><BR><BR><BR><BR><BR><BR><BR>
-    <div style='$divStyle'><iframe name='submit_frame' src='' style='width: 0px; height: 0px;'></iframe></div>
+    <div style='$divStyle'><iframe name='submit_frame' src='' style='width: 600px; height: 300px;'></iframe></div>
 </div>

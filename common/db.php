@@ -130,7 +130,8 @@ function get_all_routes() {
 function get_route($rid) {
 	$rid = (int)$rid;
 
-	$sql = "SELECT * FROM tracking_routes WHERE r_id=$rid LIMIT 1";
+	$sql = "SELECT * FROM tracking_routes, tracking_locations 
+			WHERE r_id=$rid AND l_id=r_lid LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -145,8 +146,10 @@ function get_route_by_name($name) {
 
 #---------------------------------------------------------------------------------------------------
 # Returns all drivers
-function get_all_drivers() {
-	$sql = "SELECT * FROM tracking_drivers ORDER BY d_name";
+define('STATE_ACTUAL', 0);
+define('STATE_REMOVED', 1);
+function get_all_drivers($type = STATE_ACTUAL) {
+	$sql = "SELECT * FROM tracking_drivers WHERE d_state=$type ORDER BY d_name ";
 	return res_to_array(uquery($sql));
 }
 
@@ -156,7 +159,7 @@ function get_drivers_by_route($rid) {
 	$rid = (int)$rid;
 
 	$sql = "SELECT * FROM tracking_routes, tracking_rates, tracking_drivers 
-			WHERE r_id=rate_rid AND r_id=$rid AND d_id=rate_did";
+			WHERE r_id=rate_rid AND r_id=$rid AND d_id=rate_did AND d_state=".STATE_ACTUAL;
 	return res_to_array(uquery($sql));
 }
 
@@ -168,6 +171,36 @@ function get_routes_by_driver($did) {
 	$sql = "SELECT * FROM tracking_routes, tracking_rates 
 			WHERE r_id=rate_rid AND rate_did=$did ORDER BY rate_id";
 	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates route name
+function set_route_name($rid, $name) {
+	$rid = (int)$rid;
+	$name = addslashes($name);
+
+	$sql = "UPDATE tracking_routes SET r_name='$name' WHERE r_id=$rid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates route description
+function set_route_desc($rid, $desc) {
+	$rid = (int)$rid;
+	$desc = addslashes($desc);
+
+	$sql = "UPDATE tracking_routes SET r_desc='$desc' WHERE r_id=$rid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates route location
+function set_route_location($rid, $lid) {
+	$rid = (int)$rid;
+	$lid = (int)$lid;
+
+	$sql = "UPDATE tracking_routes SET r_lid='$lid' WHERE r_id=$rid";
+	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -186,11 +219,43 @@ function add_driver($name, $address, $phone, $idcode, $passport,
 	$birthday = addslashes($birthday);
 	$wbirthday = addslashes($wbirthday);
 	$insurance = addslashes($insurance);
-	
+
 	$sql = "INSERT INTO tracking_drivers 
 			VALUES(NULL, '$name', '$address', '$phone', '$idcode', '$passport', '$stag', 
-					'$birthday', '$wbirthday', '$insurance', $children)";
-	return uquery($sql);
+					'$birthday', '$wbirthday', '$insurance', $children, 0)";
+	uquery($sql);
+
+	# add new hiring record as it's next hiring time
+	return add_hiring_record(last_insert_id(), '', '');
+}
+
+#---------------------------------------------------------------------------------------------------
+# Deletes driver by id
+function delete_driver($did) {
+	$did = (int)$did;
+
+	# remove driver from route
+	uquery("DELETE FROM tracking_rates WHERE rate_did=$did LIMIT 1");
+	# remove cars from driver
+	uquery("DELETE FROM tracking_car_drivers WHERE cd_did=$did LIMIT 1");
+	# remove driver's po
+	uquery("DELETE FROM tracking_po_drivers WHERE pod_did=$did LIMIT 1");
+	# hide driver's hiring indo
+	uquery("UPDATE tracking_hiring SET h_state=".STATE_REMOVED." WHERE h_did=$did");
+	# hide driver from lists
+	return uquery("UPDATE tracking_drivers SET d_state=".STATE_REMOVED." WHERE d_id=$did LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Restores driver by id
+function restore_driver($did) {
+	$did = (int)$did;
+
+	# add new hiring record as it's next hiring time
+	add_hiring_record($did, '', '');
+	# restore driver's hiring indo
+	uquery("UPDATE tracking_hiring SET h_state=".STATE_ACTUAL." WHERE h_did=$did");
+	return uquery("UPDATE tracking_drivers SET d_state=".STATE_ACTUAL." WHERE d_id=$did LIMIT 1");
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -198,7 +263,8 @@ function add_driver($name, $address, $phone, $idcode, $passport,
 function get_driver_by_pib($pib) {
 	$pib = addslashes($pib);
 
-	$sql = "SELECT * FROM tracking_drivers WHERE d_name='$pib' LIMIT 1";
+	$sql = "SELECT * FROM tracking_drivers 
+			WHERE d_name='$pib' AND d_state=".STATE_ACTUAL." LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -207,7 +273,8 @@ function get_driver_by_pib($pib) {
 function get_driver_like_pib($pib) {
 	$pib = addslashes($pib);
 
-	$sql = "SELECT * FROM tracking_drivers WHERE d_name LIKE '%$pib%' LIMIT 1";
+	$sql = "SELECT * FROM tracking_drivers 
+			WHERE d_name LIKE '%$pib%' AND d_state=".STATE_ACTUAL." LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -321,6 +388,14 @@ function set_driver_insurance($did, $insurance) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Sets driver's insurance
+function get_children_count() {
+	$sql = "SELECT sum(d_children) FROM tracking_drivers WHERE d_state=".STATE_ACTUAL;
+	$res = uquery($sql);
+	return $res ? mysql_result($res, 0, 0) : 0;
+}
+
+#---------------------------------------------------------------------------------------------------
 # Rate's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new rate for driver & route
@@ -352,20 +427,34 @@ function delete_rate($rid) {
 }
 
 #---------------------------------------------------------------------------------------------------
+## Updated route rate
+function set_route_rate($did, $rid, $rate) {
+	$did = (int)$did;
+	$rid = (int)$rid;
+	$rate = (int)$rate;
+
+	$sql = "UPDATE tracking_rates SET rate_rate=$rate WHERE rate_id=$rid AND rate_did=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
 # Car's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new car
-function add_car($plate, $model, $type, $places, $insurance, $sto) {
+function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color) {
 	$plate = addslashes($plate);
 	$model = addslashes($model);
 	$type = (int)$type;
 	$places = (int)$places;
 	$insurance = addslashes($insurance);
 	$sto = addslashes($sto);
+	$owner = addslashes($owner);
+	$color = addslashes($color);
 
 	$sql = "INSERT INTO tracking_cars 
-			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto')";
-	//echo $sql;
+			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto', '$owner', 
+						 '$color')";
+	echo $sql;
 	return uquery($sql);
 }
 
@@ -381,9 +470,25 @@ function get_cars() {
 function get_car($cid) {
 	$cid = (int)$cid;
 
-	$sql = "SELECT * FROM tracking_cars , tracking_car_types 
+	$sql = "SELECT * FROM tracking_cars, tracking_car_types 
 			WHERE c_type=ct_id AND c_id=$cid LIMIT 1";
 	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all car types
+function get_car_types() {
+	$sql = "SELECT * FROM tracking_car_types ORDER BY ct_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns car type by id
+function get_car_type($ctid) {
+	$ctid = (int)$ctid;
+
+	$sql = "SELECT * FROM tracking_car_types WHERE ct_id=$ctid LIMIT 1";
+	return res_to_array(uquery($sql));
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -436,12 +541,42 @@ function set_car_sto($cid, $sto) {
 }
 
 #---------------------------------------------------------------------------------------------------
-# Sets car sto
+# Sets car places
 function set_car_places($cid, $places) {
 	$cid = (int)$cid;
 	$places = (int)$places;
 
 	$sql = "UPDATE tracking_cars SET c_places=$places WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car owner
+function set_car_owner($cid, $owner) {
+	$cid = (int)$cid;
+	$owner = addslashes($owner);
+
+	$sql = "UPDATE tracking_cars SET c_owner='$owner' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car color
+function set_car_color($cid, $color) {
+	$cid = (int)$cid;
+	$color = addslashes($color);
+
+	$sql = "UPDATE tracking_cars SET c_color='$color' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car type
+function set_car_type($cid, $type) {
+	$cid = (int)$cid;
+	$type = (int)$type;
+
+	$sql = "UPDATE tracking_cars SET c_type=$type WHERE c_id=$cid";
 	return uquery($sql);
 }
 
@@ -463,7 +598,7 @@ function get_drivers_by_car($cid) {
 	$cid = (int)$cid;
 
 	$sql = "SELECT * FROM tracking_car_drivers, tracking_drivers 
-			WHERE cd_cid=$cid AND d_id=cd_did ORDER BY d_name";
+			WHERE cd_cid=$cid AND d_id=cd_did AND d_state=".STATE_ACTUAL." ORDER BY d_name";
 	return res_to_array(uquery($sql));
 }
 
@@ -503,14 +638,15 @@ function add_hiring_record($did, $contract, $order) {
 	$contract = addslashes($contract);
 	$order = addslashes($order);
 
-	$sql = "INSERT INTO tracking_hiring VALUES(NULL, $did, '$contract', '$order', '')";
+	$sql = "INSERT INTO tracking_hiring 
+			VALUES(NULL, $did, '$contract', '$order', '', 0, '', '', '')";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
 # Returns all hiring info with driver id as a key
 function get_hiring_info() {
-	$sql = "SELECT * FROM tracking_hiring";
+	$sql = "SELECT * FROM tracking_hiring ORDER BY h_id";
 	$res = uquery($sql);
 	
 	for($result=array(); $row=mysql_fetch_array($res); $result[$row['h_did']]=$row);
@@ -518,31 +654,70 @@ function get_hiring_info() {
 }
 
 #---------------------------------------------------------------------------------------------------
-# Returns all hiring info with driver id as a key
-function get_driver_hiring($did) {
-	$did = (int)$did;
+# Returns hiring info by id
+function get_hiring($hid) {
+	$hid = (int)$hid;
 
-	$sql = "SELECT * FROM tracking_hiring WHERE h_did=$did LIMIT 1";
+	$sql = "SELECT * FROM tracking_hiring WHERE h_id=$hid LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
 #---------------------------------------------------------------------------------------------------
-# Updates driver conract
-function set_driver_contract($did, $contract) {
+# Returns all hiring info with driver id as a key
+function get_driver_hirings($did) {
 	$did = (int)$did;
-	$contract = addslashes($contract);
 
-	$sql = "UPDATE tracking_hiring SET h_contract='$contract' WHERE h_did=$did";
+	$sql = "SELECT * FROM tracking_hiring WHERE h_did=$did";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates hiring date
+function set_hire_date($hid, $date) {
+	$hid = (int)$hid;
+	$date = addslashes($date);
+
+	$sql = "UPDATE tracking_hiring SET h_hire_date='$date' WHERE h_id=$hid LIMIT 1";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
-# Updates driver conract
-function set_driver_order($did, $order) {
-	$did = (int)$did;
+# Updates fire date
+function set_fire_date($hid, $date) {
+	$hid = (int)$hid;
+	$date = addslashes($date);
+
+	$sql = "UPDATE tracking_hiring SET h_fire_date='$date' WHERE h_id=$hid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates hiring contract
+function set_hire_contract($hid, $contract) {
+	$hid = (int)$hid;
+	$contract = addslashes($contract);
+
+	$sql = "UPDATE tracking_hiring SET h_contract='$contract' WHERE h_id=$hid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates hiring order
+function set_hire_order($hid, $order) {
+	$hid = (int)$hid;
 	$order = addslashes($order);
 
-	$sql = "UPDATE tracking_hiring SET h_order='$order' WHERE h_did=$did";
+	$sql = "UPDATE tracking_hiring SET h_order='$order' WHERE h_id=$hid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Updates hiring order
+function set_fire_reason($hid, $reason) {
+	$hid = (int)$hid;
+	$reason = addslashes($reason);
+
+	$sql = "UPDATE tracking_hiring SET h_fire_reason='$reason' WHERE h_id=$hid LIMIT 1";
 	return uquery($sql);
 }
 
@@ -642,6 +817,48 @@ function set_driver_po($did, $poid) {
 	$did = (int)$did;
 
 	$sql = "UPDATE tracking_po_drivers SET pod_poid=$poid WHERE pod_did=$did";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Route data functions
+#---------------------------------------------------------------------------------------------------
+## Adds new route data
+function add_route_data($rid, $url, $len, $cost, $name) {
+	$rid = (int)$rid;
+	$url = addslashes($url);
+	$name = addslashes($name);
+	$len = (int)$len;
+	$cost = (int)$cost;
+
+	$sql = "INSERT INTO tracking_route_data VALUES(NULL, $rid, '$url', $len, $cost, '$name')";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns route data by  id
+function get_route_data($rdid) {
+	$rdid = (int)$rdid;
+
+	$sql = "SELECT * FROM tracking_route_data WHERE rd_id=$rdid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns route datas by route id
+function get_route_datas($rid) {
+	$rid = (int)$rid;
+
+	$sql = "SELECT * FROM tracking_route_data WHERE rd_rid=$rid";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Deletes route data by id
+function delete_route_data($rdid) {
+	$rdid = (int)$rdid;
+
+	$sql = "DELETE FROM tracking_route_data WHERE rd_id=$rdid";
 	return uquery($sql);
 }
 

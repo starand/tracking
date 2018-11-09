@@ -68,11 +68,52 @@
         } else {
             echo " &nbsp; {$car['c_places']} &nbsp; ";
         }
-    } 
+    } elseif (isset($_GET['owner'])) {
+        if (isset($_GET['set'])) {
+            $owner = addslashes($_GET['owner']);
+            strlen($owner) >= 8 or show_error("Ім'я власника повинне бути не коротше 8 символів.");
+            set_car_owner($cid, $owner) or show_error("Помилка бази даних!");
+            $car = get_car($cid);
+            echo " &nbsp; {$car['c_owner']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='eowner' value='{$car['c_owner']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$car['c_owner']} &nbsp; ";
+        }
+    } elseif (isset($_GET['color'])) {
+        if (isset($_GET['set'])) {
+            $color = addslashes($_GET['color']);
+            set_car_color($cid, $color) or show_error("Помилка бази даних!");
+            $car = get_car($cid);
+            echo " &nbsp; {$car['c_color']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='ecolor' value='{$car['c_color']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$car['c_color']} &nbsp; ";
+        }
+    } elseif (isset($_GET['type'])) {
+        if (isset($_GET['set'])) {
+            $type = (int)$_GET['type'];
+            get_car_type($type) or show_error("Введіть правильний тип машини!");
+            set_car_type($cid, $type) or show_error("Помилка бази даних!");
+            $car = get_car($cid);
+            echo " &nbsp; {$car['ct_name']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo "<SELECT class='edit-item' id='etype' style='$style'>";
+            $types = get_car_types();
+            foreach ($types as $type) {
+                $selected = $type['ct_id'] == $car['c_type'] ? "selected" : "";
+                echo "<option value='{$type['ct_id']}' $selected>{$type['ct_name']}</option>";
+            }
+            echo "</SELECT>";
+        } else {
+            echo " &nbsp; {$car['ct_name']} &nbsp; ";
+        }
+    }
 ?>
 <script>
 $(document).ready(function() {
-    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type'];
+    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();
