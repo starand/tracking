@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(ADD.PO);
 
     if (isset($_POST['name']) && isset($_POST['phone']) && isset($_POST['lid'])) {
         $name = addslashes($_POST['name']);

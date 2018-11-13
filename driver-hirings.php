@@ -1,6 +1,8 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.ROUTE);
+    require_permission(VIEW.HIRINGS);
 
     isset($_GET['did']) or show_error("Не вибрано водія!");
     $driver = get_driver((int)$_GET['did']) or show_error("Такий водій не існує!");

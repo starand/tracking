@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(EDIT.HIRING);
 
     isset($_GET['hid']) or show_error("Не вибрано дані прийняття водія!");
     $hiring = get_hiring((int)$_GET['hid']) or show_error("Такі дані не існують!");

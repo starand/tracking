@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.DRIVER);
 
     isset($_GET['did']) or die("Не вказано водія!");
     $did = (int)$_GET['did'];
@@ -19,7 +20,11 @@
 <TABLE cellspacing='0' cellpadding='2' style='width:550px;' class='menu'>
 <TR'>
     <TD> </TD>
-    <TD style='width:110px;'><a id='drivers-info'> <?=$add_drv;?> </a></TD>
+<?
+    if (hasPermission(DEL.DRIVER)) {
+        echo "<TD style='width:110px;'><a id='drivers-info'> $add_drv </a></TD>";
+    }
+?>
 </TR>
 </TABLE>
 
@@ -66,23 +71,33 @@
 </TABLE>
 <BR>
 
-<a id='add-driver-route'> Додати маршрут </a>
-<div id='add-route-content'>
-<? include_once "driver-routes.php"; ?>
-</div>
+<?
+    if (hasPermission(EDIT.DRIVER) && hasPermission(VIEW.ROUTE)) {
+        echo "<a id='add-driver-route'> Додати маршрут </a>";
+    }
+    if (hasPermission(VIEW.ROUTES)) {
+        echo "<div id='add-route-content'>";
+        include_once "driver-routes.php";
+        echo "</div><BR>";
+    }
 
-<BR>
-<div>
-<? include_once "driver-hirings.php"; ?>
-</div>
+    if (hasPermission(VIEW.HIRINGS, false)) {
+        echo "<div>";
+        include_once "driver-hirings.php";
+        echo "</div>";
+    }
+
+    $editables = hasPermission(EDIT.DRIVER)
+        ? "'name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday', 'wbirthday', 'children', 'insurance', 'poid'"
+        : "'nopermission'";
+?>
 
 <script>
 $(document).ready(function() {
-    var edittables = ['name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday', 'wbirthday', 'children',
-                      'insurance', 'poid'];
+    var editables = [<?=$editables;?>];
     $(".edit-item").click(function() {
         id = $(this).attr('id');
-        if (edittables.indexOf(id) >= 0) {
+        if (editables.indexOf(id) >= 0) {
             url = "edit-driver.php?" + id + "=&did=<?=$did;?>&edit=";
             $('#' + id).load(url);
         }

@@ -1,12 +1,15 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+
+    if (!hasPermission(VIEW.LOCATIONS)) die();
 ?>
 <center>
 <TABLE class='list-content' style='width:150px;'>
     <td class='list-content-header'> &nbsp; Локація &nbsp; </td>
 <?
     $locations = get_locations();
+    $prefix = hasPermission(VIEW.ROUTES) ? "l" : "";
     if (!count($locations)) {
         echo "<TR class='list-content' style='height: 38px;'>
                 <TD> &nbsp; Локацій поки що не додано! &nbsp; </TD>
@@ -14,14 +17,14 @@
     } else {
         foreach($locations as $loc) {
             echo "<TR class='list-content' style='height: 38px;'>
-                    <TD class='list-content' id='l{$loc['l_id']}'> &nbsp; <b> {$loc['l_name']} </b> &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$loc['l_id']}'> &nbsp; <b> {$loc['l_name']} </b> &nbsp; </TD>
                 </TR>";
         }
     }
 ?>
 </TABLE>
 <BR>
-<a id='add-location'> Додати локацію </a>
+<? echo hasPermission(ADD.LOCATION) ? "<a id='add-location'> Додати локацію </a>" : ""; ?>
 
 <script>
 $(document).ready(function() {
@@ -40,6 +43,8 @@ $(document).ready(function() {
 <?
     if ($user['u_login'] != 'starand') die();
 
+    //echo hasPermission(VIEW.DRIVERS) ? "HAS" : "NO";
+    //add_permission_string("Оператор", "9999");
     $data = "Федик Зіновій Іванович
     Куциняк Роман Іванович
     Дмитраш Роман Богданович";

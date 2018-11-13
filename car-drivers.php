@@ -1,12 +1,15 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.CAR);
+    require_permission(VIEW.DRIVER);
 
     isset($_GET['cid']) or show_error("Не вибрано машину!");
     $car = get_car((int)$_GET['cid']) or show_error("Така машина не існує");
     $cid = $car['c_id'];
 
     if (isset($_GET['dcd'])) {
+        require_permission(DEL.CAR);
         $cd_id = (int)$_GET['dcd'];
         get_car_driver($cd_id) or show_error("Такий зв'язок не знайдено! $cd_id");
         if (delete_car_driver($cd_id)) {
@@ -19,9 +22,9 @@
 ?>
 <TABLE class='list-content' style='width:450px;'>
     <TR>
-        <TD class='list-content-header'> # </TD>
+        <TD class='list-content-header' style='width:30px;'> # </TD>
         <TD class='list-content-header'> Водій </TD>
-        <TD class='list-content-header'> X </TD>
+        <? echo hasPermission(DEL.CAR) ? "<TD class='list-content-header'> X </TD>" : ""; ?>
     </TR>
 <?
     $i = 1;
@@ -31,9 +34,10 @@
         foreach ($drivers as $driver) {
             echo "<TR class='list-content' style='height:22px;'>
                     <TD class='edit-item'> &nbsp; $i &nbsp; </TD>
-                    <TD class='edit-item' style='width:300px;' id='dd{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
-                    <TD class='edit-item' style=''> &nbsp; <img id='dcd{$driver['cd_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити водія'> &nbsp; </TD>
-                </TR>";
+                    <TD class='edit-item' style='width:300px;' id='dd{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>";
+            echo hasPermission(DEL.CAR) ? "
+                    <TD class='edit-item'> &nbsp; <img id='dcd{$driver['cd_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити водія'> &nbsp; </TD>" : "";
+            echo "</TR>";
             $i++;
         }
     } else {

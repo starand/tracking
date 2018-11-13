@@ -2,11 +2,14 @@
     include_once "common/headers.php";
     $user or die("Not authorized user!");
 
+    require_permission(VIEW.ROUTES);
+
     isset($_GET['did']) or show_error("Не вибрано водія!");
     $driver = get_driver((int)$_GET['did']) or show_error("Такий водій не існує!");
     $did = $driver['d_id'];
 
     if (isset($_GET['ddr'])) {
+        require_permission(DEL.DRIVER);
         $rate_id = (int)$_GET['ddr'];
         $rate = get_rate($rate_id) or show_error("Такий маршрут не знайдено!");
         if (delete_rate($rate_id)) {
@@ -21,8 +24,8 @@
     <TR>
         <TD class='list-content-header'> # </TD>
         <TD class='list-content-header'> Маршрут </TD>
-        <TD class='list-content-header'> Ставка </TD>
-        <TD class='list-content-header'> X </TD>
+        <? echo hasPermission(EDIT.DRIVER) ? "<TD class='list-content-header'> Ставка </TD>" : ""; ?>
+        <? echo hasPermission(EDIT.DRIVER) ? "<TD class='list-content-header'> X </TD>" : ""; ?>
     </TR>
 <?
     $i = 1;
@@ -31,10 +34,11 @@
         foreach ($routes as $route) {
             echo "<TR class='list-content' style='height:22px;'>
                     <TD class='edit-item'> &nbsp; $i &nbsp; </TD>
-                    <TD class='edit-item' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>
-                    <TD class='edit-item' style='width:100px;' id='rate{$route['rate_id']}'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
-                    <TD class='edit-item' style=''> &nbsp; <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>
-                </TR>";
+                    <TD class='edit-item' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>";
+                echo hasPermission(EDIT.DRIVER) ? "<TD class='edit-item' style='width:100px;' id='rate{$route['rate_id']}'> &nbsp; {$route['rate_rate']} &nbsp; </TD>" : "";
+                echo hasPermission(DEL.DRIVER) ? "<TD class='edit-item' style=''> &nbsp; 
+                            <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>" : "";
+                echo "</TR>";
             $i++;
         }
     } else {

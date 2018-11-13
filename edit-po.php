@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(EDIT.PO);
 
     isset($_GET['poid']) or show_error("Не вибрано підприємця!");
     $po = get_po((int)$_GET['poid']) or show_error("Такий підприємець не існує! '{$_GET['poid']}'");
@@ -43,7 +44,8 @@
             echo "<SELECT class='edit-item' id='elocation' style='$style'>";
                 $locations = get_locations();
                 foreach ($locations as $loc) {
-                    echo "<option value='{$loc['l_id']}'>{$loc['l_name']}</option>";
+                    $selected = $loc['l_id'] == $po['po_lid'] ? "selected" : "";
+                    echo "<option value='{$loc['l_id']}' $selected>{$loc['l_name']}</option>";
                 }
             echo "</SELECT>";         
         } else {

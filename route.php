@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.ROUTE);
 
     isset($_GET['rid']) or die("Не вказано маршрут!");
     $rid = (int)$_GET['rid'];
@@ -24,7 +25,7 @@
 </TABLE>
 <BR>
 
-<a id='add-route-data'> Додати геодані </a>
+<? echo hasPermission(ADD.ROUTE) ? "<a id='add-route-data'> Додати геодані </a>" : ""; ?>
 <div id='route-data-content'>
 <? include_once "route-datas.php"; ?>
 </div>

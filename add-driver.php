@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(ADD.DRIVER);
 
     if (isset($_POST['name']) && isset($_POST['phone']) && isset($_POST['address']) 
         && isset($_POST['idcode']) && isset($_POST['passport']) && isset($_POST['birthday'])

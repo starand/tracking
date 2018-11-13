@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.POS);
 ?>
 <center>
 <h2>Приватні підприємці</h2>
@@ -12,7 +13,7 @@
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <TD style='width:70px;'><a id='add-po'> Додати </a></TD>
+<? echo hasPermission(ADD.PO) ? "<TD style='width:70px;'><a id='add-po'> Додати </a></TD>" : ""; ?>
 </TR>
 </TABLE>
 
@@ -20,6 +21,7 @@
 <TABLE class='list-content' style='width:500px;' id='tbl_pos'>
 <?
     $pos = get_pos();
+    $prefix = hasPermission(VIEW.PO) ? "p" : "";
 
     if (!count($pos)) {
         echo "<TR class='list-content'>
@@ -36,9 +38,9 @@
             $pstyle = !checkPhoneCorrect($po['po_phone']) ? "background:#FF9797;" : "";
 
             echo "<TR class='list-content'>
-                    <TD class='list-content' id='c{$po['po_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='c{$po['po_id']}'> &nbsp; {$po['po_name']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$po['po_id']}' style='$pstyle'> &nbsp; {$po['po_phone']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$po['po_id']}'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$po['po_id']}'> &nbsp; {$po['po_name']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$po['po_id']}' style='$pstyle'> &nbsp; {$po['po_phone']} &nbsp; </TD>
                     <TD class='list-content' id='{$po['po_id']}'> &nbsp; {$po['l_name']} &nbsp; </TD>
                 </TR>";
             $i++;
@@ -56,7 +58,7 @@ $(document).ready(function() {
 
     $(".list-content").click(function() {
         id = $(this).attr('id');
-        if (id.substr(0, 1) == 'c') {
+        if (id.substr(0, 1) == 'p') {
             $('#main_space').load("po.php?poid=" + id.substr(1));
         }  
     });

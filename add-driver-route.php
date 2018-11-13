@@ -2,6 +2,8 @@
     include_once "common/headers.php";
     $user or die("Not authorized user!");
 
+    require_permission(ADD.DRIVER);
+
     if (isset($_POST['did']) && isset($_POST['rid']) && isset($_POST['rate'])) {
         $did = (int)$_POST['did'];
         $driver = get_driver($did) or show_error('Такий водій не існує!');

@@ -6,6 +6,13 @@ CREATE TABLE tracking_users (
     PRIMARY KEY(u_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE tracking_permissions (
+    p_id int unsigned NOT NULL AUTO_INCREMENT,
+    p_desc varchar(32) NOT NULL,
+    p_permissions varchar(255) NOT NULL,
+    PRIMARY KEY(p_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE tracking_locations (
     l_id int unsigned NOT NULL AUTO_INCREMENT,
     l_name varchar(32) NOT NULL,
@@ -85,6 +92,8 @@ CREATE TABLE tracking_hiring (
     h_firing varchar(32) NOT NULL,
     h_state tinyint NOT NULL default 0,
     h_fire_reason varchar(64) NOT NULL,
+    h_hire_date varchar(10) NOT NULL,
+    h_fire_date varchar(10) NOT NULL,
     PRIMARY KEY(h_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -112,4 +121,16 @@ CREATE TABLE tracking_route_data (
     rd_cost int NOT NULL,
     rd_name varchar(32) NOT NULL,
     PRIMARY KEY(rd_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE tracking_salary (
+    s_id int unsigned NOT NULL AUTO_INCREMENT,
+    s_rid int unsigned NOT NULL,
+    s_did int unsigned NOT NULL,
+    s_rate smallint unsigned NOT NULL,
+    s_stag varchar(10) NOT NULL,
+    s_amount int unsigned NOT NULL,
+    s_date varchar(10) NOT NULL,
+    UNIQUE(s_rid, s_did, s_date),
+    PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -76,6 +76,19 @@ function userHasPermission($permission) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Sets active location
+function setActiveLocation($loc) {
+    global $_SESSION;
+    $_SESSION['location'] = $loc;
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns active location
+function getActiveLocation() {
+    return $_SESSION['location'];
+}
+
+#---------------------------------------------------------------------------------------------------
 # checks whether date format is valid
 function checkDateDMYFormat($date) {
     $parts = explode(".", $date);
@@ -90,6 +103,24 @@ function checkDateDMYFormat($date) {
     $year = (int)$parts[2];
 
     if ($day < 1 || $day > 31) return false;
+    if ($month < 1 || $month > 12) return false;
+    if ($year < 1950 || $year > 2030) return false;
+
+    return true;
+}
+
+#---------------------------------------------------------------------------------------------------
+# checks whether date format is valid
+function checkDateMYFormat($date) {
+    $parts = explode(".", $date);
+
+    if (count($parts) != 2) return false;
+    if (!is_numeric($parts[0])) return false;
+    if (!is_numeric($parts[1])) return false;
+
+    $month = (int)$parts[0];
+    $year = (int)$parts[1];
+
     if ($month < 1 || $month > 12) return false;
     if ($year < 1950 || $year > 2030) return false;
 
@@ -131,5 +162,28 @@ function debug($msg) {
 }
 
 #---------------------------------------------------------------------------------------------------
+##
+function check_result($res, $success, $error) {
+    if ($res) {
+        show_message($success);
+    } else {
+        show_error($error);
+    }
+}
+
+#---------------------------------------------------------------------------------------------------
+function getMonthCount($date) {
+    $d1 = strtotime(date('j.n.Y'));
+    $d2 = strtotime("01.".$date);
+    $min_date = min($d1, $d2);
+    $max_date = max($d1, $d2);
+    $i = 0;
+
+    while (($min_date = strtotime("+1 MONTH", $min_date)) <= $max_date) {
+        $i++;
+    }
+
+    return $i;
+}
 
 ?>

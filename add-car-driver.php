@@ -1,6 +1,8 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(ADD.CAR);
+    require_permission(VIEW.DRIVER);
 
     if (isset($_POST['cid']) && isset($_POST['did'])) {
         $did = (int)$_POST['did'];

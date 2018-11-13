@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(EDIT.ROUTE);
 
     isset($_GET['rid']) or show_error("Не вибрано маршрут!");
     $route = get_route((int)$_GET['rid']) or show_error("Такий маршрут не існує!");

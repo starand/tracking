@@ -1,30 +1,34 @@
 <?
     include_once "common/headers.php";
     $user or die("Спочатку увійдіть в систему!");
+    require_permission(VIEW.ROUTES);
 
     isset($_GET['lid']) or die("Локацію не вказано!");
     $lid = (int)$_GET['lid'];
-    get_location($lid) or show_error("Локація не існує! '$lid'");
+    $location = get_location($lid) or show_error("Локація не існує! '$lid'");
+
+    setActiveLocation($location);
 ?>
 <center>
 <h2>Маршрути</h2>
 
-<TABLE cellspacing='0' cellpadding='2' style='width:700px;'>
+<TABLE cellspacing='0' cellpadding='2' style='width:700px;' class='menu'>
 <TR'>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <TD style='width:130px;'><a id='add-route'> Додати маршрут </a></TD>
+    <? echo hasPermission(ADD.ROUTE) ? "<TD style='width:130px;'><a id='add-route'> Додати маршрут </a></TD>" : ""; ?>
 </TR>
 </TABLE>
 
 
 <TABLE class='list-content' style='width:700px;' id='tbl_routes'>
-    <td class='list-content-header' style=''> &nbsp; # &nbsp; </td>
+    <td class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </td>
     <td class='list-content-header' style='width:100px;'> &nbsp; <b>Назва &nbsp;</b> </td>
     <td class='list-content-header' style='width:270px;'> &nbsp; <b>Опис &nbsp; </b></td>
+    <td class='list-content-header' style='width:55px;'> &nbsp; Дов. &nbsp; </b></td>
     <td class='list-content-header' style='width:300px;'> &nbsp; <b>Водії &nbsp;</b> </td>
 <?
     $routes = get_routes($lid);
@@ -42,10 +46,15 @@
                 if (strlen($content)) $content .= "<BR>";
                 $content .= "<a class='driver' id='d{$driver['d_id']}'>{$driver['d_name']}</a>";
             }
+            $datas = get_route_datas($route['r_id']);
+            $dcontent = "";
+            if (count($datas)) $dcontent .= $datas[0]['rd_length'];
+
             echo "<TR class='list-content'>
                     <TD class='list-content' id='r{$route['r_id']}'> $i </TD>
                     <TD class='list-content' id='r{$route['r_id']}'> &nbsp; {$route['r_name']} &nbsp; </TD>
                     <TD class='list-content' id='r{$route['r_id']}'> &nbsp; {$route['r_desc']} &nbsp; </TD>
+                    <TD class='list-content' id='r{$route['r_id']}'> &nbsp; $dcontent &nbsp; </TD>
                     <TD class='list-content' id='{$route['r_id']}'> &nbsp; $content &nbsp; </TD>
                 </TR>";
             $i++;

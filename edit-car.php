@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(EDIT.CAR);
 
     isset($_GET['cid']) or show_error("Не вибрано машину!");
     $car = get_car((int)$_GET['cid']) or show_error("Така машина не існує!");

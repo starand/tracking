@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.CAR);
 
     isset($_GET['cid']) or die("Не вказано машиину!");
     $cid = (int)$_GET['cid'];
@@ -39,17 +40,23 @@
 </TABLE>
 <BR>
 
-<a id='add-car-driver'> Додати водія </a>
+<? echo hasPermission(ADD.CAR) && hasPermission(VIEW.DRIVER) ? "<a id='add-car-driver'> Додати водія </a>" : ""; ?>
 <div id='add-car-driver-content'>
-<? include_once "car-drivers.php"; ?>
+<? include_once hasPermission(VIEW.CAR) && hasPermission(VIEW.DRIVER) ? "car-drivers.php" : "no.php"; ?>
 </div>
+
+<?
+    $editables = hasPermission(EDIT.CAR)
+        ? "'plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'"
+        : "'nopermission'";
+?>
 
 <script>
 $(document).ready(function() {
-    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'];
+    var editables = [<?=$editables;?>];
     $(".edit-item").click(function() {
         id = $(this).attr('id');
-        if (edittables.indexOf(id) >= 0) {
+        if (editables.indexOf(id) >= 0) {
             url = "edit-car.php?" + id + "=&cid=<?=$cid;?>&edit=";
             $('#' + id).load(url);
         }

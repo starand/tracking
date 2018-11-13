@@ -15,15 +15,28 @@
 # MySQL helper functions
 #---------------------------------------------------------------------------------------------------
 ## send query to db	
-function uquery($query) 
-{
+function uquery($query) {
+	if (substr($query, 0, 3) != "SEL") log_msg($query);
+
 	$result = @mysql_query($query); // or die("Can not send query to database!! - '$query'");
 	return $result;
 }
 
+#---------------------------------------------------------------------------------------------------
+## returns last inserted id
 function last_insert_id() {
 	global $conn;
 	return mysql_insert_id($conn);
+}
+
+#---------------------------------------------------------------------------------------------------
+## logs SQL into log file
+function log_msg($data) {
+	global $user;
+	$login = $user['u_login'];
+	$time = date('G:i:s');
+	$date = date("j.n.Y");
+	file_put_contents("./logs/$date.log", "[$time] $login: $data\n", FILE_APPEND);
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -56,7 +69,8 @@ function add_user($name, $pswd) {
 function get_user_by_login($login) {
 	$login = addslashes($login);
 
-	$sql = "SELECT * FROM tracking_users WHERE u_login='$login' LIMIT 1";
+	$sql = "SELECT * FROM tracking_users, tracking_permissions 
+			WHERE u_login='$login' AND u_perm=p_id LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
@@ -97,6 +111,17 @@ function get_location_by_name($name) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns drivers by tracking location
+function get_drivers_by_location($lid) {
+	$lid = (int)$lid;
+
+	$sql = "SELECT * FROM tracking_drivers, tracking_rates 
+			WHERE d_id=rate_did AND rate_rid IN (SELECT r_id FROM tracking_routes WHERE r_lid=$lid) 
+			ORDER BY d_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
 # Route's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new route
@@ -116,6 +141,18 @@ function get_routes($lid) {
 
 	$sql = "SELECT * FROM tracking_routes WHERE r_lid=$lid";
 	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns routes by location
+function get_routes_info($lid) {
+	$lid = (int)$lid;
+
+	$sql = "SELECT * FROM tracking_routes WHERE r_lid=$lid";
+	$res = uquery($sql);
+
+	for($result=array(); $row=mysql_fetch_array($res); $result[$row['r_id']]=$row);
+	return $result;
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -253,8 +290,6 @@ function restore_driver($did) {
 
 	# add new hiring record as it's next hiring time
 	add_hiring_record($did, '', '');
-	# restore driver's hiring indo
-	uquery("UPDATE tracking_hiring SET h_state=".STATE_ACTUAL." WHERE h_did=$did");
 	return uquery("UPDATE tracking_drivers SET d_state=".STATE_ACTUAL." WHERE d_id=$did LIMIT 1");
 }
 
@@ -859,6 +894,72 @@ function delete_route_data($rdid) {
 	$rdid = (int)$rdid;
 
 	$sql = "DELETE FROM tracking_route_data WHERE rd_id=$rdid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates route data url
+function set_rodadata_url($rdid, $url) {
+	$rdid = (int)$rdid;
+	$url = addslashes($url);
+
+	$sql = "UPDATE tracking_route_data SET rd_url='$url' WHERE rd_id=$rdid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates route data url
+function set_rodadata_len($rdid, $len) {
+	$rdid = (int)$rdid;
+	$len = (int)$len;
+
+	$sql = "UPDATE tracking_route_data SET rd_length=$len WHERE rd_id=$rdid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates route data url
+function set_rodadata_cost($rdid, $cost) {
+	$rdid = (int)$rdid;
+	$cost = (int)$cost;
+
+	$sql = "UPDATE tracking_route_data SET rd_cost=$cost WHERE rd_id=$rdid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates route data name
+function set_rodadata_name($rdid, $name) {
+	$rdid = (int)$rdid;
+	$name = addslashes($name);
+
+	$sql = "UPDATE tracking_route_data SET rd_name='$name' WHERE rd_id=$rdid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Permission functions
+#---------------------------------------------------------------------------------------------------
+## Adds new permission string
+function add_permission_string($desc, $permissions) {
+	$desc = addslashes($desc);
+	$permissions = addslashes($permissions);
+
+	$sql = "INSERT INTO tracking_permissions VALUES(NULL, '$desc', '$permissions')";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Salary functions
+#---------------------------------------------------------------------------------------------------
+## Adds new calculation record
+function add_salary_record($did, $formula, $amount) {
+	$did = (int)$did;
+	$amount = (float)$amount;
+	$formula = addslashes($formula);
+	$date = date('j.n.Y');
+
+	$sql = "INSERT INTO tracking_salary VALUES(NULL, $did, '$formula', $amount, '$date')";
 	return uquery($sql);
 }
 

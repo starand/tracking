@@ -1,27 +1,23 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.DRIVERS);
 
     if (isset($_GET['dd'])) {
-        $did = (int)$_GET['dd'];
-        if (delete_driver($did)) {
-            show_message("Водія звільнено!");
-        } else {
-            show_error("Помилка бази даних!");
-        }
+        require_permission(DEL.DRIVER);
+        check_result(delete_driver((int)$_GET['dd']),  "Водія звільнено!", "Помилка бази даних!");
     }
 
     if (isset($_GET['rd'])) {
-        $did = (int)$_GET['rd'];
-        if (restore_driver($did)) {
-            show_message("Водія поновлено!");
-        } else {
-            show_error("Помилка бази даних!");
-        }
+        require_permission(DEL.DRIVER);
+        check_result(restore_driver((int)$_GET['rd']), "Водія поновлено!", "Помилка бази даних!");
     }
 
-    ## Driver type - e.g. deleted
-    $type = $_GET['type'] ? STATE_REMOVED : STATE_ACTUAL;
+    $type = STATE_ACTUAL;
+    if ($_GET['type']) {
+        $type = STATE_REMOVED;
+        require_permission(DEL.DRIVERS);
+    }
 ?>
 <center>
 <h2>Водії</h2>
@@ -33,16 +29,18 @@
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <TD style='width:100px;'><a id='add-driver'> Додати водія </a></TD>
-    <TD style='width:100px;'><a id='drivers-info'> Більше даних </a></TD>
-    <TD style='width:70px;text-align:center;'><a id='removed-drivers'> Звільнені </a></TD>
+<?
+    echo hasPermission(ADD.DRIVER) ? "<TD style='width:100px;'><a id='add-driver'> Додати водія </a></TD>" : "";
+    echo "<TD style='width:100px;'><a id='drivers-info'> Більше даних </a></TD>";
+    echo hasPermission(DEL.DRIVERS) ? "<TD style='width:70px;text-align:center;'><a id='removed-drivers'> Звільнені </a></TD>" : "";
+?>
 </TR>
 </TABLE>
 
 <TABLE class='list-content' style='width:850px;' id='tbl_drivers'>
 <?
     $drivers = get_all_drivers($type);
-    //$hirings = get_hiring_info();
+    $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
 
     if (!count($drivers)) {
         echo "<TR class='list-content'>
@@ -76,14 +74,14 @@
 
             $istyle = !checkDateDMYFormat($driver['d_insurance']) ? "background:#FDFFC8;" :
                         (checkDMYDateExpired($driver['d_insurance']) ? "background:#FF9797;" : "");
-
             $pstyle = !checkPhoneCorrect($driver['d_phone']) ? "background:#FF9797;" : "";
+
             echo "<TR class='list-content'>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}' style='$pstyle'> {$driver['d_phone']} </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}' style='$istyle'> &nbsp; {$driver['d_insurance']} &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $content &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}' style='$pstyle'> {$driver['d_phone']} </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}' style='$istyle'> &nbsp; {$driver['d_insurance']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; $content &nbsp; </TD>
                     <TD class='list-content' id='{$driver['d_id']}'> &nbsp; $carcont &nbsp; </TD>
                     <TD class='list-content' id='po{$po['po_id']}' style='font-size:12px;'> &nbsp; {$po['po_name']} &nbsp; </TD>
                 </TR>";

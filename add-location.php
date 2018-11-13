@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(ADD.LOCATION);
 
     if (isset($_POST['name'])) {
         $name = addslashes($_POST['name']);
@@ -8,7 +9,7 @@
 
         if (add_location($name)) {
             show_message("Локацію додано!");
-            load('locations.php', 'content');
+            load('locations.php', 'left_menu');
         } else {
             show_error("Помилка бази даних. Перевірте чи така локація вже існує!");
         }

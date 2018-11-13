@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(VIEW.PO);
 
     isset($_GET['poid']) or show_error("Не вказано підприємця!");
     $poid = (int)$_GET['poid'];
@@ -24,9 +25,14 @@
 </TABLE>
 <BR>
 
+<?
+    $editables = hasPermission(EDIT.DRIVER)
+        ? "'name', 'phone', 'location'"
+        : "'nopermission'";
+?>
 <script>
 $(document).ready(function() {
-    var edittables = ['name', 'phone', 'location'];
+    var edittables = [<?=$editables;?>];
     $(".edit-item").click(function() {
         id = $(this).attr('id');
         if (edittables.indexOf(id) >= 0) {

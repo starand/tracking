@@ -11,6 +11,7 @@
 
     include_once "common/db.php";
     include_once "common/functions.php";
+    include_once "permissions.php";
 
     $user = getUser();
 ?>

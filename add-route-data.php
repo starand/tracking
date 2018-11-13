@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
+    require_permission(ADD.ROUTE);
 
     if (isset($_POST['url']) && isset($_POST['length']) && isset($_POST['cost']) &&
         isset($_POST['rid']) && isset($_POST['name'])) {
@@ -37,9 +38,9 @@
     <tr><td> &nbsp; Назва: &nbsp;</td><td><input type='text' name='name' style='<?=$style;?>'></td></tr>
     <tr><td> &nbsp; URL: &nbsp;</td><td><input type='text' name='url' style='<?=$style;?>'></td></tr>
     <tr><td> &nbsp; Довжина: &nbsp;</td><td><input type='text' name='length' style='<?=$style;?>'></td></tr>
-    <tr><td> &nbsp; Вартість: &nbsp;</td><td><input type='text' name='cost' style='<?=$style;?>'></td></tr>
     <tr>
         <td colspan='2'><center><input type='submit' value=' Додати '></td>
+        <input type='hidden' name='cost'/>
         <input type='hidden' name='rid' value='<?=$rid;?>'>
     </tr>
 </table>

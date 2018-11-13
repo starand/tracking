@@ -1,7 +1,7 @@
 <?
     include_once "common/headers.php";
     $user or die("Not authorized user!");
-
+    require_permission(VIEW.CARS);
 ?>
 <center>
 <h2>Машини</h2>
@@ -13,13 +13,18 @@
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <TD style='width:120px;'><a id='add-car'> Додати машину </a></TD>
+<?
+    if (hasPermission(ADD.CAR)) {
+        echo "<TD style='width:120px;'><a id='add-car'> Додати машину </a></TD>";
+    }
+?>
 </TR>
 </TABLE>
 
 <TABLE class='list-content' style='width:850px;' id='tbl_cars'>
 <?
     $cars = get_cars();
+    $prefix = hasPermission(VIEW.CAR) ? "c" : "";
 
     if (!count($cars)) {
         echo "<TR class='list-content'>
@@ -49,12 +54,12 @@
                         (checkDMYDateExpired($car['c_sto']) ? "background:#FF9797;" : "");
 
             echo "<TR class='list-content'>
-                    <TD class='list-content' id='c{$car['c_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='c{$car['c_id']}'> &nbsp; {$car['c_plate']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$car['c_id']}'> &nbsp; {$car['c_model']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$car['c_id']}' style='$istyle'> &nbsp; {$car['c_insurance']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$car['c_id']}' style='$to_style'> &nbsp; {$car['c_sto']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$car['c_id']}'> &nbsp; {$car['c_places']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_plate']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_model']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> &nbsp; {$car['c_insurance']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$to_style'> &nbsp; {$car['c_sto']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_places']} &nbsp; </TD>
                     <TD class='list-content' id=''> &nbsp; $content &nbsp; </TD>                    
                 </TR>";
             $i++;
