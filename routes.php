@@ -12,23 +12,22 @@
 <center>
 <h2>Маршрути</h2>
 
-<TABLE cellspacing='0' cellpadding='2' style='width:700px;' class='menu'>
+<TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
 <TR'>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <? echo hasPermission(ADD.ROUTE) ? "<TD style='width:130px;'><a id='add-route'> Додати маршрут </a></TD>" : ""; ?>
+    <? echo hasPermission(ADD.ROUTE) ? "<TD style='width:130px;'><input type='button' id='add-route' value=' Додати маршрут '/></TD>" : ""; ?>
 </TR>
 </TABLE>
 
-
-<TABLE class='list-content' style='width:700px;' id='tbl_routes'>
+<TABLE class='list-content' style='' id='tbl_routes' style='width:850px;'>
     <td class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </td>
     <td class='list-content-header' style='width:100px;'> &nbsp; <b>Назва &nbsp;</b> </td>
-    <td class='list-content-header' style='width:270px;'> &nbsp; <b>Опис &nbsp; </b></td>
-    <td class='list-content-header' style='width:55px;'> &nbsp; Дов. &nbsp; </b></td>
+    <td class='list-content-header' style='width:380px;'> &nbsp; <b>Опис &nbsp; </b></td>
+    <td class='list-content-header' style='width:75px;'> Довжина </b></td>
     <td class='list-content-header' style='width:300px;'> &nbsp; <b>Водії &nbsp;</b> </td>
 <?
     $routes = get_routes($lid);

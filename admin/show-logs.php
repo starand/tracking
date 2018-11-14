@@ -15,8 +15,11 @@
         echo "<TABLE class='list-content'>";
         $content = file_get_contents('./logs/'.$fn);
         $lines = explode("\n", $content);
-        foreach ($lines as $line) {
-            echo "<TR class='list-content'><TD class='list-content' style='font-size:12px;text-align: left;'>$line</TD></TR>";
+        foreach (array_reverse($lines) as $line) {
+            $style = strpos($line, ": DELETE ") ? "background:#FFDBDB;" : "";
+            $style = strpos($line, ": INSERT ") ? "background:#CDFFD2;" : $style;
+            $style = strpos($line, ": UPDATE ") ? "background:#FFFDCD;" : $style;
+            echo "<TR class='list-content'><TD class='list-content' style='font-size:12px;text-align:left;$style'>$line</TD></TR>";
         }
         echo "</TABLE>";
     }

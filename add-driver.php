@@ -30,6 +30,7 @@
 
     $lid = (int)$_GET['lid'];
 ?>
+<center>
 <form action='add-driver.php' method='post' target='submit_frame'>
 <table cellspacing='5' cellpadding='1' class='form-table'>
     <TR><TD colspan='2'><center><h2>Додати водія</h2></TD></TR>

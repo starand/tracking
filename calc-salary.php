@@ -2,8 +2,6 @@
     include_once "common/headers.php";
     $user or die("Спочатку увійдіть в систему!"); // TODO - replace just with method call
     require_permission(ADD.SALARY);
-
-    var_dump($_POST);
     
     if (isset($_POST['did']) && isset($_POST['amount']) && isset($_POST['formula'])) {
         $did = (int)$_POST['did'];
@@ -61,14 +59,20 @@
         <td style='text-align:center;'>&nbsp; <b>Надбавка</b> &nbsp;</td>
         <td style='text-align:center;'><input type='text' class='calc-sal' id='additional' style='width:100px;'> </td>
     </tr>
+    <tr>
+        <td> &nbsp; </td>
+        <td> &nbsp; </td>
+        <td style='text-align:center;'>&nbsp; <b>Премія</b> &nbsp;</td>
+        <td style='text-align:center;'><input type='text' class='calc-sal' id='premium' style='width:100px;'> </td>
+    </tr>
 
-    <tr><td> &nbsp; <b>Формула:</b> &nbsp; </td><td colspan='3' id='formula'> </td></tr>
+    <tr><td> &nbsp; <b>Формула:</b> &nbsp; </td><td colspan='3' id='fstr'> </td></tr>
     <tr>
         <td></td><td style='text-align:right;'> &nbsp; <b>Сума:</b> &nbsp; </td>
         <td><input type='text' id='amount' name='amount' style='width:100px;'/></td>
         <td><input type='submit' value=' Нарахувати '></td>
         <input type='hidden' name='did' value='<?=$driver['d_id'];?>'/>
-        <input type='text' name='formula' id='formula' />
+        <input type='hidden' name='formula' id='formula' />
     </tr>
 </table>
 </form>
@@ -105,11 +109,17 @@ $(document).ready(function() {
                 formula += $('#additional').val();
                 sum += $('#additional').val() * 1;
             }
+
+            if (id == 'premium' && $('#premium').val().length > 0 && $.isNumeric($('#premium').val())) {
+                if (formula.length > 0) formula += ' + ';
+                formula += $('#premium').val() + '!';
+                sum += $('#premium').val() * 1;
+            }
         }
 
         $('#formula').val(formula);
         formula += ' = ' + sum;
-        $('#formula').html('<span style=\'color:red;\'>' + formula + '</span>');
+        $('#fstr').html('<span style=\'color:red;\'>' + formula + '</span>');
         $('#amount').val(sum);
     });
 });

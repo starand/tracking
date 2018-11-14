@@ -10,17 +10,17 @@
 
 <center>
 <h2>Маршрут: <? echo "{$route['r_name']} - {$route['r_desc']}";?></h2>
-<TABLE class='list-content'>
+<TABLE class='list-content' style='width:550px;'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про маршрут </TD></TR>
     <TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Ім'я</b>: &nbsp; </TD>
-        <TD class='edit-item' id='name' style='width:350px;'> &nbsp; <?=$route['r_name'];?> &nbsp; </TD>
+        <TD class='edit-item' id='name' style='width:400px;'> &nbsp; <?=$route['r_name'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Опис</b>: &nbsp; </TD>
-        <TD class='edit-item' id='desc' style='width:350px;'>&nbsp; <?=$route['r_desc'];?> &nbsp; </TD>
+        <TD class='edit-item' id='desc'>&nbsp; <?=$route['r_desc'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Локація</b>: &nbsp; </TD>
-        <TD class='edit-item' id='location' style='width:350px;'>&nbsp; <?=$route['l_name'];?> &nbsp; </TD>
+        <TD class='edit-item' id='location'>&nbsp; <?=$route['l_name'];?> &nbsp; </TD>
     </TR>
 </TABLE>
 <BR>

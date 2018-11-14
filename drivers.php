@@ -30,9 +30,9 @@
     </TD>
     <TD> </TD>
 <?
-    echo hasPermission(ADD.DRIVER) ? "<TD style='width:100px;'><a id='add-driver'> Додати водія </a></TD>" : "";
-    echo "<TD style='width:100px;'><a id='drivers-info'> Більше даних </a></TD>";
-    echo hasPermission(DEL.DRIVERS) ? "<TD style='width:70px;text-align:center;'><a id='removed-drivers'> Звільнені </a></TD>" : "";
+    echo hasPermission(ADD.DRIVER) ? "<TD style='width:100px;'><input type='button' id='add-driver' value=' Додати водія '/></TD>" : "";
+    echo "<TD style='width:100px;'><input type='button' id='drivers-info' value=' Більше даних '/></TD>";
+    echo hasPermission(DEL.DRIVERS) ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-drivers' value=' Звільнені '/></TD>" : "";
 ?>
 </TR>
 </TABLE>
@@ -47,26 +47,26 @@
                 <TD style='font-weight:bold; text-align:center;'> &nbsp; Водіїв поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<TD class='list-content-header'> &nbsp; # &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; ПІБ &nbsp; </TD>
+        echo "<TD class='list-content-header' style='width:35px;'> &nbsp; # &nbsp; </TD>
+                <TD class='list-content-header' style='width:270px;'> &nbsp; ПІБ &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Телефон &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Довідка &nbsp; </TD>
+                <TD class='list-content-header' style='width:100px;'> &nbsp; Довідка &nbsp; </TD>
                 <TD class='list-content-header'> Маршрути </TD>
-                <TD class='list-content-header'> &nbsp; Машини &nbsp; </TD>
+                <TD class='list-content-header' style='width:90px;'> &nbsp; Машини &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Підприємець &nbsp; </TD>";
         $i = 1;
         foreach($drivers as $driver) {
             $content = "";
             $routes = get_routes_by_driver($driver['d_id']);
             foreach($routes as $route) {
-                if (strlen($content)) $content .= ", ";
+                if (strlen($content)) $content .= ", <BR>";
                 $content .= "{$route['r_name']}";
             }
 
             $carcont = "";
             $cars = get_cars_by_driver($driver['d_id']);
             foreach ($cars as $car) {
-                if (strlen($carcont)) $carcont .= " &nbsp; <BR> &nbsp; ";
+                if (strlen($carcont)) $carcont .= ",<BR>";
                 $carcont .= "<a class='car' id='c{$car['c_id']}'>{$car['c_plate']}</a>";
             }
 
@@ -81,8 +81,8 @@
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}' style='$pstyle'> {$driver['d_phone']} </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}' style='$istyle'> &nbsp; {$driver['d_insurance']} &nbsp; </TD>
-                    <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; $content &nbsp; </TD>
-                    <TD class='list-content' id='{$driver['d_id']}'> &nbsp; $carcont &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}'> $content </TD>
+                    <TD class='list-content' id='{$driver['d_id']}'> $carcont </TD>
                     <TD class='list-content' id='po{$po['po_id']}' style='font-size:12px;'> &nbsp; {$po['po_name']} &nbsp; </TD>
                 </TR>";
             $i++;

@@ -13,7 +13,7 @@
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-<? echo hasPermission(ADD.PO) ? "<TD style='width:70px;'><a id='add-po'> Додати </a></TD>" : ""; ?>
+<? echo hasPermission(ADD.PO) ? "<TD style='width:70px;'><input type='button' id='add-po' value=' Додати '/></TD>" : ""; ?>
 </TR>
 </TABLE>
 

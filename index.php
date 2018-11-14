@@ -35,5 +35,8 @@
     </TABLE>
 
     <BR><BR><BR><BR><BR><BR><BR><BR><BR>
-    <div style='$divStyle'><iframe name='submit_frame' src='' style='width: 600px; height: 300px;'></iframe></div>
+    <?
+        $style = $user['u_login'] == "starand" ? "width: 700px; height: 300px;" : "width: 0px; height:0px;";
+    ?>
+    <div style='$divStyle'><iframe name='submit_frame' src='' style='<?=$style;?>'></iframe></div>
 </div>

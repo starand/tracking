@@ -117,7 +117,7 @@ function get_drivers_by_location($lid) {
 
 	$sql = "SELECT * FROM tracking_drivers, tracking_rates 
 			WHERE d_id=rate_did AND rate_rid IN (SELECT r_id FROM tracking_routes WHERE r_lid=$lid) 
-			ORDER BY d_name";
+			GROUP BY d_id ORDER BY d_name";
 	return res_to_array(uquery($sql));
 }
 
@@ -201,6 +201,16 @@ function get_drivers_by_route($rid) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns drivers info with key d_id
+function get_drivers_info() {
+	$sql = "SELECT * FROM tracking_drivers";
+	$res = uquery($sql);
+
+	for($result=array(); $row=mysql_fetch_array($res); $result[$row['d_id']]=$row);
+	return $result;
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns routes by driver
 function get_routes_by_driver($did) {
 	$did = (int)$did;
@@ -276,7 +286,7 @@ function delete_driver($did) {
 	# remove cars from driver
 	uquery("DELETE FROM tracking_car_drivers WHERE cd_did=$did LIMIT 1");
 	# remove driver's po
-	uquery("DELETE FROM tracking_po_drivers WHERE pod_did=$did LIMIT 1");
+	# uquery("DELETE FROM tracking_po_drivers WHERE pod_did=$did LIMIT 1");
 	# hide driver's hiring indo
 	uquery("UPDATE tracking_hiring SET h_state=".STATE_REMOVED." WHERE h_did=$did");
 	# hide driver from lists
@@ -328,7 +338,7 @@ function set_driver_name($did, $name) {
 	$did = (int)$did;
 	$name = addslashes($name);
 
-	$sql = "UPDATE tracking_drivers SET d_name='$name' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_name='$name' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -338,7 +348,7 @@ function set_driver_phone($did, $phone) {
 	$did = (int)$did;
 	$phone = addslashes($phone);
 
-	$sql = "UPDATE tracking_drivers SET d_phone='$phone' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_phone='$phone' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -348,7 +358,7 @@ function set_driver_stag($did, $stag) {
 	$did = (int)$did;
 	$stag = addslashes($stag);
 
-	$sql = "UPDATE tracking_drivers SET d_stag='$stag' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_stag='$stag' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -358,7 +368,7 @@ function set_driver_address($did, $address) {
 	$did = (int)$did;
 	$address = addslashes($address);
 
-	$sql = "UPDATE tracking_drivers SET d_address='$address' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_address='$address' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -368,7 +378,7 @@ function set_driver_passport($did, $passport) {
 	$did = (int)$did;
 	$passport = addslashes($passport);
 
-	$sql = "UPDATE tracking_drivers SET d_passport='$passport' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_passport='$passport' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -378,7 +388,7 @@ function set_driver_idcode($did, $idcode) {
 	$did = (int)$did;
 	$idcode = addslashes($idcode);
 
-	$sql = "UPDATE tracking_drivers SET d_idcode='$idcode' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_idcode='$idcode' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -388,7 +398,7 @@ function set_driver_birthday($did, $birthday) {
 	$did = (int)$did;
 	$birthday = addslashes($birthday);
 
-	$sql = "UPDATE tracking_drivers SET d_birthday='$birthday' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_birthday='$birthday' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -398,7 +408,7 @@ function set_driver_wbirthday($did, $birthday) {
 	$did = (int)$did;
 	$birthday = addslashes($birthday);
 
-	$sql = "UPDATE tracking_drivers SET d_wife_birthday='$birthday' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_wife_birthday='$birthday' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -408,7 +418,7 @@ function set_driver_children($did, $children) {
 	$did = (int)$did;
 	$children = (int)$children;
 
-	$sql = "UPDATE tracking_drivers SET d_children=$children WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_children=$children WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -418,7 +428,7 @@ function set_driver_insurance($did, $insurance) {
 	$did = (int)$did;
 	$insurance = addslashes($insurance);
 
-	$sql = "UPDATE tracking_drivers SET d_insurance='$insurance' WHERE d_id=$did";
+	$sql = "UPDATE tracking_drivers SET d_insurance='$insurance' WHERE d_id=$did LIMIT 1";
 	return uquery($sql);
 }
 
@@ -959,11 +969,93 @@ function add_salary_record($did, $formula, $amount) {
 	$formula = addslashes($formula);
 	$date = date('j.n.Y');
 
-	$sql = "INSERT INTO tracking_salary VALUES(NULL, $did, '$formula', $amount, '$date')";
+	$sql = "INSERT INTO tracking_salary VALUES(NULL, $did, '$formula', $amount, '$date', 0, 0, 0)";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
+## Returns salary periods
+function get_salary_months() {
+	$sql = "SELECT SUBSTR(s_date, 4) as month FROM tracking_salary GROUP BY month";
+	return res_to_array(uquery($sql));
+}
 
+#---------------------------------------------------------------------------------------------------
+## Returns salary record
+function get_salary_record($sid) {
+	$sid = (int)$sid;
+
+	$sql = "SELECT * FROM tracking_salary WHERE s_id=$sid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns all salary records per month
+function get_month_salary($month) {
+	$month = addslashes($month);
+	$sql = "SELECT * FROM tracking_salary 
+			WHERE s_date LIKE '%.$month' ORDER BY s_id";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns all salary records per month
+function get_month_salarн_stats($month) {
+	$month = addslashes($month);
+	$sql = "SELECT sum(s_amount) as amount, sum(s_advance) as advance, sum(s_salary) as salary, 
+				   sum(s_3rdform) as 3rdform FROM tracking_salary 
+			WHERE s_date LIKE '%.$month'";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Removed one row from salary report
+function delete_salary_record($sid) {
+	$sid = (int)$sid;
+
+	$sql = "DELETE FROM tracking_salary WHERE s_id=$sid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates salary advance
+function set_salary_advance($sid, $advance) {
+	$sid = (int)$sid;
+	$advance = (float)$advance;
+
+	$sql = "UPDATE tracking_salary SET s_advance=$advance WHERE s_id=$sid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates salary salary
+function set_salary_salary($sid, $salary) {
+	$sid = (int)$sid;
+	$salary = (float)$salary;
+
+	$sql = "UPDATE tracking_salary SET s_salary=$salary WHERE s_id=$sid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates salary 3rdform
+function set_salary_3rdform($sid, $trdform) {
+	$sid = (int)$sid;
+	$trdform = (float)$trdform;
+
+	$sql = "UPDATE tracking_salary SET s_3rdform=$trdform WHERE s_id=$sid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns all salary records per month
+function get_driver_salary($did) {
+	$did = (int)$did;
+	$sql = "SELECT * FROM tracking_salary WHERE s_did=$did ORDER BY s_id DESC";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+##
 
 ?>

@@ -125,12 +125,13 @@ CREATE TABLE tracking_route_data (
 
 CREATE TABLE tracking_salary (
     s_id int unsigned NOT NULL AUTO_INCREMENT,
-    s_rid int unsigned NOT NULL,
     s_did int unsigned NOT NULL,
-    s_rate smallint unsigned NOT NULL,
-    s_stag varchar(10) NOT NULL,
-    s_amount int unsigned NOT NULL,
+    s_formula varchar(255) NOT NULL,
+    s_amount decimal(7,2) unsigned NOT NULL,
     s_date varchar(10) NOT NULL,
-    UNIQUE(s_rid, s_did, s_date),
+    s_advance decimal(7,2) unsigned NOT NULL,
+    s_salary decimal(7,2) unsigned NOT NULL,
+    s_3rdform decimal(7,2) unsigned NOT NULL,
+    UNIQUE(s_did, s_date),
     PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -9,7 +9,14 @@
 
     $drivers = get_drivers_by_location($lid);
     $routes = get_routes_info($lid);
-    //var_dump($routes);
+
+    $months = get_salary_months();
+    echo "<b>Місяць: </b> <SELECT name='month' id='month' style='width:150px; font-size:14px;'>";
+    foreach ($months as $month) {
+        echo "<option value='{$month['month']}'>{$month['month']}</option>";
+    }
+    echo "</SELECT>
+            <input type='button' id='month-salary' value='Переглянути' id=''/>";
 ?>
 <center>
 <h2>Локація: <?=$location['l_name'];?></h2>
@@ -27,7 +34,7 @@
     <td class='list-content-header' style='width:70px;'> &nbsp; Марш. &nbsp; </b></td>
     <td class='list-content-header' style='width:70px;'> &nbsp; Ставка &nbsp; </b></td>
     <td class='list-content-header' style='width:70px;'> &nbsp; Стаж &nbsp; </b></td>
-    <td class='list-content-header' style='width:100px;'> &nbsp; Розрахувати &nbsp; </b></td>
+    <td class='list-content-header' style='width:100px;'> &nbsp; Запрплата &nbsp; </b></td>
 
 <?
     if (!count($drivers)) {
@@ -48,7 +55,7 @@
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $rname &nbsp; </TD>
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$driver['rate_rate']} &nbsp; </TD>
                     <TD class='list-content' id='d{$driver['d_id']}' style='$sstyle'> &nbsp; {$driver['d_stag']} &nbsp; </TD>
-                    <TD class='list-content' id='c{$driver['d_id']}'> <a>&nbsp; Нарахувати ЗП &nbsp;</a> </TD>
+                    <TD class='list-content' id='c{$driver['d_id']}'> <a>&nbsp; Нарахувати &nbsp;</a> </TD>
                 </TR>";
             $i++;
         }
@@ -64,6 +71,11 @@ $(document).ready(function() {
         } else if (id.substr(0, 1) == 'c') {
             $('#main_space').load("calc-salary.php?did=" + id.substr(1));
         } 
+    });
+
+    $("#month-salary").click(function() {
+        month = $("#month").val();
+        $('#main_space').load("salary-month.php?month=" + month);
     });
 });
 </script>

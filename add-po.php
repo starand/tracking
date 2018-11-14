@@ -20,6 +20,7 @@
         die();
     }
 ?>
+<center>
 <form action='add-po.php' method='post' target='submit_frame'>
 <table cellspacing='5' cellpadding='1' class='form-table'>
     <TR><TD colspan='2'><center><h2>Додати підприємця</h2></TD></TR>

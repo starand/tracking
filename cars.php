@@ -15,7 +15,7 @@
     <TD> </TD>
 <?
     if (hasPermission(ADD.CAR)) {
-        echo "<TD style='width:120px;'><a id='add-car'> Додати машину </a></TD>";
+        echo "<TD style='width:120px;'><input type='button' id='add-car' value=' Додати машину '/></TD>";
     }
 ?>
 </TR>
@@ -31,14 +31,14 @@
                 <TD> &nbsp; Машини поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<TD class='list-content-header'> &nbsp; # &nbsp; </TD>
+        echo "<TR><TD class='list-content-header'> &nbsp; # &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Номер &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Модель &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Страхівка &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Тех.огляд &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Місць &nbsp; </TD>
+                <TD class='list-content-header'>  Місць  </TD>
                 <TD class='list-content-header'> &nbsp; Водії &nbsp; </TD>
-                ";
+                </TR>";
         $i = 1;
         foreach($cars as $car) {
             $content = "";
