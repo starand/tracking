@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(EDIT.ROUTE);
 
     isset($_GET['id']) or show_error("Не вибрано геодані!");

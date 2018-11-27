@@ -1,7 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
-
+    checkAuthorizedUser();
+    
     require_permission(ADD.DRIVER);
 
     if (isset($_POST['did']) && isset($_POST['rid']) && isset($_POST['rate'])) {

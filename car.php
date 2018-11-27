@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(VIEW.CAR);
 
     isset($_GET['cid']) or die("Не вказано машиину!");

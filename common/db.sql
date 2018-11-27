@@ -102,6 +102,11 @@ CREATE TABLE tracking_pos (
     po_name varchar(32) NOT NULL,
     po_phone varchar(16) NOT NULL,
     po_lid int unsigned NOT NULL,
+    po_address varchar(255) NOT NULL,
+    po_idcode varchar(16) NOT NULL,
+    po_passport varchar(8) NOT NULL,
+    po_license varchar(32) NOT NULL,
+    po_birthday varchar(10) NOT NULL,
     PRIMARY KEY(po_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Спочатку увійдіть в систему!"); // TODO - replace just with method call
+
+    checkAuthorizedUser();
     require_permission(ADD.SALARY);
     
     if (isset($_POST['did']) && isset($_POST['amount']) && isset($_POST['formula'])) {

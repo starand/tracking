@@ -14,6 +14,12 @@
     include_once "permissions.php";
 
     $user = getUser();
+
+function checkAuthorizedUser() {
+    global $user;
+    if (!$user || !is_array($user) || !$user['u_login']) die("Спочатку увійдіть в систему!");
+}
+
 ?>
 <HEAD>
     <link rel='icon' href='<?=$PATH;?>/favicon.ico'>

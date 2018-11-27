@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(VIEW.ROUTE);
 
     isset($_GET['rid']) or die("Не вказано маршрут!");

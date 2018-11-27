@@ -1,6 +1,6 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+    checkAuthorizedUser();
 
     if (!hasPermission(VIEW.LOCATIONS)) die();
 ?>

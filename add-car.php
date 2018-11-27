@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+    checkAuthorizedUser();
+    
     require_permission(ADD.CAR);
 
     if (isset($_POST['plate']) && isset($_POST['model']) && isset($_POST['type']) &&

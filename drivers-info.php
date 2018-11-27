@@ -1,7 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
 
+    checkAuthorizedUser();
     $children_count = get_children_count();
 ?>
 <center>

@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(EDIT.PO);
 
     isset($_GET['poid']) or show_error("Не вибрано підприємця!");
@@ -51,11 +52,71 @@
         } else {
             echo " &nbsp; {$po['l_name']} &nbsp; ";
         }
+    } elseif (isset($_GET['address'])) {
+        if (isset($_GET['set'])) {
+            $address = addslashes($_GET['address']);
+            strlen($address) > 0 or show_error("Адреса не може бути пустою!");
+            set_po_address($poid, $address) or show_error("Помилка бази даних!");
+            $po = get_po($poid);
+            echo " &nbsp; {$po['po_address']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='eaddress' value='{$po['po_address']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$po['po_address']} &nbsp; ";
+        }
+    } elseif (isset($_GET['license'])) {
+        if (isset($_GET['set'])) {
+            $license = addslashes($_GET['license']);
+            strlen($license) > 0 or show_error("Ліценщія не може бути пустою!");
+            set_po_license($poid, $license) or show_error("Помилка бази даних!");
+            $po = get_po($poid);
+            echo " &nbsp; {$po['po_license']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='elicense' value='{$po['po_license']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$po['po_license']} &nbsp; ";
+        }
+    } elseif (isset($_GET['birthday'])) {
+        if (isset($_GET['set'])) {
+            $birthday = addslashes($_GET['birthday']); // TODO add check date
+            strlen($birthday) == 10 or show_error("Дата повинна містити 10 символів (дд.мм.рррр)!");
+            set_po_birthday($poid, $birthday) or show_error("Помилка бази даних!");
+            $po = get_po($poid);
+            echo " &nbsp; {$po['po_birthday']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='ebirthday' value='{$po['po_birthday']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$po['po_birthday']} &nbsp; ";
+        }
+    } elseif (isset($_GET['passport'])) {
+        if (isset($_GET['set'])) {
+            $passport = addslashes($_GET['passport']);
+            strlen($passport) > 0 or show_error("Паспорт не може бути пустим!");
+            set_po_passport($poid, $passport) or show_error("Помилка бази даних!");
+            $po = get_po($poid);
+            echo " &nbsp; {$po['po_passport']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='epassport' value='{$po['po_passport']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$po['po_passport']} &nbsp; ";
+        }
+    } elseif (isset($_GET['idcode'])) {
+        if (isset($_GET['set'])) {
+            $idcode = addslashes($_GET['idcode']);
+            strlen($idcode) > 0 or show_error("Ідентифікаційний код не може бути пустим!");
+            set_po_idcode($poid, $idcode) or show_error("Помилка бази даних!");
+            $po = get_po($poid);
+            echo " &nbsp; {$po['po_idcode']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='eidcode' value='{$po['po_idcode']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$po['po_idcode']} &nbsp; ";
+        }
     }
 ?>
 <script>
 $(document).ready(function() {
-    var edittables = ['name', 'phone', 'location'];
+    var edittables = ['name', 'phone', 'location', 'address', 'idcode', 'passport', 'license', 'birthday'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();

@@ -1,6 +1,5 @@
 <?
     include_once "common/headers.php";
-    //$user or die("Not authorized user!");
     $admin = $user && $user['u_login'] == 'starand' ? 'trash' : '';
 
     echo "<TABLE cellspacing='0' cellpadding='0' style='width:100%;'>

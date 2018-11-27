@@ -1,10 +1,10 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
 
+    checkAuthorizedUser();
     require_permission(VIEW.LOGS);
 
-    foreach(glob('./logs/*.*') as $file) {
+    foreach(array_reverse(glob('./logs/*.*')) as $file) {
         $filename = basename($file);
         echo "<a class='file-name' id='$filename'>$filename</a> &nbsp;"; 
     }

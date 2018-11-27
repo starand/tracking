@@ -306,6 +306,13 @@ td.list-content-header {
 	font-size: 14px;
 }
 
+th.list-content-header {
+	font-weight: bold;
+	background: #ebedef;
+	text-align: center;
+	font-size: 14px;
+}
+
 td.list-content {
 	text-align: center;
 	font-size: 14px;

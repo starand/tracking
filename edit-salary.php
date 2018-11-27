@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(EDIT.SALARY);
 
     isset($_GET['sid']) or show_error("Не вибрано запис!");
@@ -44,7 +45,7 @@
         if (isset($_GET['set'])) {
             $es3 = (float)$_GET['set'];
             $es3 >= 0 or show_error("Зарплата (ф3) не може бути від'ємною!");
-            $es3 <= $rest or show_error("Зарплата (ф3) не може бути більшою ніж нарахована сума мінус виплати!");
+            $es3 <= ($rest + 0.01) or show_error("Зарплата (ф3) не може бути більшою ніж нарахована сума мінус виплати!");
             set_salary_3rdform($sid, $es3) or show_error("Помилка бази даних!");
             $info = get_salary_record($sid);
             echo " &nbsp; {$info['s_3rdform']} &nbsp; ";

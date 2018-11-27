@@ -770,12 +770,19 @@ function set_fire_reason($hid, $reason) {
 # Private Enterprenier's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new po
-function add_po($name, $phone, $lid) {
+function add_po($name, $phone, $lid, $address, $idcode, $passport, $license, $birthday) {
 	$name = addslashes($name);
 	$phone = addslashes($phone);
 	$lid = (int)$lid;
+	$address = addslashes($address);
+	$idcode = addslashes($idcode);
+	$passport = addslashes($passport);
+	$license = addslashes($license);
+	$birthday = addslashes($birthday);
 
-	$sql = "INSERT INTO tracking_pos VALUES(NULL, '$name', '$phone', $lid)";
+	$sql = "INSERT INTO tracking_pos 
+			VALUES(NULL, '$name', '$phone', $lid, '$address', '$idcode', '$passport',
+				   '$license', '$birthday')";
 	return uquery($sql);
 }
 
@@ -809,7 +816,7 @@ function set_po_name($poid, $name) {
 	$poid = (int)$poid;
 	$name = addslashes($name);
 
-	$sql = "UPDATE tracking_pos SET po_name='$name' WHERE po_id=$poid";
+	$sql = "UPDATE tracking_pos SET po_name='$name' WHERE po_id=$poid LIMIT 1";
 	return uquery($sql);
 }
 
@@ -819,7 +826,7 @@ function set_po_phone($poid, $phone) {
 	$poid = (int)$poid;
 	$phone = addslashes($phone);
 
-	$sql = "UPDATE tracking_pos SET po_phone='$phone' WHERE po_id=$poid";
+	$sql = "UPDATE tracking_pos SET po_phone='$phone' WHERE po_id=$poid LIMIT 1";
 	return uquery($sql);
 }
 
@@ -829,7 +836,57 @@ function set_po_location($poid, $lid) {
 	$poid = (int)$poid;
 	$lid = (int)$lid;
 
-	$sql = "UPDATE tracking_pos SET po_lid=$lid WHERE po_id=$poid";
+	$sql = "UPDATE tracking_pos SET po_lid=$lid WHERE po_id=$poid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po address
+function set_po_address($poid, $address) {
+	$poid = (int)$poid;
+	$address = addslashes($address);
+
+	$sql = "UPDATE tracking_pos SET po_address='$address' WHERE po_id=$poid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po idcode
+function set_po_idcode($poid, $idcode) {
+	$poid = (int)$poid;
+	$idcode = addslashes($idcode);
+
+	$sql = "UPDATE tracking_pos SET po_idcode='$idcode' WHERE po_id=$poid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po passport
+function set_po_passport($poid, $passport) {
+	$poid = (int)$poid;
+	$passport = addslashes($passport);
+
+	$sql = "UPDATE tracking_pos SET po_passport='$passport' WHERE po_id=$poid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po license
+function set_po_license($poid, $license) {
+	$poid = (int)$poid;
+	$license = addslashes($license);
+
+	$sql = "UPDATE tracking_pos SET po_license='$license' WHERE po_id=$poid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets po birthday
+function set_po_birthday($poid, $birthday) {
+	$poid = (int)$poid;
+	$birthday = addslashes($birthday);
+
+	$sql = "UPDATE tracking_pos SET po_birthday='$birthday' WHERE po_id=$poid LIMIT 1";
 	return uquery($sql);
 }
 

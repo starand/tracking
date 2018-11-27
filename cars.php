@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(VIEW.CARS);
 ?>
 <center>
@@ -31,7 +32,7 @@
                 <TD> &nbsp; Машини поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<TR><TD class='list-content-header'> &nbsp; # &nbsp; </TD>
+        echo "<TR><TD class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Номер &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Модель &nbsp; </TD>
                 <TD class='list-content-header'> &nbsp; Страхівка &nbsp; </TD>
@@ -54,13 +55,13 @@
                         (checkDMYDateExpired($car['c_sto']) ? "background:#FF9797;" : "");
 
             echo "<TR class='list-content'>
-                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> $i </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_plate']} &nbsp; </TD>
-                    <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_model']} &nbsp; </TD>
-                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> &nbsp; {$car['c_insurance']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}'> {$car['c_model']} </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> {$car['c_insurance']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}' style='$to_style'> &nbsp; {$car['c_sto']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_places']} &nbsp; </TD>
-                    <TD class='list-content' id=''> &nbsp; $content &nbsp; </TD>                    
+                    <TD class='list-content'> &nbsp; $content &nbsp; </TD>                    
                 </TR>";
             $i++;
         }

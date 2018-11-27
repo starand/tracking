@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Спочатку увійдіть в систему!");
+
+    checkAuthorizedUser();
     require_permission(VIEW.SALARY);
 
     $location = getActiveLocation();

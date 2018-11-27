@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Not authorized user!");
+
+    checkAuthorizedUser();
     require_permission(ADD.ROUTE);
 
     if (isset($_POST['url']) && isset($_POST['length']) && isset($_POST['cost']) &&

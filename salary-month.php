@@ -1,6 +1,7 @@
 <?
     include_once "common/headers.php";
-    $user or die("Спочатку увійдіть в систему!");
+
+    checkAuthorizedUser();
     require_permission(VIEW.SALARY);
 
     if (isset($_GET['dds'])) {
@@ -13,7 +14,7 @@
 ?>
 <center>
 <h2>Зарплатна відомість за <?=$month;?></h2>
-<TABLE class='list-content' style='width:750px;'>
+<TABLE class='list-content' style='width:850px;' id='tbl-month-salary'>
 <?
     $infos = get_month_salary($month);
     $stats = get_month_salarн_stats($month);
@@ -23,14 +24,13 @@
     if (!count($infos)) {
         echo "<TR class='list-content'><TD class='list-content'> &nbsp; Даних не знайдено! &nbsp; </TD></TR>";
     } else {
-        echo "<TR><TD class='list-content-header'> &nbsp; # &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Водій &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Дата &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Сума &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Аванс &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Зарплата &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; 3тя форма &nbsp; </TD>
-                <!--<TD class='list-content-header'> &nbsp; Формула &nbsp; </TD>-->";
+        echo "<TR><TH class='list-content-header'> &nbsp; # &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Водій &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Дата &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Сума &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Аванс &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Зарплата &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; 3тя форма &nbsp; </TD>";
         echo hasPermission(DEL.SALARY) ? "<TD class='list-content-header'> &nbsp; X &nbsp; </TD>" : "";
         echo "</TR>";
 
@@ -39,16 +39,15 @@
             $driver = $drivers[$info['s_did']];
 
             $sum = $info['s_advance'] + $info['s_salary'] + $info['s_3rdform'];
-            $style = $sum == $info['s_amount'] ? "background:#E9FFE7;" : "";
+            $style = abs($sum - $info['s_amount']) < 0.01 ? "background:#E9FFE7;" : "";
             echo "<TR class='list-content' style='$style'>
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>
-                    <TD class='list-content' id='{$info['s_id']}'> &nbsp; {$info['s_amount']} &nbsp; </TD>
-                    <!--<TD class='list-content' id='$prefix{$info['s_id']}'> &nbsp; {$info['s_formula']} &nbsp; </TD>-->
-                    <TD class='edit-item' id='{$prefix}a{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_advance']} &nbsp; </TD>
-                    <TD class='edit-item' id='{$prefix}s{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_salary']} &nbsp; </TD>
-                    <TD class='edit-item' id='{$prefix}3{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_3rdform']} &nbsp; </TD>
+                    <TD class='list-content' id='{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_amount']} &nbsp; </TD>
+                    <TD class='edit-item' id='{$prefix}a{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_advance']} &nbsp; </TD>
+                    <TD class='edit-item' id='{$prefix}s{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_salary']} &nbsp; </TD>
+                    <TD class='edit-item' id='{$prefix}3{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_3rdform']} &nbsp; </TD>
                     ";
                     
             echo hasPermission(DEL.SALARY) ? "
@@ -99,5 +98,28 @@ $(document).ready(function() {
             $("#main_space").load(url);
         }
     });
+
+    var table = $('table');
+
+    $('.list-content-header')
+        .wrapInner('<span title="sort this column"/>')
+        .each(function(){
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+            th.click(function() {
+                table.find('td').filter(function() {
+                    return $(this).index() === thIndex;
+                }).sortElements(function(a, b) {
+                    if( $.text([a]) == $.text([b]) ) { return 0; }
+                    return $.text([a]) > $.text([b]) ? (inverse ? -1 : 1) : (inverse ? 1 : -1);
+                }, function() {
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                });
+                inverse = !inverse;
+                alert(1);
+            });
+        });
 });
 </script>
