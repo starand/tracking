@@ -11,7 +11,7 @@
 
     if (isset($_GET['fn'])) {
         $fn = addslashes($_GET['fn']);
-        if (strlen($fn) != 14) die();
+        if (strlen($fn) > 14 || strlen($fn) < 12) die();
         echo "<TABLE class='list-content'>";
         $content = file_get_contents('./logs/'.$fn);
         $lines = explode("\n", $content);
@@ -30,7 +30,8 @@
 $(document).ready(function() {
     $(".file-name").click(function() {
         id = $(this).attr('id');
-        $('#main_space').load('adm.php?page=sl&fn='+id);
+        url = 'adm.php?page=sl&fn=' + id;
+        $('#main_space').load(url);
     });
 });
 </script>

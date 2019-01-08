@@ -77,6 +77,7 @@
                         (checkDMYDateExpired($driver['d_insurance']) ? "background:#FF9797;" : "");
             $pstyle = !checkPhoneCorrect($driver['d_phone']) ? "background:#FF9797;" : "";
 
+            $powner = shortenPIB($po['po_name']);
             echo "<TR class='list-content'>
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
@@ -84,7 +85,7 @@
                     <TD class='list-content' id='$prefix{$driver['d_id']}' style='$istyle'> &nbsp; {$driver['d_insurance']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> $content </TD>
                     <TD class='list-content' id='{$driver['d_id']}'> $carcont </TD>
-                    <TD class='list-content' id='po{$po['po_id']}' style='font-size:12px;'> &nbsp; {$po['po_name']} &nbsp; </TD>
+                    <TD class='list-content' id='po{$po['po_id']}' style='font-size:12px;'> &nbsp; $powner &nbsp; </TD>
                 </TR>";
             $i++;
         }

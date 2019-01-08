@@ -14,7 +14,7 @@
     $months = get_salary_months();
     echo "<b>Місяць: </b> <SELECT name='month' id='month' style='width:150px; font-size:14px;'>";
     foreach ($months as $month) {
-        echo "<option value='{$month['month']}'>{$month['month']}</option>";
+        echo "<option value='{$month['month']}'>".getPrevMonthName($month['month'])."</option>";
     }
     echo "</SELECT>
             <input type='button' id='month-salary' value='Переглянути' id=''/>";

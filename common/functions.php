@@ -1,4 +1,5 @@
 <?
+
 #---------------------------------------------------------------------------------------------------
 function mobileDevice() {
     global $_SERVER;
@@ -188,6 +189,56 @@ function getMonthCount($date) {
 
 #---------------------------------------------------------------------------------------------------
 
-#---------------------------------------------------------------------------------------------------
+$MONTHS_UA = array("", "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", 
+                    "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень");
 
+function getUaMonthName($m) {
+    switch($m) {
+        case 1: return "Січень";
+        case 2: return "Лютий";
+        case 3: return "Березень";
+        case 4: return "Квітень";
+        case 5: return "Травень";
+        case 6: return "Червень";
+        case 7: return "Липень";
+        case 8: return "Серпень";
+        case 9: return "Вересень";
+        case 10: return "Жовтень";
+        case 11: return "Листопад";
+        case 12: return "Грудень";
+        default: return "ERROR";
+    }
+}
+
+#---------------------------------------------------------------------------------------------------
+# Converst 'mm.yyyy' -> into 'Month yyyyy'
+function getPrevMonthName($date) {
+    $parts = explode(".", $date);
+    if (count($parts) != 2) return "<ERROR>";
+    $month = strlen($parts[0]) == 1 ? "0".$parts[0] : $parts[0];
+    $date = "01.".$month.".".$parts[1];
+
+    $time = strtotime("-1 MONTH", strtotime($date));
+    $m = (int)date("m", $time);
+    $year = date("Y", $time);
+    return getUaMonthName($m)." ".$year;
+}
+
+#---------------------------------------------------------------------------------------------------
+#
+function shortenPIB($pib) {
+    $parts = explode(" ", trim($pib));
+    if ($parts <= 1) return $pib;
+
+    $result = $parts[0]." ";
+    $count = count($parts);
+    for ($i = 1; $i < $count; ++$i) {
+        $part = $parts[$i];
+        if (strlen($part) == 0) continue;
+        $result .= mb_substr($part, 0, 1).".";
+    }
+
+    return $result;
+}
+#---------------------------------------------------------------------------------------------------
 ?>

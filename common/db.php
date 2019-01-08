@@ -511,6 +511,15 @@ function get_cars() {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns cars by owner
+function get_cars_by_owner($owner) {
+	$owner = addslashes($owner);
+
+	$sql = "SELECT * FROM tracking_cars WHERE c_owner='$owner' ORDER BY c_plate";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns car by id
 function get_car($cid) {
 	$cid = (int)$cid;
@@ -923,6 +932,16 @@ function set_driver_po($did, $poid) {
 }
 
 #---------------------------------------------------------------------------------------------------
+# Returns all pos
+function get_po_employees($poid) {
+	$poid = (int)$poid;
+
+	$sql = "SELECT * FROM tracking_po_drivers, tracking_drivers
+			WHERE pod_poid=$poid AND pod_did=d_id ORDER BY d_name";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
 # Route data functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new route data
@@ -1033,7 +1052,8 @@ function add_salary_record($did, $formula, $amount) {
 #---------------------------------------------------------------------------------------------------
 ## Returns salary periods
 function get_salary_months() {
-	$sql = "SELECT SUBSTR(s_date, 4) as month FROM tracking_salary GROUP BY month";
+	$sql = "SELECT s_date, SUBSTRING(s_date, POSITION('.' IN s_date) + 1) as month 
+			FROM tracking_salary GROUP BY month";
 	return res_to_array(uquery($sql));
 }
 

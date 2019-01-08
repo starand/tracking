@@ -13,7 +13,7 @@
     $month = addslashes($_GET['month']);
 ?>
 <center>
-<h2>Зарплатна відомість за <?=$month;?></h2>
+<h2>Зарплатна відомість за <?=getPrevMonthName($month);?></h2>
 <TABLE class='list-content' style='width:850px;' id='tbl-month-salary'>
 <?
     $infos = get_month_salary($month);
@@ -26,7 +26,7 @@
     } else {
         echo "<TR><TH class='list-content-header'> &nbsp; # &nbsp; </TD>
                 <TH class='list-content-header'> &nbsp; Водій &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Дата &nbsp; </TD>
+                <TH class='list-content-header'> &nbsp; Дата нарах. &nbsp; </TD>
                 <TH class='list-content-header'> &nbsp; Сума &nbsp; </TD>
                 <TH class='list-content-header'> &nbsp; Аванс &nbsp; </TD>
                 <TH class='list-content-header'> &nbsp; Зарплата &nbsp; </TD>

@@ -44,7 +44,7 @@
             $content = "";
             foreach($drivers as $driver) {
                 if (strlen($content)) $content .= "<BR>";
-                $content .= "<a class='driver' id='d{$driver['d_id']}'>{$driver['d_name']}</a>";
+                $content .= "<a class='driver' id='d{$driver['d_id']}'>".shortenPIB($driver['d_name'])." - {$driver['d_phone']}</a>";
             }
             $datas = get_route_datas($route['r_id']);
             $dcontent = "";
