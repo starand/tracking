@@ -17,7 +17,7 @@
     $type = STATE_ACTUAL;
     if ($_GET['type']) {
         $type = STATE_REMOVED;
-        require_permission(DEL.DRIVERS);
+        require_permission(DEL.CARS);
     }
 ?>
 <center>
@@ -32,7 +32,7 @@
     <TD> </TD>
 <?
     echo hasPermission(ADD.CAR) ? "<TD style='width:120px;'><input type='button' id='add-car' value=' Додати машину '/></TD>" : "";
-    echo hasPermission(DEL.CARS) ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-cars' value=' Видалені '/></TD>" : "";
+    echo hasPermission(DEL.CARS) && $type == STATE_ACTUAL ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-cars' value=' Видалені '/></TD>" : "";
 ?>
 </TR>
 </TABLE>

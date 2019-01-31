@@ -33,7 +33,7 @@
 <?
     echo hasPermission(ADD.DRIVER) ? "<TD style='width:100px;'><input type='button' id='add-driver' value=' Додати водія '/></TD>" : "";
     echo "<TD style='width:100px;'><input type='button' id='drivers-info' value=' Більше даних '/></TD>";
-    echo hasPermission(DEL.DRIVERS) ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-drivers' value=' Звільнені '/></TD>" : "";
+    echo hasPermission(DEL.DRIVERS) && $type == STATE_ACTUAL ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-drivers' value=' Звільнені '/></TD>" : "";
 ?>
 </TR>
 </TABLE>

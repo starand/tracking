@@ -11,6 +11,20 @@
 
 <center>
 <h2>Підприємець: <? echo "{$po['po_name']}";?></h2>
+<?
+    $add_po = $po['po_state'] == STATE_ACTUAL
+        ? "<a id='delete-po' style='color:red;'>Звільнити підприємця</a>"
+        : "<a id='restore-po' style='color:red;'>Поновити підприємця</a>";
+?>
+<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TR>
+    <TD> </TD>
+<?
+    echo hasPermission(DEL.PO) ? "<TD style='width:150px;'><a id='po-info'> $add_po </a></TD>" : "";
+?>
+</TR>
+</TABLE>
+
 <TABLE class='list-content'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про підприємця </TD></TR>
     <TR class='list-content' style='height:22px;'>
@@ -101,6 +115,13 @@ $(document).ready(function() {
         } else if (id.substr(0, 2) == 'po') {
             $('#main_space').load("po.php?poid=" + id.substr(2));
         }
+    });
+
+    $("#delete-po").click(function() {
+        $("#main_space").load("pos.php?dpo=<?=$poid;?>");
+    });
+    $("#restore-po").click(function() {
+        $("#main_space").load("pos.php?rpo=<?=$poid;?>");
     });
 });
 </script>

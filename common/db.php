@@ -11,6 +11,9 @@
 
 	$tbl_prfx = "tracking";
 
+	define('STATE_ACTUAL', 0);
+	define('STATE_REMOVED', 1);
+
 #---------------------------------------------------------------------------------------------------
 # MySQL helper functions
 #---------------------------------------------------------------------------------------------------
@@ -139,16 +142,34 @@ function add_route($name, $desc, $lid) {
 	$nadescme = addslashes($desc);
 	$lid = (int)$lid;
 
-	$sql = "INSERT INTO tracking_routes VALUES(NULL, $lid, '$name', '$desc')";
+	$sql = "INSERT INTO tracking_routes VALUES(NULL, $lid, '$name', '$desc', ".STATE_ACTUAL.")";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
+# Deletes route by id
+function delete_route($rid) {
+	$rid = (int)$rid;
+
+	# hide route from lists
+	return uquery("UPDATE tracking_routes SET r_state=".STATE_REMOVED." WHERE r_id=$rid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Restores route by id
+function restore_route($rid) {
+	$rid = (int)$rid;
+
+	# hide route from lists
+	return uquery("UPDATE tracking_routes SET r_state=".STATE_ACTUAL." WHERE r_id=$rid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns routes by location
-function get_routes($lid) {
+function get_routes($lid, $type = STATE_ACTUAL) {
 	$lid = (int)$lid;
 
-	$sql = "SELECT * FROM tracking_routes WHERE r_lid=$lid";
+	$sql = "SELECT * FROM tracking_routes WHERE r_lid=$lid AND r_state=$type";
 	return res_to_array(uquery($sql));
 }
 
@@ -192,9 +213,9 @@ function get_route_by_name($name) {
 
 #---------------------------------------------------------------------------------------------------
 # Returns all drivers
-define('STATE_ACTUAL', 0);
-define('STATE_REMOVED', 1);
 function get_all_drivers($type = STATE_ACTUAL) {
+	$type = (int)$type;
+
 	$sql = "SELECT * FROM tracking_drivers WHERE d_state=$type ORDER BY d_name ";
 	return res_to_array(uquery($sql));
 }
@@ -820,14 +841,35 @@ function add_po($name, $phone, $lid, $address, $idcode, $passport, $license, $bi
 
 	$sql = "INSERT INTO tracking_pos 
 			VALUES(NULL, '$name', '$phone', $lid, '$address', '$idcode', '$passport',
-				   '$license', '$birthday')";
+				   '$license', '$birthday', ".STATE_ACTUAL.")";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
+# Deletes po by id
+function delete_po($poid) {
+	$poid = (int)$poid;
+
+	# hide po from lists
+	return uquery("UPDATE tracking_pos SET po_state=".STATE_REMOVED." WHERE po_id=$poid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Restores po by id
+function restore_po($poid) {
+	$poid = (int)$poid;
+
+	# hide po from lists
+	return uquery("UPDATE tracking_pos SET po_state=".STATE_ACTUAL." WHERE po_id=$poid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns all pos
-function get_pos() {
-	$sql = "SELECT * FROM tracking_pos, tracking_locations WHERE po_lid=l_id ORDER BY po_name";
+function get_pos($type = STATE_ACTUAL) {
+	$type = (int)$type;
+
+	$sql = "SELECT * FROM tracking_pos, tracking_locations 
+			WHERE po_lid=l_id AND po_state=$type ORDER BY po_name";
 	return res_to_array(uquery($sql));
 }
 

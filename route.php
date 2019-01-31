@@ -11,6 +11,20 @@
 
 <center>
 <h2>Маршрут: <? echo "{$route['r_name']} - {$route['r_desc']}";?></h2>
+<?
+    $add_route = $route['r_state'] == STATE_ACTUAL
+        ? "<a id='delete-route' style='color:red;'>Видалити маршрут</a>"
+        : "<a id='restore-route' style='color:red;'>Поновити маршрут</a>";
+?>
+<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TR>
+    <TD> </TD>
+<?
+    echo hasPermission(DEL.ROUTE) ? "<TD style='width:150px;'><a id='po-info'> $add_route </a></TD>" : "";
+?>
+</TR>
+</TABLE>
+
 <TABLE class='list-content' style='width:550px;'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про маршрут </TD></TR>
     <TR class='list-content' style='height:22px;'>
@@ -44,6 +58,13 @@ $(document).ready(function() {
 
     $("#add-route-data").on("click", function() {
         $("#route-data-content").load("add-route-data.php?rid=<?=$rid;?>");
+    });
+
+    $("#delete-route").click(function() {
+        $("#main_space").load("routes.php?dr=<?=$rid;?>");
+    });
+    $("#restore-route").click(function() {
+        $("#main_space").load("routes.php?rr=<?=$rid;?>");
     });
 });
 </script>

@@ -26,6 +26,7 @@ CREATE TABLE tracking_routes (
     r_lid int unsigned NOT NULL,
     r_name varchar(30) NOT NULL,
     r_desc varchar(255) NOT NULL,
+    r_state tinyint NOT NULL default 0,
     PRIMARY KEY(r_id),
     UNIQUE(r_lid, r_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -109,6 +110,7 @@ CREATE TABLE tracking_pos (
     po_passport varchar(8) NOT NULL,
     po_license varchar(32) NOT NULL,
     po_birthday varchar(10) NOT NULL,
+    po_state tinyint NOT NULL default 0,
     PRIMARY KEY(po_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -4,6 +4,22 @@
     checkAuthorizedUser();
     require_permission(VIEW.ROUTES);
 
+    if (isset($_GET['dr'])) {
+        require_permission(DEL.ROUTE);
+        check_result(delete_route((int)$_GET['dr']),  "Маршурут видалено!", "Помилка бази даних!");
+    }
+
+    if (isset($_GET['rr'])) {
+        require_permission(DEL.ROUTE);
+        check_result(restore_route((int)$_GET['rr']), "Маршурут поновлено!", "Помилка бази даних!");
+    }
+
+    $type = STATE_ACTUAL;
+    if ($_GET['type']) {
+        $type = STATE_REMOVED;
+        require_permission(DEL.ROUTES);
+    }
+
     isset($_GET['lid']) or die("Локацію не вказано!");
     $lid = (int)$_GET['lid'];
     $location = get_location($lid) or show_error("Локація не існує! '$lid'");
@@ -20,7 +36,10 @@
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-    <? echo hasPermission(ADD.ROUTE) ? "<TD style='width:130px;'><input type='button' id='add-route' value=' Додати маршрут '/></TD>" : ""; ?>
+    <?
+        echo hasPermission(ADD.ROUTE) ? "<TD style='width:130px;'><input type='button' id='add-route' value=' Додати маршрут '/></TD>" : "";
+        echo hasPermission(DEL.ROUTE) && $type == STATE_ACTUAL ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-routes' value=' Видалені '/></TD>" : "";
+    ?>
 </TR>
 </TABLE>
 
@@ -31,7 +50,7 @@
     <td class='list-content-header' style='width:75px;'> Довжина </b></td>
     <td class='list-content-header' style='width:300px;'> &nbsp; <b>Водії &nbsp;</b> </td>
 <?
-    $routes = get_routes($lid);
+    $routes = get_routes($lid, $type);
 
     if (!count($routes)) {
         echo "<TR class='list-content' style='height: 38px;'>
@@ -89,6 +108,10 @@ $(document).ready(function() {
         $("#tbl_routes tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $("#removed-routes").click(function() {
+        $('#main_space').load("routes.php?type=1&lid=<?=$lid;?>");
     });
 });
 </script>

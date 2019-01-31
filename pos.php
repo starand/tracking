@@ -3,6 +3,22 @@
 
     checkAuthorizedUser();
     require_permission(VIEW.POS);
+
+    if (isset($_GET['dpo'])) {
+        require_permission(DEL.PO);
+        check_result(delete_po((int)$_GET['dpo']),  "Підприємця видалено!", "Помилка бази даних!");
+    }
+
+    if (isset($_GET['rpo'])) {
+        require_permission(DEL.PO);
+        check_result(restore_po((int)$_GET['rpo']), "Підприємця поновлено!", "Помилка бази даних!");
+    }
+
+    $type = STATE_ACTUAL;
+    if ($_GET['type']) {
+        $type = STATE_REMOVED;
+        require_permission(DEL.POS);
+    }
 ?>
 <center>
 <h2>Приватні підприємці</h2>
@@ -10,18 +26,21 @@
 <TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
 <TR'>
     <TD>
-        Пошук: <input type='text' id='query' style='width:300px;'/>
+        Пошук: <input type='text' id='query' style='width:250px;'/>
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>
     </TD>
     <TD> </TD>
-<? echo hasPermission(ADD.PO) ? "<TD style='width:70px;'><input type='button' id='add-po' value=' Додати '/></TD>" : ""; ?>
+<?
+    echo hasPermission(ADD.PO) ? "<TD style='width:70px;'><input type='button' id='add-po' value=' Додати '/></TD>" : "";
+    echo hasPermission(DEL.PO) && $type == STATE_ACTUAL ? "<TD style='width:70px;text-align:center;'><input type='button'  id='removed-pos' value=' Звільнені '/></TD>" : "";
+?>
 </TR>
 </TABLE>
 
 
 <TABLE class='list-content' style='width:500px;' id='tbl_pos'>
 <?
-    $pos = get_pos();
+    $pos = get_pos($type);
     $prefix = hasPermission(VIEW.PO) ? "p" : "";
 
     if (!count($pos)) {
@@ -71,6 +90,10 @@ $(document).ready(function() {
         $("#tbl_pos tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $("#removed-pos").click(function() {
+        $('#main_space').load("pos.php?type=1");
     });
 });
 </script>
