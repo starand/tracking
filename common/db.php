@@ -56,11 +56,13 @@ function row_to_array($res) {
 # Users's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new user
-function add_user($name, $pswd) {
+function add_user($name, $pswd, $pib="", $perm=1) {
 	$name = addslashes($name);
 	$pswd = md5($pswd);
+	$pib = addslashes($pib);
+	$perm = (int)$perm;
 
-	$sql = "INSERT INTO tracking_users VALUES(NULL, '$name', '$pswd')";
+	$sql = "INSERT INTO tracking_users VALUES(NULL, '$name', '$pswd', $perm, '$pib')";
 	return uquery($sql);
 }
 
@@ -72,6 +74,13 @@ function get_user_by_login($login) {
 	$sql = "SELECT * FROM tracking_users, tracking_permissions 
 			WHERE u_login='$login' AND u_perm=p_id LIMIT 1";
 	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns users list
+function get_users() {
+	$sql = "SELECT * FROM tracking_users, tracking_permissions WHERE u_perm=p_id AND u_id<>1";
+	return res_to_array(uquery($sql));
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -269,7 +278,7 @@ function add_driver($name, $address, $phone, $idcode, $passport,
 
 	$sql = "INSERT INTO tracking_drivers 
 			VALUES(NULL, '$name', '$address', '$phone', '$idcode', '$passport', '$stag', 
-					'$birthday', '$wbirthday', '$insurance', $children, 0)";
+					'$birthday', '$wbirthday', '$insurance', $children, ".STATE_ACTUAL.")";
 	uquery($sql);
 
 	# add new hiring record as it's next hiring time
@@ -498,15 +507,35 @@ function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $colo
 
 	$sql = "INSERT INTO tracking_cars 
 			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto', '$owner', 
-						 '$color')";
+						 '$color', ".STATE_ACTUAL.")";
 	echo $sql;
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
+# Deletes car by id
+function delete_car($cid) {
+	$cid = (int)$cid;
+
+	# hide car from lists
+	return uquery("UPDATE tracking_cars SET c_state=".STATE_REMOVED." WHERE c_id=$cid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Restores car by id
+function restore_car($cid) {
+	$cid = (int)$cid;
+
+	# hide car from lists
+	return uquery("UPDATE tracking_cars SET c_state=".STATE_ACTUAL." WHERE c_id=$cid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
 # Returns cars
-function get_cars() {
-	$sql = "SELECT * FROM tracking_cars ORDER BY c_plate"; // , tracking_car_types WHERE c_type=ct_id
+function get_cars($type = STATE_ACTUAL) {
+	$type = (int)$type;
+
+	$sql = "SELECT * FROM tracking_cars WHERE c_state=$type ORDER BY c_plate";
 	return res_to_array(uquery($sql));
 }
 

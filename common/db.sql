@@ -3,6 +3,7 @@ CREATE TABLE tracking_users (
     u_login varchar(30) NOT NULL,
     u_pswd varchar(32) NOT NULL,
     u_perm int(10) unsigned NOT NULL,
+    u_name varchar(64) not null,
     PRIMARY KEY(u_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -66,6 +67,7 @@ CREATE TABLE tracking_cars (
     c_sto varchar(32) NOT NULL,
     c_owner varchar(32) NOT NULL,
     c_color varchar(16) NOT NULL,
+    c_state tinyint NOT NULL default 0,
     UNIQUE(c_plate),
     PRIMARY KEY(c_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

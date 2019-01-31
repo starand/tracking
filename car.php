@@ -11,7 +11,21 @@
 
 <center>
 <h2>Машина: <? echo "{$car['c_plate']} - {$car['c_model']}";?></h2>
-<TABLE class='list-content'>
+<?
+    $add_car = $car['c_state'] == STATE_ACTUAL
+        ? "<a id='delete-car' style='color:red;'>Видалити автомобіль</a>"
+        : "<a id='restore-car' style='color:red;'>Поновити автомобіль</a>";
+?>
+<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TR>
+    <TD> </TD>
+<?
+    echo hasPermission(DEL.CAR) ? "<TD style='width:150px;'><a id='car-info'> $add_car </a></TD>" : "";
+?>
+</TR>
+</TABLE>
+
+<TABLE class='list-content' style='width:500px;'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про машину </TD></TR>
     <TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Номер</b>: &nbsp; </TD>
@@ -65,6 +79,13 @@ $(document).ready(function() {
 
     $("#add-car-driver").on("click", function() {
         $("#add-car-driver-content").load("add-car-driver.php?cid=<?=$cid;?>");
+    });
+
+    $("#delete-car").click(function() {
+        $("#main_space").load("cars.php?dc=<?=$cid;?>");
+    });
+    $("#restore-car").click(function() {
+        $("#main_space").load("cars.php?rc=<?=$cid;?>");
     });
 });
 </script>

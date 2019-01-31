@@ -19,7 +19,7 @@
         : "<a id='restore-driver' style='color:red;'>Поновити водія</a>";
 ?>
 <TABLE cellspacing='0' cellpadding='2' style='width:550px;' class='menu'>
-<TR'>
+<TR>
     <TD> </TD>
 <?
     if (hasPermission(DEL.DRIVER)) {

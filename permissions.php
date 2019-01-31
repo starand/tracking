@@ -36,7 +36,12 @@ define('_reservd_5',17);
 define('_reservd_6',18);
 define('_reservd_7',19);
 define('FINANCE',   20);
-define('LOGS',     21);
+define('LOGS',      21);
+define('USERS',     22);
+define('USER',      23);
+define('GROUPS',    24);
+define('GROUP',     25);
+
 
 #---------------------------------------------------------------------------------------------------
 ## Checks whether user has specific permission
