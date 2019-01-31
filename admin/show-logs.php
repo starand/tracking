@@ -4,10 +4,30 @@
     checkAuthorizedUser();
     require_permission(VIEW.LOGS);
 
+    $logFiles = array();
     foreach(array_reverse(glob('./logs/*.*')) as $file) {
         $filename = basename($file);
-        echo "<a class='file-name' id='$filename'>$filename</a> &nbsp;"; 
+        $parts = explode('.', $filename);
+        $year = $parts[2].".".$parts[1];
+
+        if (!isset($logFiles[$year])) $logFiles[$year] = array();
+
+        $logFiles[$year][] = $filename;
     }
+
+    echo "<h2>DataBase Logs</h2>";
+    echo "<TABLE class='list-content'>";
+    foreach ($logFiles as $year => $files) {
+        echo "<TR class='list-content'>
+                    <TD class='edit-item'><b>$year</b></TD>
+                <TD class='edit-item'>";
+        foreach ($files as $file) {
+            echo "<a class='file-name' id='$file'>$file</a> &nbsp;";
+        }
+
+        echo "</TD></TR>";
+    }
+    echo "</TABLE>";
 
     if (isset($_GET['fn'])) {
         $fn = addslashes($_GET['fn']);
