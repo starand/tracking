@@ -38,12 +38,11 @@
 
         $i = 1;
         foreach ($users as $user) {
-            $prefix = "";
             echo "<TR class='list-content'>
-                <TD class='list-content' id='$prefix{$user['u_id']}'> $i </TD>
-                <TD class='list-content' id='$prefix{$user['u_id']}'> &nbsp; {$user['u_name']} &nbsp; </TD>
-                <TD class='list-content' id='$prefix{$user['u_id']}'> {$user['u_login']} </TD>
-                <TD class='list-content' id='$prefix{$user['u_id']}'> &nbsp; {$user['u_perm']} &nbsp; </TD>
+                <TD class='list-content' id='{$user['u_id']}'> $i </TD>
+                <TD class='list-content' id='{$user['u_id']}'> &nbsp; {$user['u_name']} &nbsp; </TD>
+                <TD class='list-content' id='{$user['u_id']}'> {$user['u_login']} </TD>
+                <TD class='list-content' id='g{$user['p_id']}'> &nbsp; {$user['p_desc']} &nbsp; </TD>
             </TR>";
             $i++;
         }
@@ -67,7 +66,14 @@ $(document).ready(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
+    $(".list-content").click(function() {
+        id = $(this).attr('id');
+        if (id.substr(0, 1) == 'g') {
+            $('#main_space').load("group.php?gid=" + id.substr(1));
+        } else if (id.substr(0, 1) == 'u') {
+            //$('#main_space').load("po.php?poid=" + id.substr(2));
+        }
+    });
 });
 </script>
-
-

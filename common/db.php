@@ -1107,6 +1107,39 @@ function add_permission_string($desc, $permissions) {
 }
 
 #---------------------------------------------------------------------------------------------------
+## Returns groups list
+function get_perm_groups() {
+	$sql = "SELECT * FROM tracking_permissions";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns group by id
+function get_perm_group($gid) {
+	$gid = (int)$gid;
+
+	$sql = "SELECT * FROM tracking_permissions WHERE p_id=$gid";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns users in group list
+function get_users_by_group($gid) {
+	$gid = (int)$gid;
+
+	$sql = "SELECT * FROM tracking_users WHERE u_perm=$gid";
+	return res_to_array(uquery($sql));
+}
+
+function update_perm_string($gid, $value) {
+	$gid = (int)$gid;
+	$value = addslashes($value);
+
+	$sql = "UPDATE tracking_permissions SET p_permissions='$value' WHERE p_id=$gid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
 # Salary functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new calculation record

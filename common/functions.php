@@ -51,7 +51,9 @@ function load($page, $target) {
 # Checks whether users is logged in
 function getUser() {
     global $_SESSION;
-    return isset($_SESSION['tracking_user']) ? $_SESSION['tracking_user'] : false;
+    if (!isset($_SESSION['tracking_user'])) return false;
+    $_SESSION['tracking_user'] = get_user_by_login($_SESSION['tracking_user']['u_login']);
+    return $_SESSION['tracking_user'];
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -241,4 +243,5 @@ function shortenPIB($pib) {
     return $result;
 }
 #---------------------------------------------------------------------------------------------------
+
 ?>

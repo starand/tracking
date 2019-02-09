@@ -22,9 +22,7 @@
 <TR>
     <TD> </TD>
 <?
-    if (hasPermission(DEL.DRIVER)) {
-        echo "<TD style='width:110px;'><a id='drivers-info'> $add_drv </a></TD>";
-    }
+    echo hasPermission(DEL.DRIVER) ? "<TD style='width:110px;'><a id='drivers-info'> $add_drv </a></TD>" : "";
 ?>
 </TR>
 </TABLE>
