@@ -24,7 +24,7 @@
 <h2>Машини</h2>
 
 <TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
-<TR'>
+<TR>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>

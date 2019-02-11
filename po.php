@@ -13,8 +13,8 @@
 <h2>Підприємець: <? echo "{$po['po_name']}";?></h2>
 <?
     $add_po = $po['po_state'] == STATE_ACTUAL
-        ? "<a id='delete-po' style='color:red;'>Звільнити підприємця</a>"
-        : "<a id='restore-po' style='color:red;'>Поновити підприємця</a>";
+        ? "<input type='button' id='delete-po'  style='color:red;' value=' Звільнити підприємця ' />"
+        : "<input type='button' id='restore-po' style='color:red;' value=' Поновити підприємця ' />";
 ?>
 <TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
 <TR>
@@ -57,30 +57,63 @@
 
 <BR>
 
-<TABLE class='list-content'>
-    <TR>
-        <TD class='list-content-header'> # </TD>
-        <TD class='list-content-header'> Працівник </TD>
-        <TD class='list-content-header'> Телефон </TD>
-    </TR>
-<?
-    $empoyees = get_po_employees($poid);
-    $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
+<TABLE>
+<TR><TD style='vertical-align:top;'>
+    <b>Працівники:</b>
+    <TABLE class='list-content'>
+        <TR>
+            <TD class='list-content-header'> # </TD>
+            <TD class='list-content-header'> Працівник </TD>
+            <TD class='list-content-header'> Телефон </TD>
+        </TR>
+    <?
+        $empoyees = get_po_employees($poid);
+        $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
 
-    if (count($empoyees) == 0) {
-        echo "<TR><TD colspan='3'>За цим підприємцем працівників не закріплено!</TD></TR>";
-    } else {
-        $i = 1;
-        foreach ($empoyees as $employee) {
-            echo "<TR>
-                    <TD class='list-content'> $i </TD>
-                    <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_name']} &nbsp; </TD>
-                    <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_phone']} &nbsp; </TD>
-                </TR>";
-            ++$i;
+        if (count($empoyees) == 0) {
+            echo "<TR><TD colspan='3' class='list-content'>За цим підприємцем працівників не закріплено!</TD></TR>";
+        } else {
+            $i = 1;
+            foreach ($empoyees as $employee) {
+                echo "<TR>
+                        <TD class='list-content'> $i </TD>
+                        <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_name']} &nbsp; </TD>
+                        <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_phone']} &nbsp; </TD>
+                    </TR>";
+                ++$i;
+            }
         }
-    }
-?>
+    ?>
+    </TABLE>
+</TD><TD style='vertical-align:top;'>
+    <b>Талони:</b>
+    <TABLE class='list-content'>
+        <TR>
+            <TD class='list-content-header'> # </TD>
+            <TD class='list-content-header'> Автомобіль </TD>
+            <TD class='list-content-header'> Дійсний до </TD>
+        </TR>
+    <?
+        $coupons = get_po_temp_coupons($poid);
+        $prefix = hasPermission(VIEW.CARS) ? "c" : "";
+
+        if (count($coupons) == 0) {
+            echo "<TR><TD colspan='2' class='list-content'>Талонів не знайдено!</TD></TR>";
+        } else {
+            $i = 1;
+            foreach ($coupons as $coupon) {
+                $dstyle = checkDMYDateExpired($coupon['tc_date']) ? "background:#FF9797;" : "";
+                echo "<TR style='$dstyle'>
+                        <TD class='list-content'> $i </TD>
+                        <TD class='list-content' id='$prefix{$coupon['c_id']}'> &nbsp; {$coupon['c_plate']} &nbsp; </TD>
+                        <TD class='list-content' id='{$coupon['tc_id']}'> &nbsp; {$coupon['tc_date']} &nbsp; </TD>
+                    </TR>";
+                ++$i;
+            }
+        }
+    ?>
+    </TABLE>
+</TD></TR>
 </TABLE>
 
 <BR>
@@ -114,6 +147,8 @@ $(document).ready(function() {
             $('#main_space').load("driver.php?did=" + id.substr(1));
         } else if (id.substr(0, 2) == 'po') {
             $('#main_space').load("po.php?poid=" + id.substr(2));
+        } else if (id.substr(0, 1) == 'c') {
+            $('#main_space').load("car.php?cid=" + id.substr(1));
         }
     });
 

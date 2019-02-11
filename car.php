@@ -13,8 +13,8 @@
 <h2>Машина: <? echo "{$car['c_plate']} - {$car['c_model']}";?></h2>
 <?
     $add_car = $car['c_state'] == STATE_ACTUAL
-        ? "<a id='delete-car' style='color:red;'>Видалити автомобіль</a>"
-        : "<a id='restore-car' style='color:red;'>Поновити автомобіль</a>";
+        ? "<input type='button' id='delete-car'  style='color:red;' value=' Видалити автомобіль ' />"
+        : "<input type='button' id='restore-car' style='color:red;' value=' Поновити автомобіль ' />";
 ?>
 <TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
 <TR>
@@ -55,9 +55,22 @@
 </TABLE>
 <BR>
 
-<? echo hasPermission(ADD.CAR) && hasPermission(VIEW.DRIVER) ? "<a id='add-car-driver'> Додати водія </a>" : ""; ?>
+
+<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TR>
+    <TD> </TD>
+<?
+    echo hasPermission(ADD.CAR) && hasPermission(VIEW.DRIVER) ? "<TD style='width:100px;'><input type='button' id='add-car-driver' value=' Додати водія '/></TD>" : "";
+    echo hasPermission(ADD.CAR) && hasPermission(VIEW.POS) ? "<TD style='width:100px;'><input type='button' id='add-temp-coupon' value=' Додати талон '/></TD>" : "";
+?>
+</TR>
+</TABLE>
+
 <div id='add-car-driver-content'>
 <? include_once hasPermission(VIEW.CAR) && hasPermission(VIEW.DRIVER) ? "car-drivers.php" : "no.php"; ?>
+</div>
+<div id='add-temp-coupon-content'>
+<? include_once hasPermission(VIEW.CAR) && hasPermission(VIEW.POS) ? "temp-coupons.php" : "no.php"; ?>
 </div>
 
 <?
@@ -79,6 +92,10 @@ $(document).ready(function() {
 
     $("#add-car-driver").on("click", function() {
         $("#add-car-driver-content").load("add-car-driver.php?cid=<?=$cid;?>");
+    });
+
+    $("#add-temp-coupon").on("click", function() {
+        $("#add-temp-coupon-content").load("add-temp-coupon.php?cid=<?=$cid;?>");
     });
 
     $("#delete-car").click(function() {

@@ -40,7 +40,7 @@
 </TABLE>
 <BR>
 
-<? echo hasPermission(ADD.ROUTE) ? "<a id='add-route-data'> Додати геодані </a>" : ""; ?>
+<? echo hasPermission(EDIT.ROUTE) ? "<a id='add-route-data'> Додати геодані </a>" : ""; ?>
 <div id='route-data-content'>
 <? include_once "route-datas.php"; ?>
 </div>

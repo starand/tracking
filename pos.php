@@ -24,7 +24,7 @@
 <h2>Приватні підприємці</h2>
 
 <TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
-<TR'>
+<TR>
     <TD>
         Пошук: <input type='text' id='query' style='width:250px;'/>
         <img id='search' style='height:18px;' src='<?=$PATH;?>/themes/light/search.png' title='Шукати'>

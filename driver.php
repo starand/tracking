@@ -15,8 +15,8 @@
 <h2>Водій: <?=$driver['d_name'];?></h2>
 <?
     $add_drv = $driver['d_state'] == STATE_ACTUAL
-        ? "<a id='delete-driver' style='color:red;'>Звільнити водія</a>"
-        : "<a id='restore-driver' style='color:red;'>Поновити водія</a>";
+        ? "<input type='button' id='delete-driver'  style='color:red;' value=' Звільнити водія ' />"
+        : "<input type='button' id='restore-driver' style='color:red;' value=' Поновити водія ' />";
 ?>
 <TABLE cellspacing='0' cellpadding='2' style='width:550px;' class='menu'>
 <TR>

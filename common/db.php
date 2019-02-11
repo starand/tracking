@@ -11,8 +11,9 @@
 
 	$tbl_prfx = "tracking";
 
-	define('STATE_ACTUAL', 0);
-	define('STATE_REMOVED', 1);
+	define('STATE_ACTUAL', 		0);
+	define('STATE_REMOVED', 	1);
+	define('STATE_DISABLED', 	2);
 
 #---------------------------------------------------------------------------------------------------
 # MySQL helper functions
@@ -1235,6 +1236,69 @@ function get_driver_salary($did) {
 	$sql = "SELECT * FROM tracking_salary WHERE s_did=$did ORDER BY s_id DESC";
 	return res_to_array(uquery($sql));
 }
+
+#---------------------------------------------------------------------------------------------------
+# Salary functions
+#---------------------------------------------------------------------------------------------------
+## Adds new temporary coupon
+function add_temp_coupon($cid, $poid, $date, $state = STATE_ACTUAL) {
+	$cid = (int)$cid;
+	$poid = (int)$poid;
+	$state  = (int)$state;
+	$date = addslashes($date);
+
+	$sql = "INSERT INTO tracking_temp_coupons VALUES(NULL, $cid, $poid, '$date', $state)";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Removes temp coupon
+function remove_temp_coupon($tcid) {
+	$tcid = (int)$tcid;
+
+	$sql = "DELETE FROM tracking_temp_coupons WHERE tc_id=$tcid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns temp coupon
+function get_temp_coupon($tcid) {
+	$tcid = (int)$tcid;
+
+	$sql = "SELECT * FROM tracking_temp_coupons WHERE tc_id=$tcid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns temporary coupons by car id
+function get_car_temp_coupons($cid) {
+	$cid = (int)$cid;
+
+	$sql = "SELECT * FROM tracking_temp_coupons, tracking_pos  WHERE tc_cid=$cid AND tc_poid=po_id";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns temporary coupons by po id
+function get_po_temp_coupons($poid) {
+	$poid = (int)$poid;
+
+	$sql = "SELECT * FROM tracking_temp_coupons, tracking_cars WHERE tc_poid=$poid AND tc_cid=c_id";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates temp coupon state
+function update_temp_coupon_state($tcid, $state) {
+	$tcid = (int)$tcid;
+	$state = (int)$state;
+
+	$sql = "UPDATE tracking_temp_coupons SET tc_state=$state WHERE tc_id=$tcid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+##
 
 #---------------------------------------------------------------------------------------------------
 ##

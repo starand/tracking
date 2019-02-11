@@ -144,3 +144,13 @@ CREATE TABLE tracking_salary (
     UNIQUE(s_did, s_date),
     PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE tracking_temp_coupons (
+    tc_id int unsigned NOT NULL AUTO_INCREMENT,
+    tc_cid int unsigned NOT NULL,
+    tc_poid int unsigned NOT NULL,
+    tc_date varchar(10) NOT NULL,
+    tc_state tinyint NOT NULL default 0,
+    PRIMARY KEY(tc_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+

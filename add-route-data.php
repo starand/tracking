@@ -2,7 +2,7 @@
     include_once "common/headers.php";
 
     checkAuthorizedUser();
-    require_permission(ADD.ROUTE);
+    require_permission(EDIT.ROUTE);
 
     if (isset($_POST['url']) && isset($_POST['length']) && isset($_POST['cost']) &&
         isset($_POST['rid']) && isset($_POST['name'])) {

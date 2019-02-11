@@ -23,7 +23,7 @@
 <h2>Локація: <?=$location['l_name'];?></h2>
 
 <TABLE cellspacing='0' cellpadding='2' style='width:700px;' class='menu'>
-<TR'>
+<TR>
     <TD> </TD>
     <TD style='width:150px;'></TD>
 </TR>

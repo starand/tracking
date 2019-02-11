@@ -31,7 +31,7 @@
 <form action='add-car-driver.php' method='post' target='submit_frame'>
 <table cellspacing='5' cellpadding='1' class='form-table'>
     <tr><td colspan='2'><center><h2>Додати водія</h2></td></tr>
-    <tr><td> &nbsp; Водій <?=$cid;?>: &nbsp;</td><td>
+    <tr><td> &nbsp; Водій: &nbsp;</td><td>
         <SELECT name='did' style='width:350px; font-size:14px;'>
         <?
             foreach ($drivers as $driver) {
