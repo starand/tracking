@@ -480,7 +480,7 @@ function add_rate($did, $rid, $rate) {
 	$rid = (int)$rid;
 	$rate = (int)$rate;
 
-	$sql = "INSERT INTO tracking_rates VALUES(NULL, $did, $rid, $rate)";
+	$sql = "INSERT INTO tracking_rates VALUES(NULL, $did, $rid, $rate, '')";
 	return uquery($sql);
 }
 
@@ -508,10 +508,24 @@ function set_route_rate($did, $rid, $rate) {
 	$did = (int)$did;
 	$rid = (int)$rid;
 	$rate = (int)$rate;
+	$date = date('d.m.Y');
 
-	$sql = "UPDATE tracking_rates SET rate_rate=$rate WHERE rate_id=$rid AND rate_did=$did";
+	$sql = "UPDATE tracking_rates SET rate_rate=$rate, rate_update='$date' 
+			WHERE rate_id=$rid AND rate_did=$did";
 	return uquery($sql);
 }
+
+#---------------------------------------------------------------------------------------------------
+## Updated route rate last increase date
+function set_route_rate_update($did, $rid, $date) {
+	$did = (int)$did;
+	$rid = (int)$rid;
+	$date = addslashes($date);
+
+	$sql = "UPDATE tracking_rates SET rate_update='$date' WHERE rate_id=$rid AND rate_did=$did";
+	return uquery($sql);
+}
+
 
 #---------------------------------------------------------------------------------------------------
 # Car's functions
@@ -1158,7 +1172,7 @@ function add_salary_record($did, $formula, $amount) {
 ## Returns salary periods
 function get_salary_months() {
 	$sql = "SELECT s_date, SUBSTRING(s_date, POSITION('.' IN s_date) + 1) as month 
-			FROM tracking_salary GROUP BY month";
+			FROM tracking_salary GROUP BY month ORDER BY s_date DESC";
 	return res_to_array(uquery($sql));
 }
 

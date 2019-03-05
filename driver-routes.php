@@ -24,7 +24,7 @@
     <TR>
         <TD class='list-content-header'> # </TD>
         <TD class='list-content-header'> Маршрут </TD>
-        <? echo hasPermission(EDIT.DRIVER) ? "<TD class='list-content-header'> Ставка </TD>" : ""; ?>
+        <? echo hasPermission(EDIT.DRIVER) ? "<TD class='list-content-header'> Ставка </TD><TD class='list-content-header'> Дата зміни </TD>" : ""; ?>
         <? echo hasPermission(EDIT.DRIVER) ? "<TD class='list-content-header'> X </TD>" : ""; ?>
     </TR>
 <?
@@ -35,7 +35,9 @@
             echo "<TR class='list-content' style='height:22px;'>
                     <TD class='edit-item'> &nbsp; $i &nbsp; </TD>
                     <TD class='edit-item' style='width:300px;'> &nbsp; {$route['r_name']} - {$route['r_desc']} &nbsp; </TD>";
-                echo hasPermission(EDIT.DRIVER) ? "<TD class='edit-item' style='width:100px;' id='rate{$route['rate_id']}'> &nbsp; {$route['rate_rate']} &nbsp; </TD>" : "";
+                echo hasPermission(EDIT.DRIVER) ? 
+                    "<TD class='edit-item' style='width:100px;' id='rate{$route['rate_id']}'> &nbsp; {$route['rate_rate']} &nbsp; </TD>
+                    <TD class='edit-item' style='width:100px;' id='update{$route['rate_id']}'> &nbsp; {$route['rate_update']} &nbsp; </TD>" : "";
                 echo hasPermission(DEL.DRIVER) ? "<TD class='edit-item' style=''> &nbsp; 
                             <img id='ddr{$route['rate_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити маршрут'> &nbsp; </TD>" : "";
                 echo "</TR>";
@@ -62,6 +64,9 @@ $(document).ready(function() {
         id = $(this).attr('id');
         if (id.substr(0,4) == 'rate') {
             url = "edit-driver.php?rate=&rid=" + id + "&edit=&did=<?=$did;?>";
+            $('#' + id).load(url);
+        } else if (id.substr(0,6) == 'update') {
+            url = "edit-driver.php?update=&rid=" + id + "&edit=&did=<?=$did;?>";
             $('#' + id).load(url);
         }
     });

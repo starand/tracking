@@ -155,7 +155,7 @@
     } elseif (isset($_GET['rate'])) {
         $rateId = addslashes($_GET['rid']);
         $rid = (int)substr($rateId, 4);
-        get_rate($rid) or show_error("Така ставка не знайдена");
+        $rate = get_rate($rid) or show_error("Така ставка не знайдена");
         if (isset($_GET['set'])) {
             $rate = (int)$_GET['rate'] or show_message("Ставка повинна бути більше нуля!");
             set_route_rate($did, $rid, $rate) or show_error("Помилка бази даних!");
@@ -165,6 +165,20 @@
             echo " <input type='text' class='edit-item' id='e$rateId' value='{$rate['rate_rate']}' style='$style;width:100px;' name='$rid'>";
         } else {
             echo " &nbsp; {$rate['rate_rate']} &nbsp; ";
+        }
+    } elseif (isset($_GET['update'])) {
+        $rateId = addslashes($_GET['rid']);
+        $rid = (int)substr($rateId, 6);
+        $rate = get_rate($rid) or show_error("Така ставка не знайдена");
+        if (isset($_GET['set'])) {
+            $rateUpdate = addslashes($_GET['update']);
+            set_route_rate_update($did, $rid, $rateUpdate) or show_error("Помилка бази даних!");
+            $rate = get_rate($rid);
+            echo " &nbsp; {$rate['rate_update']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='e$rateId' value='{$rate['rate_update']}' style='$style;width:100px;' name='$rid'>";
+        } else {
+            echo " &nbsp; {$rate['rate_update']} &nbsp; ";
         }
     }
 ?>
@@ -183,6 +197,9 @@ $(document).ready(function() {
             } else if (id.substr(0, 4) == 'rate') {
                 url = 'edit-driver.php?rate=&did=<?=$did;?>&rid=<?=$rateId;?>';
                 $('#' + id).load(url);
+            } else if (id.substr(0, 6) == 'update') {
+                url = 'edit-driver.php?update=&did=<?=$did;?>&rid=<?=$rateId;?>';
+                $('#' + id).load(url);
             }
         }).change(function() {
             id = $(this).attr('id').substr(1);
@@ -193,6 +210,10 @@ $(document).ready(function() {
             } else if (id.substr(0, 4) == 'rate') {
                 val = encodeURIComponent($(this).val().trim());
                 url = 'edit-driver.php?rate=' + val + '&rid=<?=$rateId;?>&set=&did=<?=$did;?>';
+                $('#' + id).load(url);
+            } else if (id.substr(0, 6) == 'update') {
+                val = encodeURIComponent($(this).val().trim());
+                url = 'edit-driver.php?update=' + val + '&rid=<?=$rateId;?>&set=&did=<?=$did;?>';
                 $('#' + id).load(url);
             }
         }).focus().select();

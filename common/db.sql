@@ -54,6 +54,7 @@ CREATE TABLE tracking_rates (
     rate_did int unsigned NOT NULL,
     rate_rid int unsigned NOT NULL,
     rate_rate smallint unsigned not NULL,
+    rate_update varchar(10) NOT NULL,
     PRIMARY KEY(rate_id),
     UNIQUE(rate_did, rate_rid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -71,7 +71,7 @@
         $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
 
         if (count($empoyees) == 0) {
-            echo "<TR><TD colspan='3' class='list-content'>За цим підприємцем працівників не закріплено!</TD></TR>";
+            echo "<TR><TD colspan='3' class='list-content' style='text-align:center;'>За цим підприємцем працівників не закріплено!</TD></TR>";
         } else {
             $i = 1;
             foreach ($empoyees as $employee) {
@@ -98,7 +98,7 @@
         $prefix = hasPermission(VIEW.CARS) ? "c" : "";
 
         if (count($coupons) == 0) {
-            echo "<TR><TD colspan='2' class='list-content'>Талонів не знайдено!</TD></TR>";
+            echo "<TR><TD colspan='3' class='list-content' style='text-align:center;'>Талонів не знайдено!</TD></TR>";
         } else {
             $i = 1;
             foreach ($coupons as $coupon) {
