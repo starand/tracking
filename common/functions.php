@@ -144,9 +144,19 @@ function checkPhoneCorrect($phone) {
 }
 
 #---------------------------------------------------------------------------------------------------
-##
+## Checks whether date is expired
 function checkDMYDateExpired($date) {
     return strtotime(date('d-m-Y')) >= strtotime($date);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Checks whether date is about 2 weeks to epiration
+function checkDMYDateExpireIn($date, $days = 14) {
+    $curSeconds = strtotime(date('d-m-Y'));
+    $dateSeconds = strtotime($date);
+
+    return $curSeconds >= $dateSeconds ? true
+                : ($dateSeconds - $curSeconds) <= 3600 * 24 * $days;
 }
 
 #---------------------------------------------------------------------------------------------------

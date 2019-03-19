@@ -74,7 +74,8 @@
             $po = get_driver_po($driver['d_id']);
 
             $istyle = !checkDateDMYFormat($driver['d_insurance']) ? "background:#FDFFC8;" :
-                        (checkDMYDateExpired($driver['d_insurance']) ? "background:#FF9797;" : "");
+                        (checkDMYDateExpired($driver['d_insurance']) ? "background:#FF9797;" :
+                        (checkDMYDateExpireIn($driver['d_insurance']) ? "background:#ffff00;" : ""));
             $pstyle = !checkPhoneCorrect($driver['d_phone']) ? "background:#FF9797;" : "";
 
             $powner = shortenPIB($po['po_name']);

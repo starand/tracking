@@ -32,9 +32,11 @@
             }
 
             $istyle = !checkDateDMYFormat($car['c_insurance']) ? "background:#FDFFC8;" :
-                        (checkDMYDateExpired($car['c_insurance']) ? "background:#FF9797;" : "");
+                        (checkDMYDateExpired($car['c_insurance']) ? "background:#FF9797;" :
+                        (checkDMYDateExpireIn($car['c_insurance']) ? "background:#ffff00;" : ""));
             $to_style = !checkDateDMYFormat($car['c_sto']) ? "background:#FDFFC8;" :
-                        (checkDMYDateExpired($car['c_sto']) ? "background:#FF9797;" : "");
+                        (checkDMYDateExpired($car['c_sto']) ? "background:#FF9797;" :
+                        (checkDMYDateExpireIn($car['c_sto']) ? "background:#ffff00;" : ""));
 
             $owner = shortenPIB($car['c_owner']);
 
@@ -42,7 +44,7 @@
                     <TD class='list-content' id='$prefix{$car['c_id']}'> $i </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_plate']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> {$car['c_model']} </TD>
-                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> {$car['c_insurance']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> {$car['c_insurance']} </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}' style='$to_style'> &nbsp; {$car['c_sto']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_places']} &nbsp; </TD>
                     <TD class='list-content' style='font-size:14px;'> &nbsp; $owner &nbsp; </TD>
