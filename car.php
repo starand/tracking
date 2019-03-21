@@ -49,6 +49,9 @@
         <TD class='edit-item'> &nbsp; <b>Власник</b>: &nbsp; </TD>
         <TD class='edit-item' id='owner' style='width:350px;'>&nbsp; <?=$car['c_owner'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
+        <TD class='edit-item'> &nbsp; <b>Водій</b>: &nbsp; </TD>
+        <TD class='edit-item' id='driver' style='width:350px;'>&nbsp; <?=$car['c_driver'];?> &nbsp; </TD>
+    </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Колір</b>: &nbsp; </TD>
         <TD class='edit-item' id='color' style='width:350px;'>&nbsp; <?=$car['c_color'];?> &nbsp; </TD>
     </TR>
@@ -75,7 +78,7 @@
 
 <?
     $editables = hasPermission(EDIT.CAR)
-        ? "'plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'"
+        ? "'plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver'"
         : "'nopermission'";
 ?>
 

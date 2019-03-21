@@ -82,6 +82,18 @@
         } else {
             echo " &nbsp; {$car['c_owner']} &nbsp; ";
         }
+    } elseif (isset($_GET['driver'])) {
+        if (isset($_GET['set'])) {
+            $driver = addslashes($_GET['driver']);
+            strlen($driver) >= 4 or show_error("Ім'я водія повинне бути не коротше 4 символів.");
+            set_car_driver($cid, $driver) or show_error("Помилка бази даних!");
+            $car = get_car($cid);
+            echo " &nbsp; {$car['c_driver']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='edriver' value='{$car['c_driver']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$car['c_driver']} &nbsp; ";
+        }
     } elseif (isset($_GET['color'])) {
         if (isset($_GET['set'])) {
             $color = addslashes($_GET['color']);
@@ -115,7 +127,7 @@
 ?>
 <script>
 $(document).ready(function() {
-    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color'];
+    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();

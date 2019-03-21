@@ -531,7 +531,7 @@ function set_route_rate_update($did, $rid, $date) {
 # Car's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new car
-function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color) {
+function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color, $driver="") {
 	$plate = addslashes($plate);
 	$model = addslashes($model);
 	$type = (int)$type;
@@ -540,10 +540,11 @@ function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $colo
 	$sto = addslashes($sto);
 	$owner = addslashes($owner);
 	$color = addslashes($color);
+	$driver = addslashes($driver);
 
 	$sql = "INSERT INTO tracking_cars 
 			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto', '$owner', 
-						 '$color', ".STATE_ACTUAL.")";
+						 '$color', ".STATE_ACTUAL.", '$driver')";
 	echo $sql;
 	return uquery($sql);
 }
@@ -676,6 +677,16 @@ function set_car_owner($cid, $owner) {
 	$owner = addslashes($owner);
 
 	$sql = "UPDATE tracking_cars SET c_owner='$owner' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car driver
+function set_car_driver($cid, $driver) {
+	$cid = (int)$cid;
+	$driver = addslashes($driver);
+
+	$sql = "UPDATE tracking_cars SET c_driver='$driver' WHERE c_id=$cid";
 	return uquery($sql);
 }
 

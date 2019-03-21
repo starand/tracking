@@ -70,6 +70,7 @@ CREATE TABLE tracking_cars (
     c_owner varchar(32) NOT NULL,
     c_color varchar(16) NOT NULL,
     c_state tinyint NOT NULL default 0,
+    c_driver varchar(32) NOT NULL,
     UNIQUE(c_plate),
     PRIMARY KEY(c_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

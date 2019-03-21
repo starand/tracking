@@ -24,7 +24,7 @@
                 </TR>";
         $i = 1;
         foreach($cars as $car) {
-            $content = "";
+            $content = $car['c_driver'];
             $drivers = get_drivers_by_car($car['c_id']);
             foreach($drivers as $driver) {
                 if (strlen($content)) $content .= ", ";
