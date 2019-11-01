@@ -132,7 +132,7 @@
     } elseif (isset($_GET['poid'])) {
         $po = get_driver_po($did);
         if (!$po) {
-            add_driver_po($did, 22);
+            add_employee_po($did, 22, EMPLOYEE_DRIVER);
             $po = get_driver_po($did);
         }
         if (isset($_GET['set'])) {

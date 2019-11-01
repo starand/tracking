@@ -65,20 +65,35 @@
             <TD class='list-content-header'> # </TD>
             <TD class='list-content-header'> Працівник </TD>
             <TD class='list-content-header'> Телефон </TD>
+            <TD class='list-content-header'> Посада </TD>
         </TR>
     <?
-        $empoyees = get_po_employees($poid);
+        $drivers = get_po_drivers($poid);
+        $mechanics = get_po_mechanics($poid);
         $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
-
-        if (count($empoyees) == 0) {
+        $i = 1;
+        if (count($drivers) == 0 && count($mechanics) == 0) {
             echo "<TR><TD colspan='3' class='list-content' style='text-align:center;'>За цим підприємцем працівників не закріплено!</TD></TR>";
         } else {
-            $i = 1;
-            foreach ($empoyees as $employee) {
+            foreach ($drivers as $employee) {
                 echo "<TR>
                         <TD class='list-content'> $i </TD>
                         <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_name']} &nbsp; </TD>
                         <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; {$employee['d_phone']} &nbsp; </TD>
+                        <TD class='list-content' id='$prefix{$employee['d_id']}'> &nbsp; Водій &nbsp; </TD>
+                    </TR>";
+                ++$i;
+            }
+        }
+        $mechanics = get_po_mechanics($poid);
+        $prefix = hasPermission(VIEW.MECHANIC) ? "m" : "";
+        if (count($mechanics) != 0) {
+            foreach ($mechanics as $employee) {
+                echo "<TR>
+                        <TD class='list-content'> $i </TD>
+                        <TD class='list-content' id='$prefix{$employee['m_id']}'> &nbsp; {$employee['m_name']} &nbsp; </TD>
+                        <TD class='list-content' id='$prefix{$employee['m_id']}'> &nbsp; {$employee['m_phone']} &nbsp; </TD>
+                        <TD class='list-content' id='$prefix{$employee['m_id']}'> &nbsp; Автослюсар &nbsp; </TD>
                     </TR>";
                 ++$i;
             }
@@ -149,6 +164,8 @@ $(document).ready(function() {
             $('#main_space').load("po.php?poid=" + id.substr(2));
         } else if (id.substr(0, 1) == 'c') {
             $('#main_space').load("car.php?cid=" + id.substr(1));
+        } else if (id.substr(0, 1) == 'm') {
+            $('#main_space').load("mechanic.php?did=" + id.substr(1));
         }
     });
 

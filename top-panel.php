@@ -7,6 +7,7 @@
                 <TD class ='top-title' id='top_logo' style='width:130px;'><div class='top-logo'>&nbsp; Tracking &nbsp;</div></TD>";
                 if ($user) {
                     echo hasPermission(VIEW.DRIVERS) ? "<TD class='top-title' id='drivers' style='width:60px;'> &nbsp; Водії &nbsp; </TD>" : "";
+                    echo hasPermission(VIEW.MECHANICS) ? "<TD class='top-title' id='mechanics' style='width:60px;'> &nbsp; Слюсарі &nbsp; </TD>" : "";
                     echo hasPermission(VIEW.CARS) ? "<TD class='top-title' id='cars' style='width:80px;'> &nbsp; Машини &nbsp; </TD>" : "";
                     echo hasPermission(VIEW.POS) ? "<TD class='top-title' id='pos' style='width:90px;'> &nbsp; Підприємці &nbsp; </TD>" : "";
                     echo hasPermission(VIEW.SALARY) ? "<TD class='top-title' id='salary' style='width:90px;' id='salary'> &nbsp; Зарплата &nbsp; </TD>" : "";
@@ -34,6 +35,9 @@ $(document).ready(function() {
     $("#drivers").on("click", function() {
         $("#main_space").load("drivers.php");
     });
+    $("#mechanics").on("click", function() {
+        $("#main_space").load("mechanics.php");
+    });
     $("#cars").on("click", function() {
         $("#main_space").load("cars.php");
     });
@@ -47,7 +51,7 @@ $(document).ready(function() {
         $("#main_space").load("adm.php");
     });
     $("#salary").on("click", function() {
-        $("#main_space").load("salary.php");
+        $("#main_space").load("salary-driver.php");
     });
     $("#users").on("click", function() {
         $("#main_space").load("users.php");

@@ -5,13 +5,22 @@
     require_permission(VIEW.SALARY);
     require_permission(VIEW.DRIVER);
 
-    isset($_GET['did']) or die("Не вказано водія!");
+    isset($_GET['did']) or isset($_GET['mid']) or die("Не вказано працівника!");
     $did = (int)$_GET['did'];
-    $driver = get_driver($did) or show_error("Водія не знайдено! '{$_GET['did']}'");
-    $infos = get_driver_salary($did);
+    $mid = (int)$_GET['mid'];
+
+    $driver = get_driver($did);
+    $mechanic = get_mechanic($mid);
+
+    $eid = $driver ? $driver['d_id'] : $mechanic['m_id'];
+    $eid or show_error("Працівника не знайдено! '{$_GET['did']}'");
+
+    $infos = $driver ? get_driver_salary($eid) : get_mechanic_salary($eid);
+
+    $name = $driver ? $driver['d_name'] : $mechanic['m_name'];
 ?>
 <center>
-<h2>Зарплата: <?=$driver['d_name']?></h2>
+<h2>Зарплата: <?=$name;?></h2>
 <TABLE class='list-content' style='width:850px;'>
 <?
     if (!count($infos)) {
@@ -32,10 +41,10 @@
         $i = 1;
         foreach($infos as $info) {
             echo "<TR class='list-content'>
-                    <TD class='list-content' id='{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='{$driver['d_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>
+                    <TD class='list-content' id='$eid'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='$eid'> &nbsp; {$info['s_date']} &nbsp; </TD>
                     <TD class='list-content' id='{$info['s_id']}'> &nbsp; {$info['s_formula']} &nbsp; </TD>
-                    <TD class='list-content' id='{$driver['d_id']}'> &nbsp; {$info['s_amount']} &nbsp; </TD>
+                    <TD class='list-content' id='$eid'> &nbsp; {$info['s_amount']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}a{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_advance']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}s{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_salary']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}3{$info['s_id']}' style='width:80px;'> &nbsp; {$info['s_3rdform']} &nbsp; </TD>

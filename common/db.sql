@@ -91,7 +91,7 @@ CREATE TABLE tracking_car_drivers (
 
 CREATE TABLE tracking_hiring (
     h_id int unsigned NOT NULL AUTO_INCREMENT,
-    h_did int unsigned NOT NULL,
+    h_eid int unsigned NOT NULL,
     h_contract varchar(32) NOT NULL,
     h_order varchar(32) NOT NULL,
     h_firing varchar(32) NOT NULL,
@@ -99,6 +99,7 @@ CREATE TABLE tracking_hiring (
     h_fire_reason varchar(64) NOT NULL,
     h_hire_date varchar(10) NOT NULL,
     h_fire_date varchar(10) NOT NULL,
+    h_emp_type tinyint unsigned NOT NULL default 0,
     PRIMARY KEY(h_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -116,11 +117,12 @@ CREATE TABLE tracking_pos (
     PRIMARY KEY(po_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE tracking_po_drivers (
+CREATE TABLE tracking_po_employees (
     pod_id int unsigned NOT NULL AUTO_INCREMENT,
     pod_poid int unsigned NOT NULL,
     pod_did int unsigned NOT NULL,
-    UNIQUE(pod_poid, pod_did),
+    pod_emp_type tinyint unsigned NOT NULL default 0,
+    UNIQUE(pod_poid, pod_did, pod_emp_type),
     PRIMARY KEY(pod_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -136,14 +138,15 @@ CREATE TABLE tracking_route_data (
 
 CREATE TABLE tracking_salary (
     s_id int unsigned NOT NULL AUTO_INCREMENT,
-    s_did int unsigned NOT NULL,
+    s_eid int unsigned NOT NULL,
     s_formula varchar(255) NOT NULL,
     s_amount decimal(7,2) unsigned NOT NULL,
     s_date varchar(10) NOT NULL,
     s_advance decimal(7,2) unsigned NOT NULL,
     s_salary decimal(7,2) unsigned NOT NULL,
     s_3rdform decimal(7,2) unsigned NOT NULL,
-    UNIQUE(s_did, s_date),
+    s_emp_type tinyint unsigned NOT NULL default 0,
+    UNIQUE(s_eid, s_date),
     PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -156,3 +159,23 @@ CREATE TABLE tracking_temp_coupons (
     PRIMARY KEY(tc_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE tracking_mechanics (
+    m_id int unsigned NOT NULL AUTO_INCREMENT,
+    m_name varchar(32) NOT NULL,
+    m_address varchar(255) NOT NULL,
+    m_phone varchar(16) NOT NULL,
+    m_idcode varchar(16) NOT NULL,
+    m_passport varchar(8) NOT NULL,
+    m_stag varchar(10) NOT NULL,
+    m_birthday varchar(10) NOT NULL,
+    m_wife_birthday varchar(10) NOT NULL,
+    m_insurance varchar(10) NOT NULL,
+    m_children tinyint NOT NULL default 0,
+    m_state tinyint NOT NULL default 0,
+    m_education varchar(64) NOT NULL,
+    m_rate smallint unsigned NOT NULL,
+    m_add_coef float NOT NULL default 1.0,
+    UNIQUE(m_phone),
+    UNIQUE(m_name, m_address),
+    PRIMARY KEY(m_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

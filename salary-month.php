@@ -19,6 +19,7 @@
     $infos = get_month_salary($month);
     $stats = get_month_salarн_stats($month);
     $drivers = get_drivers_info();
+    $mechanics = get_mechanics_info();
     $prefix = hasPermission(EDIT.SALARY) ? "es" : "";
 
     if (!count($infos)) {
@@ -36,15 +37,22 @@
 
         $i = 1;
         foreach($infos as $info) {
-            $driver = $drivers[$info['s_did']];
+            $driver = $drivers[$info['s_eid']];
+            $mechanic = $mechanics[$info['s_eid']];
 
             $sum = $info['s_advance'] + $info['s_salary'] + $info['s_3rdform'];
             $style = abs($sum - $info['s_amount']) < 0.01 ? "background:#E9FFE7;" : "";
-            echo "<TR class='list-content' style='$style'>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
+            echo "<TR class='list-content' style='$style'>";
+            if ($driver) {
+                echo "<TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
                     <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>
-                    <TD class='list-content' id='{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_amount']} &nbsp; </TD>
+                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>";
+            } elseif ($mechanic) {
+                echo "<TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; $i &nbsp; </TD>
+                    <TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; {$mechanic['m_name']} &nbsp; </TD>
+                    <TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>";
+            }
+            echo"   <TD class='list-content' id='{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_amount']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}a{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_advance']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}s{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_salary']} &nbsp; </TD>
                     <TD class='edit-item' id='{$prefix}3{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_3rdform']} &nbsp; </TD>
@@ -87,6 +95,9 @@ $(document).ready(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'd') {
             url = "driver-salary.php?did=" + id.substr(1);
+            $('#main_space').load(url);
+        } else if (id.substr(0, 1) == 'm') {
+            url = "driver-salary.php?mid=" + id.substr(1);
             $('#main_space').load(url);
         }
     });

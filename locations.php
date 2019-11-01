@@ -43,24 +43,16 @@ $(document).ready(function() {
 <?
     if ($user['u_login'] != 'starand') die();
 
-    //echo hasPermission(VIEW.DRIVERS) ? "HAS" : "NO";
-    //add_permission_string("Оператор", "9999");
-    $data = "Федик Зіновій Іванович
-    Куциняк Роман Іванович
-    Дмитраш Роман Богданович";
+	$sql = "SELECT * FROM tracking_salary";
+    $recs = res_to_array(uquery($sql));
+    foreach ($recs as $rec) {
+        $driver = get_driver($rec['s_eid']);
+        if ($driver) continue;
 
-    $lines = explode("\n", $data);
-    $i = 69;
-    foreach($lines as $line) {
-        $parts = explode(",", $line);
-        $pib = trim($parts[0]);
-        $driver = get_driver_like_pib($pib);
-        $did = $driver ? $driver['d_id'] : "NOT_FOUND";
-        //$loc = trim($parts[1]);
-        
-        //echo "$did <BR>";
-        //add_driver_po($did, 20); set_driver_po($did, 20);
-        //add_hiring_record($drv_id, $contract, $order);
-        //add_po($pib, '', $lid);
+        $mechanic = get_mechanic($rec['s_eid']);
+        echo "{$mechanic['m_name']} <BR>";
+
+        $sql = "update tracking_salary set s_emp_type=1 where s_id={$rec['s_id']}";
+        //uquery($sql);
     }
 ?>

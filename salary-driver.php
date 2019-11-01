@@ -70,7 +70,7 @@ $(document).ready(function() {
         if (id.substr(0, 1) == 'd') {
             $('#main_space').load("driver.php?did=" + id.substr(1));
         } else if (id.substr(0, 1) == 'c') {
-            $('#main_space').load("calc-salary.php?did=" + id.substr(1));
+            $('#main_space').load("calc-salary-driver.php?did=" + id.substr(1));
         } 
     });
 

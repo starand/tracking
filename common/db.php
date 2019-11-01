@@ -304,7 +304,7 @@ function add_driver($name, $address, $phone, $idcode, $passport,
 	uquery($sql);
 
 	# add new hiring record as it's next hiring time
-	return add_hiring_record(last_insert_id(), '', '');
+	return add_hiring_record(last_insert_id(), '', '', EMPLOYEE_DRIVER);
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -316,10 +316,9 @@ function delete_driver($did) {
 	uquery("DELETE FROM tracking_rates WHERE rate_did=$did LIMIT 1");
 	# remove cars from driver
 	uquery("DELETE FROM tracking_car_drivers WHERE cd_did=$did LIMIT 1");
-	# remove driver's po
-	# uquery("DELETE FROM tracking_po_drivers WHERE pod_did=$did LIMIT 1");
 	# hide driver's hiring indo
-	uquery("UPDATE tracking_hiring SET h_state=".STATE_REMOVED." WHERE h_did=$did");
+	uquery("UPDATE tracking_hiring SET h_state=".STATE_REMOVED." 
+			WHERE h_eid=$did AND h_emp_type=".EMPLOYEE_DRIVER);
 	# hide driver from lists
 	return uquery("UPDATE tracking_drivers SET d_state=".STATE_REMOVED." WHERE d_id=$did LIMIT 1");
 }
@@ -330,7 +329,7 @@ function restore_driver($did) {
 	$did = (int)$did;
 
 	# add new hiring record as it's next hiring time
-	add_hiring_record($did, '', '');
+	add_hiring_record($did, '', '', EMPLOYEE_DRIVER);
 	return uquery("UPDATE tracking_drivers SET d_state=".STATE_ACTUAL." WHERE d_id=$did LIMIT 1");
 }
 
@@ -763,23 +762,28 @@ function delete_car_driver($cdid) {
 # Hiring functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new hiring record
-function add_hiring_record($did, $contract, $order) {
-	$did = (int)$did;
+define('EMPLOYEE_DRIVER',		0);
+define('EMPLOYEE_MECHANIC',		1);
+function add_hiring_record($eid, $contract, $order, $emp_type) {
+	$eid = (int)$eid;
 	$contract = addslashes($contract);
 	$order = addslashes($order);
+	$emp_type = (int)$emp_type;
 
 	$sql = "INSERT INTO tracking_hiring 
-			VALUES(NULL, $did, '$contract', '$order', '', 0, '', '', '')";
+			VALUES(NULL, $eid, '$contract', '$order', '', 0, '', '', '', $emp_type)";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
 # Returns all hiring info with driver id as a key
-function get_hiring_info() {
-	$sql = "SELECT * FROM tracking_hiring ORDER BY h_id";
+function get_hiring_info($emp_type) {
+	$emp_type = (int)$emp_type;
+
+	$sql = "SELECT * FROM tracking_hiring WHERE h_emp_type=$emp_type ORDER BY h_id";
 	$res = uquery($sql);
 	
-	for($result=array(); $row=mysql_fetch_array($res); $result[$row['h_did']]=$row);
+	for($result=array(); $row=mysql_fetch_array($res); $result[$row['h_eid']]=$row);
 	return $result;
 }
 
@@ -797,7 +801,16 @@ function get_hiring($hid) {
 function get_driver_hirings($did) {
 	$did = (int)$did;
 
-	$sql = "SELECT * FROM tracking_hiring WHERE h_did=$did";
+	$sql = "SELECT * FROM tracking_hiring WHERE h_eid=$did AND h_emp_type=".EMPLOYEE_DRIVER;
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all hiring info with mecahnic id as a key
+function get_mechanic_hirings($mid) {
+	$mid = (int)$mid;
+
+	$sql = "SELECT * FROM tracking_hiring WHERE h_eid=$mid AND h_emp_type=".EMPLOYEE_MECHANIC;
 	return res_to_array(uquery($sql));
 }
 
@@ -997,44 +1010,81 @@ function set_po_birthday($poid, $birthday) {
 }
 
 #---------------------------------------------------------------------------------------------------
-# PO-drivers relations functions
+# PO-employee relations functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new po
-function add_driver_po($did, $poid) {
+# look at EMPLOYEE_DRIVER
+function add_employee_po($did, $poid, $emp_type) {
 	$poid = (int)$poid;
 	$did = (int)$did;
+	$emp_type = (int)$emp_type;
 
-	$sql = "INSERT INTO tracking_po_drivers VALUES(NULL, $poid, $did)";
+	$sql = "INSERT INTO tracking_po_employees VALUES(NULL, $poid, $did, $emp_type)";
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
-# Returns all pos
+# Returns driver po
 function get_driver_po($did) {
 	$did = (int)$did;
 
-	$sql = "SELECT * FROM tracking_po_drivers, tracking_pos 
-			WHERE pod_did=$did AND po_id=pod_poid LIMIT 1";
+	$sql = "SELECT * FROM tracking_po_employees, tracking_pos 
+			WHERE pod_did=$did AND po_id=pod_poid AND pod_emp_type=".EMPLOYEE_DRIVER." LIMIT 1";
 	return row_to_array(uquery($sql));
 }
 
 #---------------------------------------------------------------------------------------------------
-# Returns all pos
+# Returns mechanic po
+function get_mechanic_po($mid) {
+	$mid = (int)$mid;
+
+	$sql = "SELECT * FROM tracking_po_employees, tracking_pos 
+			WHERE pod_did=$mid AND po_id=pod_poid AND pod_emp_type=".EMPLOYEE_MECHANIC." LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver po
 function set_driver_po($did, $poid) {
 	$poid = (int)$poid;
 	$did = (int)$did;
 
-	$sql = "UPDATE tracking_po_drivers SET pod_poid=$poid WHERE pod_did=$did";
+	$sql = "UPDATE tracking_po_employees SET pod_poid=$poid 
+			WHERE pod_did=$did AND pod_emp_type=".EMPLOYEE_DRIVER;
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic po
+function set_mechanic_po($mid, $poid) {
+	$poid = (int)$poid;
+	$mid = (int)$mid;
+
+	$sql = "UPDATE tracking_po_employees SET pod_poid=$poid 
+			WHERE pod_did=$mid AND pod_emp_type=".EMPLOYEE_MECHANIC;
 	return uquery($sql);
 }
 
 #---------------------------------------------------------------------------------------------------
 # Returns all pos
-function get_po_employees($poid) {
+function get_po_drivers($poid) {
 	$poid = (int)$poid;
 
-	$sql = "SELECT * FROM tracking_po_drivers, tracking_drivers
-			WHERE pod_poid=$poid AND pod_did=d_id ORDER BY d_name";
+	$sql = "SELECT * FROM tracking_po_employees, tracking_drivers
+			WHERE pod_poid=$poid AND pod_did=d_id AND pod_emp_type=".EMPLOYEE_DRIVER."
+					AND d_state=".STATE_ACTUAL." ORDER BY d_name";
+	return res_to_array(uquery($sql));
+}
+
+
+#---------------------------------------------------------------------------------------------------
+# Returns all pos
+function get_po_mechanics($poid) {
+	$poid = (int)$poid;
+
+	$sql = "SELECT * FROM tracking_po_employees, tracking_mechanics
+			WHERE pod_poid=$poid AND pod_did=m_id AND pod_emp_type=".EMPLOYEE_MECHANIC." 
+					AND m_state=".STATE_ACTUAL." ORDER BY m_name";
 	return res_to_array(uquery($sql));
 }
 
@@ -1169,13 +1219,15 @@ function update_perm_string($gid, $value) {
 # Salary functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new calculation record
-function add_salary_record($did, $formula, $amount) {
+function add_salary_record($did, $formula, $amount, $emp_type) {
 	$did = (int)$did;
 	$amount = (float)$amount;
 	$formula = addslashes($formula);
 	$date = date('j.n.Y');
+	$emp_type = (int)$emp_type;
 
-	$sql = "INSERT INTO tracking_salary VALUES(NULL, $did, '$formula', $amount, '$date', 0, 0, 0)";
+	$sql = "INSERT INTO tracking_salary 
+			VALUES(NULL, $did, '$formula', $amount, '$date', 0, 0, 0, $emp_type)";
 	return uquery($sql);
 }
 
@@ -1258,7 +1310,17 @@ function set_salary_3rdform($sid, $trdform) {
 ## Returns all salary records per month
 function get_driver_salary($did) {
 	$did = (int)$did;
-	$sql = "SELECT * FROM tracking_salary WHERE s_did=$did ORDER BY s_id DESC";
+	$sql = "SELECT * FROM tracking_salary 
+			WHERE s_eid=$did AND s_emp_type=".EMPLOYEE_DRIVER." ORDER BY s_id DESC";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns all salary records per month
+function get_mechanic_salary($did) {
+	$did = (int)$did;
+	$sql = "SELECT * FROM tracking_salary 
+			WHERE s_eid=$did AND s_emp_type=".EMPLOYEE_MECHANIC." ORDER BY s_id DESC";
 	return res_to_array(uquery($sql));
 }
 
@@ -1321,6 +1383,224 @@ function update_temp_coupon_state($tcid, $state) {
 	$sql = "UPDATE tracking_temp_coupons SET tc_state=$state WHERE tc_id=$tcid LIMIT 1";
 	return uquery($sql);
 }
+
+#---------------------------------------------------------------------------------------------------
+# Mechanic's functions
+#---------------------------------------------------------------------------------------------------
+## Adds new mechanic
+function add_mechanic($name, $address, $phone, $idcode, $passport, 
+					$stag, $birthday, $wbirthday, $children, $insurance, $education) {
+	$name = addslashes($name);
+	$address = addslashes($address);
+	$phone = addslashes($phone);
+	$idcode = addslashes($idcode);
+	$passport = addslashes($passport);
+	$stag = addslashes($stag);
+	$children = (int)$children;
+	$birthday = addslashes($birthday);
+	$wbirthday = addslashes($wbirthday);
+	$insurance = addslashes($insurance);
+    $education = addslashes($education);
+
+	$sql = "INSERT INTO tracking_mechanics 
+			VALUES(NULL, '$name', '$address', '$phone', '$idcode', '$passport', '$stag', '$birthday',
+					'$wbirthday', '$insurance', $children, ".STATE_ACTUAL.", '$education', 0, 1.0)";
+	uquery($sql);
+
+	# add new hiring record as it's next hiring time
+	return add_hiring_record(last_insert_id(), '', '', EMPLOYEE_MECHANIC);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns all mechanics
+function get_all_mechanics($type = STATE_ACTUAL) {
+	$type = (int)$type;
+
+	$sql = "SELECT * FROM tracking_mechanics WHERE m_state=$type ORDER BY m_name ";
+	return res_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns mechanics info with key m_id
+function get_mechanics_info() {
+	$sql = "SELECT * FROM tracking_mechanics";
+	$res = uquery($sql);
+
+	for($result=array(); $row=mysql_fetch_array($res); $result[$row['m_id']]=$row);
+	return $result;
+}
+
+#---------------------------------------------------------------------------------------------------
+# Deletes mechanic by id
+function delete_mechanic($mid) {
+	$mid = (int)$mid;
+
+	# hide mechanic's hiring info
+	uquery("UPDATE tracking_hiring SET h_state=".STATE_REMOVED." 
+			WHERE h_eid=$mid AND h_emp_type=".EMPLOYEE_MECHANIC);
+	# hide mechanic from lists
+	return uquery("UPDATE tracking_mechanics SET m_state=".STATE_REMOVED." WHERE m_id=$mid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Restores mechanic by id
+function restore_mechanic($mid) {
+	$mid = (int)$mid;
+
+	# add new hiring record as it's next hiring time
+	add_hiring_record($mid, '', '', EMPLOYEE_MECHANIC);
+	return uquery("UPDATE tracking_mechanics SET m_state=".STATE_ACTUAL." WHERE m_id=$mid LIMIT 1");
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns mechanic by pib
+function get_mechanic_by_pib($pib) {
+	$pib = addslashes($pib);
+
+	$sql = "SELECT * FROM tracking_mechanics 
+			WHERE m_name='$pib' AND m_state=".STATE_ACTUAL." LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns mechanic by pib
+function get_mechanic_like_pib($pib) {
+	$pib = addslashes($pib);
+
+	$sql = "SELECT * FROM tracking_mechanics 
+			WHERE m_name LIKE '%$pib%' AND m_state=".STATE_ACTUAL." LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns mechanic by id
+function get_mechanic($mid) {
+	$mid = (int)$mid;
+
+	$sql = "SELECT * FROM tracking_mechanics WHERE m_id=$mid LIMIT 1";
+	return row_to_array(uquery($sql));
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic name
+function set_mechanic_name($mid, $name) {
+	$mid = (int)$mid;
+	$name = addslashes($name);
+
+	$sql = "UPDATE tracking_mechanics SET m_name='$name' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic phone
+function set_mechanic_phone($mid, $phone) {
+	$mid = (int)$mid;
+	$phone = addslashes($phone);
+
+	$sql = "UPDATE tracking_mechanics SET m_phone='$phone' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic stag
+function set_mechanic_stag($mid, $stag) {
+	$mid = (int)$mid;
+	$stag = addslashes($stag);
+
+	$sql = "UPDATE tracking_mechanics SET m_stag='$stag' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic address
+function set_mechanic_address($mid, $address) {
+	$mid = (int)$mid;
+	$address = addslashes($address);
+
+	$sql = "UPDATE tracking_mechanics SET m_address='$address' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic passport
+function set_mechanic_passport($mid, $passport) {
+	$mid = (int)$mid;
+	$passport = addslashes($passport);
+
+	$sql = "UPDATE tracking_mechanics SET m_passport='$passport' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic idcode
+function set_mechanic_idcode($mid, $idcode) {
+	$mid = (int)$mid;
+	$idcode = addslashes($idcode);
+
+	$sql = "UPDATE tracking_mechanics SET m_idcode='$idcode' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic birthday
+function set_mechanic_birthday($mid, $birthday) {
+	$mid = (int)$mid;
+	$birthday = addslashes($birthday);
+
+	$sql = "UPDATE tracking_mechanics SET m_birthday='$birthday' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic's wife birthday
+function set_mechanic_wbirthday($mid, $birthday) {
+	$mid = (int)$mid;
+	$birthday = addslashes($birthday);
+
+	$sql = "UPDATE tracking_mechanics SET m_wife_birthday='$birthday' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic birthday
+function set_mechanic_children($mid, $children) {
+	$mid = (int)$mid;
+	$children = (int)$children;
+
+	$sql = "UPDATE tracking_mechanics SET m_children=$children WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic's insurance
+function set_mechanic_insurance($mid, $insurance) {
+	$mid = (int)$mid;
+	$insurance = addslashes($insurance);
+
+	$sql = "UPDATE tracking_mechanics SET m_insurance='$insurance' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Returns children count
+function get_mechanic_children_count() {
+	$sql = "SELECT sum(m_children) FROM tracking_mechanics WHERE m_state=".STATE_ACTUAL;
+	$res = uquery($sql);
+	return $res ? mysql_result($res, 0, 0) : 0;
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic's education
+function set_mechanic_education($mid, $education) {
+	$mid = (int)$mid;
+	$education = addslashes($education);
+
+	$sql = "UPDATE tracking_mechanics SET m_education='$education' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+
 
 #---------------------------------------------------------------------------------------------------
 ##

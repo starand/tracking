@@ -5,11 +5,11 @@
     require_permission(VIEW.ROUTE);
     require_permission(VIEW.HIRINGS);
 
-    isset($_GET['did']) or show_error("Не вибрано водія!");
-    $driver = get_driver((int)$_GET['did']) or show_error("Такий водій не існує!");
-    $did = $driver['d_id'];
+    isset($_GET['did']) or show_error("Не вибрано автослюсаря!");
+    $mechanic = get_mechanic((int)$_GET['did']) or show_error("Такий автослюсар не існує!");
+    $did = $mechanic['m_id'];
 
-    $hirings = get_driver_hirings($did);
+    $hirings = get_mechanic_hirings($did);
 ?>
 <TABLE class='list-content'>
 <?
@@ -17,7 +17,7 @@
         echo "<TR class='list-content'>
                 <TD style='font-weight:bold; text-align:center;'> &nbsp; Дані поки що не додано! &nbsp; </TD>
             </TR>";
-        add_hiring_record($did, '', '', EMPLOYEE_DRIVER);
+        add_hiring_record($did, '', '', EMPLOYEE_MECHANIC);
     } else {
         echo "<TD class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </TD>
                 <TD class='list-content-header' style='width:135px;'> &nbsp; Дата прийому &nbsp; </TD>

@@ -4,7 +4,7 @@
     checkAuthorizedUser();
     require_permission(EDIT.HIRING);
 
-    isset($_GET['hid']) or show_error("Не вибрано дані прийняття водія!");
+    isset($_GET['hid']) or show_error("Не вибрано дані прийняття працівника!");
     $hiring = get_hiring((int)$_GET['hid']) or show_error("Такі дані не існують!");
     $hid = $hiring['h_id'];
     isset($_GET['editId']) or show_error("Не вибрано поле для редагування");
