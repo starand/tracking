@@ -18,8 +18,10 @@ function show_error($msg, $target = 'main_error') {
 
 #---------------------------------------------------------------------------------------------------
 ## clear error
-function clear_error($target = 'main_error') {
-    echo "<script>parent.document.getElementById('$target').innerHTML = ' &nbsp; '</script>";
+function setup_info_panel($target = 'main_error') {
+    echo "<script>";
+    include_once "setup_info_panel.js";
+    echo "</script>";
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -253,5 +255,37 @@ function shortenPIB($pib) {
     return $result;
 }
 #---------------------------------------------------------------------------------------------------
+## Displays panel to select EMPLOYEE_DRIVER or EMPLOYEE_MECHANIC
+function show_salary_type_panel($type) {
+    $color1 = $type == EMPLOYEE_DRIVER ? "#D6DBDF" : "#5DADE2";
+    $color2 = $type != EMPLOYEE_DRIVER ? "#D6DBDF" : "#5DADE2";
+    $style = 'text-align:center; font-weight:bold;width:110px;';
+    echo "<input type='text' id='show-driver-salary' value=' Водії ' style='background:$color1; $style' readonly>".
+         "<input type='text' id='show-mechanic-salary' value=' Автослюсарі ' style='background:$color2; $style' readonly>";
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns whether mechanic is active employee type
+function isMechanicMode() {
+    global $_SESSION;
+    return isset($_SESSION['tracking_employee_type']) &&
+                 $_SESSION['tracking_employee_type'] == EMPLOYEE_MECHANIC;
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns whether mechanic is active employee type
+function isDriverMode() {
+    global $_SESSION;
+    return isset($_SESSION['tracking_employee_type']) &&
+                 $_SESSION['tracking_employee_type'] == EMPLOYEE_DRIVER;
+}
+
+#---------------------------------------------------------------------------------------------------
+## Returns whether mechanic is active employee type
+function setEmployeeMode($mode) {
+    global $_SESSION;
+    $_SESSION['tracking_employee_type'] = $mode;
+}
+
 
 ?>

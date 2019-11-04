@@ -4,6 +4,7 @@
     checkAuthorizedUser();
     require_permission(VIEW.LOGS);
 
+    $_GET['page'] = 'sl'; //TODO remove if there are more pages
     if (isset($_GET['page'])) {
         $page = addslashes($_GET['page']);
         switch ($page) {
@@ -21,7 +22,7 @@
 <script>
 $(document).ready(function() {
     $("#show-logs").click(function() {
-        $('#main_space').load('adm.php?page=sl');
+        load_main_hist('adm.php?page=sl');
     });
 });
 </script>

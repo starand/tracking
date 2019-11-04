@@ -27,8 +27,8 @@
     $routes = get_routes_by_driver($did);
 ?>
 <center>
-<h2> <?=$driver['d_name'];?> </h2>
-<span>Розрахунок заробітної плати</span>
+<h2 id='view-employee'> <?=$driver['d_name'];?> </h2>
+<span>Розрахунок заробітної плати водія</span>
 <form action='calc-salary-driver.php' method='post' target='submit_frame'>
 <table cellspacing='5' cellpadding='1' class='form-table' style='width:600px;'>
     <tr><td colspan='4' style='text-align:center;'>&nbsp; <b>Маршрути</b> &nbsp;</td></tr>
@@ -122,6 +122,10 @@ $(document).ready(function() {
         formula += ' = ' + sum;
         $('#fstr').html('<span style=\'color:red;\'>' + formula + '</span>');
         $('#amount').val(sum);
+    });
+
+    $("#view-employee").click(function(event) {
+        load_main_hist("driver.php?did=<?=$did;?>");
     });
 });
 </script>

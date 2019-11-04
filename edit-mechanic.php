@@ -18,7 +18,8 @@
             $mechanic = get_mechanic($did);
             echo " &nbsp; {$mechanic['m_name']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-item' id='ename' value='{$mechanic['m_name']}' style='$style'>";
+            $name = htmlspecialchars($mechanic['m_name'], ENT_QUOTES);
+            echo " <input type='text' class='edit-item' id='ename' value='{$name}' style='$style'>";
         } else {
             echo " &nbsp; {$mechanic['m_name']} &nbsp; ";
         }
@@ -164,6 +165,34 @@
         } else {
             echo " &nbsp; {$mechanic['m_education']} &nbsp; ";
         }
+    } elseif (isset($_GET['rate'])) {
+        $mid = (int)$_GET['did'];
+        $mechanic = get_mechanic($mid) or show_message("Автослюсар не знайдений!");
+        if (isset($_GET['set'])) {
+            $rate = (int)$_GET['rate'] or show_message("Ставка повинна бути більше нуля!");
+            set_mechanic_rate($mid, $rate) or show_error("Помилка бази даних!");
+            $mechanic = get_mechanic($mid);
+            echo " &nbsp; {$mechanic['m_rate']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='erate' value='{$mechanic['m_rate']}' style='$style;width:70px;'>";
+        } else {
+            echo " &nbsp; {$mechanic['m_rate']} &nbsp; ";
+        }
+    } elseif (isset($_GET['add_coef'])) {
+        $mid = (int)$_GET['did'];
+        $mechanic = get_mechanic($mid) or show_message("Автослюсар не знайдений!");
+        $coef = number_format($mechanic['m_add_coef'], 2);
+        if (isset($_GET['set'])) {
+            $add_coef = (float)$_GET['add_coef'] or show_message("Ставка повинна бути більше нуля!");
+            set_mechanic_coef($mid, $add_coef) or show_error("Помилка бази даних!");
+            $mechanic = get_mechanic($mid);
+            $coef = number_format($mechanic['m_add_coef'], 2);
+            echo " &nbsp; $coef &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='eadd_coef' value='$coef' style='$style;width:70px;'>";
+        } else {
+            echo " &nbsp; $coef &nbsp; ";
+        }
     }
 ?>
 <script>
@@ -179,11 +208,11 @@ $(document).ready(function() {
                 url = 'edit-mechanic.php?' + id + '=&did=<?=$did;?>';
                 $('#' + id).load(url);
             } else if (id.substr(0, 4) == 'rate') {
-                url = 'edit-mechanic.php?rate=&did=<?=$did;?>&rid=<?=$rateId;?>';
-                $('#' + id).load(url);
-            } else if (id.substr(0, 6) == 'update') {
-                url = 'edit-mechanic.php?update=&did=<?=$did;?>&rid=<?=$rateId;?>';
-                $('#' + id).load(url);
+                url = 'edit-mechanic.php?rate=&did=<?=$did;?>';
+                $('#r<?=$did;?>').load(url);
+            } else if (id.substr(0, 8) == 'add_coef') {
+                url = 'edit-mechanic.php?add_coef=&did=<?=$did;?>';
+                $('#a<?=$did;?>').load(url);
             }
         }).change(function() {
             id = $(this).attr('id').substr(1);
@@ -193,12 +222,12 @@ $(document).ready(function() {
                 $('#' + id).load(url);
             } else if (id.substr(0, 4) == 'rate') {
                 val = encodeURIComponent($(this).val().trim());
-                url = 'edit-mechanic.php?rate=' + val + '&rid=<?=$rateId;?>&set=&did=<?=$did;?>';
-                $('#' + id).load(url);
-            } else if (id.substr(0, 6) == 'update') {
+                url = 'edit-mechanic.php?rate=' + val + '&set=&did=<?=$did;?>';
+                $('#r<?=$did;?>').load(url);
+            } else if (id.substr(0, 8) == 'add_coef') {
                 val = encodeURIComponent($(this).val().trim());
-                url = 'edit-mechanic.php?update=' + val + '&rid=<?=$rateId;?>&set=&did=<?=$did;?>';
-                $('#' + id).load(url);
+                url = 'edit-mechanic.php?add_coef=' + val + '&set=&did=<?=$did;?>';
+                $('#a<?=$did;?>').load(url);
             }
         }).focus().select();
 });

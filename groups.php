@@ -48,7 +48,7 @@
 $(document).ready(function() {
     $("td.list-content").on("click", function() {
         id = $(this).attr('id');
-        $('#main_space').load("group.php?gid=" + id);
+        load_main_hist("group.php?gid=" + id);
     });
 });
 </script>

@@ -29,12 +29,12 @@
 <script>
 $(document).ready(function() {
     $("#add-location").on("click", function() {
-        $("#main_space").load("add-location.php");
+        load_main_hist("add-location.php");
     });
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'l') {
-            $('#main_space').load("routes.php?lid=" + id.substr(1));
+            load_main_hist("routes.php?lid=" + id.substr(1));
         }  
     });
 });
@@ -50,7 +50,7 @@ $(document).ready(function() {
         if ($driver) continue;
 
         $mechanic = get_mechanic($rec['s_eid']);
-        echo "{$mechanic['m_name']} <BR>";
+        //echo "{$mechanic['m_name']} <BR>";
 
         $sql = "update tracking_salary set s_emp_type=1 where s_id={$rec['s_id']}";
         //uquery($sql);

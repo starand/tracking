@@ -33,28 +33,28 @@ $(document).ready(function() {
         $("#main").load("index.php?logout=");
     });
     $("#drivers").on("click", function() {
-        $("#main_space").load("drivers.php");
+        load_main_hist("drivers.php");
     });
     $("#mechanics").on("click", function() {
-        $("#main_space").load("mechanics.php");
+        load_main_hist("mechanics.php");
     });
     $("#cars").on("click", function() {
-        $("#main_space").load("cars.php");
+        load_main_hist("cars.php");
     });
     $("#pos").on("click", function() {
-        $("#main_space").load("pos.php");
+        load_main_hist("pos.php");
     });
     $("#top_logo").on("click", function() {
         $("#left_menu").load("locations.php");
     });
     $("#trash").on("click", function() {
-        $("#main_space").load("adm.php");
+        load_main_hist("adm.php");
     });
     $("#salary").on("click", function() {
-        $("#main_space").load("salary-driver.php");
+        load_main_hist("salary.php");
     });
     $("#users").on("click", function() {
-        $("#main_space").load("users.php");
+        load_main_hist("users.php");
     });
 });
 </script>

@@ -159,13 +159,13 @@ $(document).ready(function() {
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'd') {
-            $('#main_space').load("driver.php?did=" + id.substr(1));
+            load_main_hist("driver.php?did=" + id.substr(1));
         } else if (id.substr(0, 2) == 'po') {
-            $('#main_space').load("po.php?poid=" + id.substr(2));
+            load_main_hist("po.php?poid=" + id.substr(2));
         } else if (id.substr(0, 1) == 'c') {
-            $('#main_space').load("car.php?cid=" + id.substr(1));
+            load_main_hist("car.php?cid=" + id.substr(1));
         } else if (id.substr(0, 1) == 'm') {
-            $('#main_space').load("mechanic.php?did=" + id.substr(1));
+            load_main_hist("mechanic.php?did=" + id.substr(1));
         }
     });
 

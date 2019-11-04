@@ -18,7 +18,8 @@
             $po = get_po($poid);
             echo " &nbsp; {$po['po_name']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-item' id='ename' value='{$po['po_name']}' style='$style'>";
+            $name = htmlspecialchars($po['po_name'], ENT_QUOTES);
+            echo " <input type='text' class='edit-item' id='ename' value='{$name}' style='$style'>";
         } else {
             echo " &nbsp; {$po['po_name']} &nbsp; ";
         }

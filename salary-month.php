@@ -37,8 +37,11 @@
 
         $i = 1;
         foreach($infos as $info) {
-            $driver = $drivers[$info['s_eid']];
-            $mechanic = $mechanics[$info['s_eid']];
+            if ($info['s_emp_type'] == EMPLOYEE_DRIVER) {
+                $driver = $drivers[$info['s_eid']];
+            } elseif ($info['s_emp_type'] == EMPLOYEE_MECHANIC) {
+                $mechanic = $mechanics[$info['s_eid']];
+            }
 
             $sum = $info['s_advance'] + $info['s_salary'] + $info['s_3rdform'];
             $style = abs($sum - $info['s_amount']) < 0.01 ? "background:#E9FFE7;" : "";
@@ -95,10 +98,10 @@ $(document).ready(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'd') {
             url = "driver-salary.php?did=" + id.substr(1);
-            $('#main_space').load(url);
+            load_main_hist(url);
         } else if (id.substr(0, 1) == 'm') {
             url = "driver-salary.php?mid=" + id.substr(1);
-            $('#main_space').load(url);
+            load_main_hist(url);
         }
     });
 

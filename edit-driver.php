@@ -18,7 +18,8 @@
             $driver = get_driver($did);
             echo " &nbsp; {$driver['d_name']} &nbsp; ";
         } elseif (isset($_GET['edit'])) {
-            echo " <input type='text' class='edit-item' id='ename' value='{$driver['d_name']}' style='$style'>";
+            $name = htmlspecialchars($driver['d_name'], ENT_QUOTES);
+            echo " <input type='text' class='edit-item' id='ename' value='$name' style='$style'>";
         } else {
             echo " &nbsp; {$driver['d_name']} &nbsp; ";
         }

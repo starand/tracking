@@ -73,13 +73,13 @@
 $(document).ready(function() {
     $("#add-po").on("click", function() {
         id = $(this).attr('id');
-        $("#main_space").load("add-po.php");
+        load_main_hist("add-po.php");
     });
 
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'p') {
-            $('#main_space').load("po.php?poid=" + id.substr(1));
+            load_main_hist("po.php?poid=" + id.substr(1));
         }  
     });
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
     });
 
     $("#removed-pos").click(function() {
-        $('#main_space').load("pos.php?type=1");
+        load_main_hist("pos.php?type=1");
     });
 });
 </script>

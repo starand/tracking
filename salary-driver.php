@@ -1,8 +1,9 @@
 <?
     include_once "common/headers.php";
-
+    
     checkAuthorizedUser();
     require_permission(VIEW.SALARY);
+    setEmployeeMode(EMPLOYEE_DRIVER);
 
     $location = getActiveLocation();
     if (!$location) $location = get_location(1);
@@ -16,17 +17,14 @@
     foreach ($months as $month) {
         echo "<option value='{$month['month']}'>".getPrevMonthName($month['month'])."</option>";
     }
-    echo "</SELECT>
-            <input type='button' id='month-salary' value='Переглянути' id=''/>";
+    echo "</SELECT> <input type='button' id='month-salary' value='Переглянути' id=''/> &nbsp; &nbsp; ";
+    show_salary_type_panel(EMPLOYEE_MECHANIC);
 ?>
 <center>
-<h2>Локація: <?=$location['l_name'];?></h2>
+<h2>Водії - <?=$location['l_name'];?></h2>
 
 <TABLE cellspacing='0' cellpadding='2' style='width:700px;' class='menu'>
-<TR>
-    <TD> </TD>
-    <TD style='width:150px;'></TD>
-</TR>
+<TR><TD> </TD><TD style='width:150px;'></TD></TR>
 </TABLE>
 
 <TABLE class='list-content' style='width:700px;' id='tbl_salary'>
@@ -68,15 +66,19 @@ $(document).ready(function() {
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'd') {
-            $('#main_space').load("driver.php?did=" + id.substr(1));
+            load_main_hist("driver.php?did=" + id.substr(1));
         } else if (id.substr(0, 1) == 'c') {
-            $('#main_space').load("calc-salary-driver.php?did=" + id.substr(1));
-        } 
+            load_main_hist("calc-salary-driver.php?did=" + id.substr(1));
+        }
     });
 
     $("#month-salary").click(function() {
         month = $("#month").val();
-        $('#main_space').load("salary-month.php?month=" + month);
+        load_main_hist("salary-month.php?month=" + month);
+    });
+
+    $("#show-mechanic-salary").click(function() {
+        load_main_hist("salary-mechanic.php");
     });
 });
 </script>

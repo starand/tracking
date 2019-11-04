@@ -53,10 +53,10 @@
 <script>
 $(document).ready(function() {
     $("#add-user").on("click", function() {
-        $("#main_space").load("add-user.php");
+        load_main_hist("add-user.php");
     });
     $("#groups").on("click", function() {
-        $("#main_space").load("groups.php");
+        load_main_hist("groups.php");
     });
 
     $("#search").click(function() {
@@ -70,9 +70,9 @@ $(document).ready(function() {
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'g') {
-            $('#main_space').load("group.php?gid=" + id.substr(1));
+            load_main_hist("group.php?gid=" + id.substr(1));
         } else if (id.substr(0, 1) == 'u') {
-            //$('#main_space').load("po.php?poid=" + id.substr(2));
+            //load_main_hist("po.php?poid=" + id.substr(2));
         }
     });
 });

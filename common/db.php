@@ -44,16 +44,36 @@ function log_msg($data) {
 }
 
 #---------------------------------------------------------------------------------------------------
+## Removes slashes from selected fields
+$STRING_UPDATE_FIELDS = array('d_name', 'm_name', 'po_name');
+
+function upd_str_val($name, $value) {
+	global $STRING_UPDATE_FIELDS;
+	return in_array($name, $STRING_UPDATE_FIELDS)
+		? stripslashes($value) : $value;
+}
+
+#---------------------------------------------------------------------------------------------------
+# Removes slashes from array of fields
+function upd_arr_val($arr) {
+	$result = array();
+	foreach ($arr as $k => $v) {
+		$result[$k] = upd_str_val($k, $v);
+	}
+	return $result;
+}
+
+#---------------------------------------------------------------------------------------------------
 ## convert mysql result into assosiate array
 function res_to_array($res) {
-	for($result=array(); $row=mysql_fetch_array($res); $result[]=$row);
+	for($result=array(); $row=mysql_fetch_array($res); $result[] = upd_arr_val($row));
 	return $result;
 }
 
 #---------------------------------------------------------------------------------------------------
 ## convert one row result to assosiate array
 function row_to_array($res) {
-	return $res ? mysql_fetch_array($res) : false;
+	return $res ? upd_arr_val(mysql_fetch_array($res)) : false;
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -1235,7 +1255,7 @@ function add_salary_record($did, $formula, $amount, $emp_type) {
 ## Returns salary periods
 function get_salary_months() {
 	$sql = "SELECT s_date, SUBSTRING(s_date, POSITION('.' IN s_date) + 1) as month 
-			FROM tracking_salary GROUP BY month ORDER BY s_date DESC";
+			FROM tracking_salary GROUP BY month ORDER BY s_id DESC";
 	return res_to_array(uquery($sql));
 }
 
@@ -1596,6 +1616,26 @@ function set_mechanic_education($mid, $education) {
 	$education = addslashes($education);
 
 	$sql = "UPDATE tracking_mechanics SET m_education='$education' WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic birthday
+function set_mechanic_rate($mid, $rate) {
+	$mid = (int)$mid;
+	$rate = (int)$rate;
+
+	$sql = "UPDATE tracking_mechanics SET m_rate=$rate WHERE m_id=$mid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets mechanic additional coeficient
+function set_mechanic_coef($mid, $coef) {
+	$mid = (int)$mid;
+	$coef = (float)$coef;
+
+	$sql = "UPDATE tracking_mechanics SET m_add_coef=$coef WHERE m_id=$mid LIMIT 1";
 	return uquery($sql);
 }
 

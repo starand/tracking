@@ -18,6 +18,27 @@
 
     echo "<center><h2>DataBase Logs</h2>";
     echo "<TABLE class='list-content'>";
+
+    function cmp($a, $b) {
+        $date_a = explode(".", $a);
+        $date_b = explode(".", $b);
+
+        $year_a = (int)$date_a[0];
+        $year_b = (int)$date_b[0];
+        $month_a = (int)$date_a[1];
+        $month_b = (int)$date_b[1];
+
+        //echo "$year_a $year_b $month_a $month_b <BR>";
+
+        if ($year_a == $year_b)  {
+            if ($month_a == $month_b) return 0;
+            return $month_a < $month_b ? 1 : -1;
+        } else {
+            return $year_a < $year_b ? 1 : -1;
+        }
+    }
+    uksort($logFiles, 'cmp');
+
     foreach ($logFiles as $year => $files) {
         ksort($files);
         echo "<TR class='list-content'>
@@ -53,7 +74,7 @@ $(document).ready(function() {
     $(".file-name").click(function() {
         id = $(this).attr('id');
         url = 'adm.php?page=sl&fn=' + id;
-        $('#main_space').load(url);
+        load_main_hist(url);
     });
 });
 </script>

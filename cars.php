@@ -48,7 +48,7 @@
 $(document).ready(function() {
     $("#add-car").on("click", function() {
         id = $(this).attr('id');
-        $("#main_space").load("add-car.php");
+        load_main_hist("add-car.php");
     });
 
     $("#search").click(function() {
@@ -61,7 +61,7 @@ $(document).ready(function() {
     });
 
     $("#removed-cars").click(function() {
-        $('#main_space').load("cars.php?type=1");
+        load_main_hist("cars.php?type=1");
     });
 });
 </script>

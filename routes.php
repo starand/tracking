@@ -86,20 +86,20 @@
 $(document).ready(function() {
     $("#add-route").on("click", function() {
         id = $(this).attr('id');
-        $("#main_space").load("add-route.php?lid=<?=$lid;?>");
+        load_main_hist("add-route.php?lid=<?=$lid;?>");
     });
 
     $(".driver").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'd') {
-            $('#main_space').load("driver.php?did=" + id.substr(1));
+            load_main_hist("driver.php?did=" + id.substr(1));
         }
     });
 
     $(".list-content").click(function() {
         id = $(this).attr('id');
         if (id.substr(0, 1) == 'r') {
-            $('#main_space').load("route.php?rid=" + id.substr(1));
+            load_main_hist("route.php?rid=" + id.substr(1));
         }
     });
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
     });
 
     $("#removed-routes").click(function() {
-        $('#main_space').load("routes.php?type=1&lid=<?=$lid;?>");
+        load_main_hist("routes.php?type=1&lid=<?=$lid;?>");
     });
 });
 </script>
