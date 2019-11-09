@@ -47,15 +47,30 @@
 
     var HISTORY_SIZE = 20;
 
-    function cleanHistoryAfter(pos) {
-        //alert('Cleaning -- Pos: ' + historyPos + ', Count: ' + historyArray.length);
-        for (i = 0; i < historyArray.length; ++i) historyArray.pop();
+    function cleanHistoryElements(pos) {
+        for (i = 0; i < pos; ++i) historyArray.pop();
+    }
+
+    function dump() {
+        return;
+
+        text = 'Pos: ' + historyPos + ', len: ' + historyArray.length;
+        text += ' - DUMP: ';
+        for (i = 0; i < historyArray.length; i++) {
+            if (i == historyPos) text += '[';
+            text += historyArray[i];
+            if (i == historyPos) text += ']';
+            text += ', ';
+        }
+
+        parent.document.getElementById('main_error').innerHTML = text;
     }
 
     function historyAdd(url) {
         if (getLastUrl() == url) return;
-        if (historyPos < historyArray.length - 1) {
-            cleanHistoryAfter(historyPos + 1);
+        var diff = historyArray.length - 1 - historyPos;
+        if (diff > 0) {
+            cleanHistoryElements(diff);
         }
 
         historyArray.push(url); historyPos++;
@@ -64,13 +79,7 @@
             historyArray.shift();
             historyPos--;
         }
-
-        text = 'DUMP: ';
-        for (i = 0; i < historyArray.length; i++) {
-            text += historyArray[i];
-            text += ', ';
-        }
-        //parent.document.getElementById('main_error').innerHTML = text;
+        dump();
     }
 
     function goPrev() {
@@ -80,6 +89,7 @@
 
         url = historyArray[--historyPos];
         $('#main_space').load(url);
+        dump();
     }
 
     function goNext() {
@@ -89,9 +99,10 @@
 
         url = historyArray[++historyPos];
         $('#main_space').load(url);
+        dump();
     }
 
     function getLastUrl() {
-        return  historyArray.length == 0 ? "" :  historyArray[historyArray.length - 1];
+        return  historyArray.length == 0 ? "" :  historyArray[historyPos];
     }
 </script>

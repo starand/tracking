@@ -23,11 +23,12 @@
     isset($_GET['lid']) or die("Локацію не вказано!");
     $lid = (int)$_GET['lid'];
     $location = get_location($lid) or show_error("Локація не існує! '$lid'");
+    $name = $location['l_name'];
 
     setActiveLocation($location);
 ?>
 <center>
-<h2>Маршрути</h2>
+<h2>Маршрути - <?=$name;?></h2>
 
 <TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
 <TR>
