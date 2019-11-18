@@ -146,7 +146,7 @@ CREATE TABLE tracking_salary (
     s_salary decimal(7,2) unsigned NOT NULL,
     s_3rdform decimal(7,2) unsigned NOT NULL,
     s_emp_type tinyint unsigned NOT NULL default 0,
-    UNIQUE(s_eid, s_date),
+    UNIQUE(s_eid, s_date, s_emp_type),
     PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

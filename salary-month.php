@@ -37,6 +37,7 @@
 
         $i = 1;
         foreach($infos as $info) {
+            unset($driver); unset($mechanic);
             if ($info['s_emp_type'] == EMPLOYEE_DRIVER) {
                 $driver = $drivers[$info['s_eid']];
             } elseif ($info['s_emp_type'] == EMPLOYEE_MECHANIC) {
