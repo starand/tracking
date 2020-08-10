@@ -16,7 +16,7 @@
         ? "<input type='button' id='delete-car'  style='color:red;' value=' Видалити автомобіль ' />"
         : "<input type='button' id='restore-car' style='color:red;' value=' Поновити автомобіль ' />";
 ?>
-<TABLE cellspacing='0' cellpadding='2' style='width:500px;' class='menu'>
+<TABLE cellspacing='0' cellpadding='2' style='width:600px;' class='menu'>
 <TR>
     <TD> </TD>
 <?
@@ -25,7 +25,7 @@
 </TR>
 </TABLE>
 
-<TABLE class='list-content' style='width:500px;'>
+<TABLE class='list-content' style='width:600px;'>
     <TR><TD class='list-content-header' colspan='2'> Інформація про машину </TD></TR>
     <TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Номер</b>: &nbsp; </TD>
@@ -36,6 +36,9 @@
     </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Страхівка</b>: &nbsp; </TD>
         <TD class='edit-item' id='insurance' style='width:350px;'>&nbsp; <?=$car['c_insurance'];?> &nbsp; </TD>
+    </TR><TR class='list-content' style='height:22px;'>
+        <TD class='edit-item'> &nbsp; <b>Страхування пасажарів</b>: &nbsp; </TD>
+        <TD class='edit-item' id='pass_insur' style='width:350px;'>&nbsp; <?=$car['c_pass_insur'];?> &nbsp; </TD>        
     </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>СТО</b>: &nbsp; </TD>
     <TD class='edit-item' id='sto' style='width:350px;'>&nbsp; <?=$car['c_sto'];?> &nbsp; </TD>
@@ -78,7 +81,7 @@
 
 <?
     $editables = hasPermission(EDIT.CAR)
-        ? "'plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver'"
+        ? "'plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver', 'pass_insur'"
         : "'nopermission'";
 ?>
 

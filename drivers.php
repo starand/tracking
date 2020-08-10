@@ -23,7 +23,7 @@
 <center>
 <h2>Водії</h2>
 
-<TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
+<TABLE cellspacing='0' cellpadding='2' style='width:1050px;' class='menu'>
 <TR>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
@@ -38,7 +38,7 @@
 </TR>
 </TABLE>
 
-<TABLE class='list-content' style='width:850px;' id='tbl_drivers'>
+<TABLE class='list-content' style='width:1050px;' id='tbl_drivers'>
 <?
     $drivers = get_all_drivers($type);
     $prefix = hasPermission(VIEW.DRIVER) ? "d" : "";
@@ -48,13 +48,14 @@
                 <TD style='font-weight:bold; text-align:center;'> &nbsp; Водіїв поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<TD class='list-content-header' style='width:35px;'> &nbsp; # &nbsp; </TD>
-                <TD class='list-content-header' style='width:270px;'> &nbsp; ПІБ &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Телефон &nbsp; </TD>
-                <TD class='list-content-header' style='width:100px;'> &nbsp; Довідка &nbsp; </TD>
+        echo "<TD class='list-content-header' style='width:35px;'>  #  </TD>
+                <TD class='list-content-header' style='width:270px;'>  ПІБ  </TD>
+                <TD class='list-content-header'>  Телефон  </TD>
+                <TD class='list-content-header' style='width:100px;'> Довідка </TD>
+                <TD class='list-content-header' style='width:100px;'> Страхівка водія </TD>
                 <TD class='list-content-header'> Маршрути </TD>
-                <TD class='list-content-header' style='width:90px;'> &nbsp; Машини &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Підприємець &nbsp; </TD>";
+                <TD class='list-content-header' style='width:90px;'>  Машини  </TD>
+                <TD class='list-content-header'>  Підприємець  </TD>";
         $i = 1;
         foreach($drivers as $driver) {
             $content = "";
@@ -76,6 +77,9 @@
             $istyle = !checkDateDMYFormat($driver['d_insurance']) ? "background:#FDFFC8;" :
                         (checkDMYDateExpired($driver['d_insurance']) ? "background:#FF9797;" :
                         (checkDMYDateExpireIn($driver['d_insurance']) ? "background:#ffff00;" : ""));
+            $drvstyle = !checkDateDMYFormat($driver['d_drv_insur']) ? "background:#FDFFC8;" :
+                    (checkDMYDateExpired($driver['d_drv_insur']) ? "background:#FF9797;" :
+                    (checkDMYDateExpireIn($driver['d_drv_insur']) ? "background:#ffff00;" : ""));
             $pstyle = !checkPhoneCorrect($driver['d_phone']) ? "background:#FF9797;" : "";
 
             $powner = shortenPIB($po['po_name']);
@@ -84,6 +88,7 @@
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}' style='$pstyle'> {$driver['d_phone']} </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}' style='$istyle'> &nbsp; {$driver['d_insurance']} &nbsp; </TD>
+                    <TD class='list-content' id='$prefix{$driver['d_id']}' style='$drvstyle'> &nbsp; {$driver['d_drv_insur']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$driver['d_id']}'> $content </TD>
                     <TD class='list-content' id='{$driver['d_id']}'> $carcont </TD>
                     <TD class='list-content' id='po{$po['po_id']}' style='font-size:12px;'> &nbsp; $powner &nbsp; </TD>

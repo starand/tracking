@@ -46,6 +46,18 @@
         } else {
             echo " &nbsp; {$car['c_insurance']} &nbsp; ";
         }
+    } elseif (isset($_GET['pass_insur'])) {
+        if (isset($_GET['set'])) {
+            $pass_insur = addslashes($_GET['pass_insur']);
+            strlen($pass_insur) >= 8 or show_error("Дата страхівки повинна бути не коротше 8 символів.");
+            set_car_pass_insur($cid, $pass_insur) or show_error("Помилка бази даних!");
+            $car = get_car($cid);
+            echo " &nbsp; {$car['c_pass_insur']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='epass_insur' value='{$car['c_pass_insur']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$car['c_pass_insur']} &nbsp; ";
+        }
     } elseif (isset($_GET['sto'])) {
         if (isset($_GET['set'])) {
             $sto = addslashes($_GET['sto']);
@@ -127,7 +139,7 @@
 ?>
 <script>
 $(document).ready(function() {
-    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver'];
+    var edittables = ['plate', 'model', 'insurance', 'sto', 'places', 'type', 'owner', 'color', 'driver', 'pass_insur'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();

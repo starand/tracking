@@ -21,7 +21,7 @@
 ?>
 <center>
 <h2>Зарплата: <?=$name;?></h2>
-<TABLE class='list-content' style='width:850px;'>
+<TABLE class='list-content' style='width:1050px;'>
 <?
     if (!count($infos)) {
         echo "<TR class='list-content'><TD class='list-content'> &nbsp; Даних не знайдено! &nbsp; </TD></TR>";

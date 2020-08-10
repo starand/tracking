@@ -30,7 +30,7 @@
 <center>
 <h2>Маршрути - <?=$name;?></h2>
 
-<TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
+<TABLE cellspacing='0' cellpadding='2' style='width:1050px;' class='menu'>
 <TR>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
@@ -44,12 +44,12 @@
 </TR>
 </TABLE>
 
-<TABLE class='list-content' style='' id='tbl_routes' style='width:850px;'>
+<TABLE class='list-content' style='' id='tbl_routes' style='width:1050px;'>
     <td class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </td>
     <td class='list-content-header' style='width:100px;'> &nbsp; <b>Назва &nbsp;</b> </td>
-    <td class='list-content-header' style='width:380px;'> &nbsp; <b>Опис &nbsp; </b></td>
+    <td class='list-content-header' style='width:450px;'> &nbsp; <b>Опис &nbsp; </b></td>
     <td class='list-content-header' style='width:75px;'> Довжина </b></td>
-    <td class='list-content-header' style='width:300px;'> &nbsp; <b>Водії &nbsp;</b> </td>
+    <td class='list-content-header' style='width:350px;'> &nbsp; <b>Водії &nbsp;</b> </td>
 <?
     $routes = get_routes($lid, $type);
 

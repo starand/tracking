@@ -130,6 +130,18 @@
         } else {
             echo " &nbsp; {$driver['d_insurance']} &nbsp; ";
         }
+    } elseif (isset($_GET['drv_insur'])) {
+        if (isset($_GET['set'])) {
+            $drv_insur = addslashes($_GET['drv_insur']);
+            strlen($drv_insur) == 10 or show_error("Дата повинна містити 10 символів (дд.мм.рррр)!");
+            set_driver_drv_insur($did, $drv_insur) or show_error("Помилка бази даних!");
+            $driver = get_driver($did);
+            echo " &nbsp; {$driver['d_drv_insur']} &nbsp; ";
+        } elseif (isset($_GET['edit'])) {
+            echo " <input type='text' class='edit-item' id='edrv_insur' value='{$driver['d_drv_insur']}' style='$style'>";
+        } else {
+            echo " &nbsp; {$driver['d_drv_insur']} &nbsp; ";
+        }
     } elseif (isset($_GET['poid'])) {
         $po = get_driver_po($did);
         if (!$po) {
@@ -186,7 +198,7 @@
 <script>
 $(document).ready(function() {
     var edittables = ['name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday',
-                        'wbirthday', 'children', 'insurance', 'poid'];
+                        'wbirthday', 'children', 'insurance', 'poid', 'drv_insur'];
     $(".edit-item")
         .click(function(event) {
             event.stopImmediatePropagation();

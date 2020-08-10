@@ -2,12 +2,11 @@
 	include_once "common/config.php";
 
 	# connecting
-	$conn = @mysql_pconnect($host, $user, $pswd) or die("Can not connect to database!!");
-	mysql_select_db($db) or die("Can not select database!!");
+	$conn = mysqli_connect($host, $user, $pswd, $db) or die("Can not connect to database!!");
+	//mysqli_select_db($conn, $db) or die("Can not select database!!");
 	# set UTF8 as default connection
-	mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', ".
-		"character_set_connection='utf8',character_set_database='utf8',character_set_server='utf8'",
-		$conn);
+	mysqli_query($conn, "SET character_set_results = 'utf8', character_set_client = 'utf8', ".
+		"character_set_connection='utf8',character_set_database='utf8',character_set_server='utf8'");
 
 	$tbl_prfx = "tracking";
 
@@ -20,9 +19,10 @@
 #---------------------------------------------------------------------------------------------------
 ## send query to db	
 function uquery($query) {
+	global $conn;
 	if (substr($query, 0, 3) != "SEL") log_msg($query);
 
-	$result = @mysql_query($query); // or die("Can not send query to database!! - '$query'");
+	$result = mysqli_query($conn, $query); // or die("Can not send query to database!! - '$query'");
 	return $result;
 }
 
@@ -30,7 +30,14 @@ function uquery($query) {
 ## returns last inserted id
 function last_insert_id() {
 	global $conn;
-	return mysql_insert_id($conn);
+	return mysqli_insert_id($conn);
+}
+
+#---------------------------------------------------------------------------------------------------
+## replacement for missing method in PHP 7
+function mysqli_result($result, $row, $field=0) {
+	$row = mysqli_fetch_assoc($result);
+	return reset($row);
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -45,7 +52,7 @@ function log_msg($data) {
 
 #---------------------------------------------------------------------------------------------------
 ## Removes slashes from selected fields
-$STRING_UPDATE_FIELDS = array('d_name', 'm_name', 'po_name');
+$STRING_UPDATE_FIELDS = array('d_name', 'm_name', 'po_name', 'l_name');
 
 function upd_str_val($name, $value) {
 	global $STRING_UPDATE_FIELDS;
@@ -66,14 +73,14 @@ function upd_arr_val($arr) {
 #---------------------------------------------------------------------------------------------------
 ## convert mysql result into assosiate array
 function res_to_array($res) {
-	for($result=array(); $row=mysql_fetch_array($res); $result[] = upd_arr_val($row));
+	for($result=array(); $row=mysqli_fetch_array($res); $result[] = upd_arr_val($row));
 	return $result;
 }
 
 #---------------------------------------------------------------------------------------------------
 ## convert one row result to assosiate array
 function row_to_array($res) {
-	return $res ? upd_arr_val(mysql_fetch_array($res)) : false;
+	return $res ? upd_arr_val(mysqli_fetch_array($res)) : false;
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -202,7 +209,7 @@ function get_routes_info($lid) {
 	$sql = "SELECT * FROM tracking_routes WHERE r_lid=$lid";
 	$res = uquery($sql);
 
-	for($result=array(); $row=mysql_fetch_array($res); $result[$row['r_id']]=$row);
+	for($result=array(); $row=mysqli_fetch_array($res); $result[$row['r_id']]=$row);
 	return $result;
 }
 
@@ -257,7 +264,7 @@ function get_drivers_info() {
 	$sql = "SELECT * FROM tracking_drivers";
 	$res = uquery($sql);
 
-	for($result=array(); $row=mysql_fetch_array($res); $result[$row['d_id']]=$row);
+	for($result=array(); $row=mysqli_fetch_array($res); $result[$row['d_id']]=upd_arr_val($row));
 	return $result;
 }
 
@@ -306,7 +313,7 @@ function set_route_location($rid, $lid) {
 #---------------------------------------------------------------------------------------------------
 ## Adds new driver
 function add_driver($name, $address, $phone, $idcode, $passport, 
-					$stag, $birthday, $wbirthday, $children, $insurance) {
+					$stag, $birthday, $wbirthday, $children, $insurance, $drv_ins) {
 	$name = addslashes($name);
 	$address = addslashes($address);
 	$phone = addslashes($phone);
@@ -317,10 +324,11 @@ function add_driver($name, $address, $phone, $idcode, $passport,
 	$birthday = addslashes($birthday);
 	$wbirthday = addslashes($wbirthday);
 	$insurance = addslashes($insurance);
+	$drv_ins = addslashes($drv_ins);
 
 	$sql = "INSERT INTO tracking_drivers 
 			VALUES(NULL, '$name', '$address', '$phone', '$idcode', '$passport', '$stag', 
-					'$birthday', '$wbirthday', '$insurance', $children, ".STATE_ACTUAL.")";
+					'$birthday', '$wbirthday', '$insurance', $children, ".STATE_ACTUAL.", '$drv_ins')";
 	uquery($sql);
 
 	# add new hiring record as it's next hiring time
@@ -484,10 +492,20 @@ function set_driver_insurance($did, $insurance) {
 
 #---------------------------------------------------------------------------------------------------
 # Sets driver's insurance
+function set_driver_drv_insur($did, $insurance) {
+	$did = (int)$did;
+	$insurance = addslashes($insurance);
+
+	$sql = "UPDATE tracking_drivers SET d_drv_insur='$insurance' WHERE d_id=$did LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets driver's insurance
 function get_children_count() {
 	$sql = "SELECT sum(d_children) FROM tracking_drivers WHERE d_state=".STATE_ACTUAL;
 	$res = uquery($sql);
-	return $res ? mysql_result($res, 0, 0) : 0;
+	return $res ? mysqli_result($res, 0, 0) : 0;
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -550,7 +568,8 @@ function set_route_rate_update($did, $rid, $date) {
 # Car's functions
 #---------------------------------------------------------------------------------------------------
 ## Adds new car
-function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color, $driver="") {
+function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color, $driver="",
+				$pass_insur='') {
 	$plate = addslashes($plate);
 	$model = addslashes($model);
 	$type = (int)$type;
@@ -560,10 +579,11 @@ function add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $colo
 	$owner = addslashes($owner);
 	$color = addslashes($color);
 	$driver = addslashes($driver);
+	$pass_insur = addslashes($pass_insur);
 
 	$sql = "INSERT INTO tracking_cars 
 			VALUES(NULL, '$plate', '$model', $type, $places, '$insurance', '$sto', '$owner', 
-						 '$color', ".STATE_ACTUAL.", '$driver')";
+						 '$color', ".STATE_ACTUAL.", '$driver', '$pass_insur')";
 	echo $sql;
 	return uquery($sql);
 }
@@ -666,6 +686,16 @@ function set_car_insurance($cid, $insurance) {
 	$insurance = addslashes($insurance);
 
 	$sql = "UPDATE tracking_cars SET c_insurance='$insurance' WHERE c_id=$cid";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+# Sets car insurance
+function set_car_pass_insur($cid, $insurance) {
+	$cid = (int)$cid;
+	$insurance = addslashes($insurance);
+
+	$sql = "UPDATE tracking_cars SET c_pass_insur='$insurance' WHERE c_id=$cid";
 	return uquery($sql);
 }
 
@@ -803,7 +833,7 @@ function get_hiring_info($emp_type) {
 	$sql = "SELECT * FROM tracking_hiring WHERE h_emp_type=$emp_type ORDER BY h_id";
 	$res = uquery($sql);
 	
-	for($result=array(); $row=mysql_fetch_array($res); $result[$row['h_eid']]=$row);
+	for($result=array(); $row=mysqli_fetch_array($res); $result[$row['h_eid']]=$row);
 	return $result;
 }
 
@@ -1247,7 +1277,7 @@ function add_salary_record($did, $formula, $amount, $emp_type) {
 	$emp_type = (int)$emp_type;
 
 	$sql = "INSERT INTO tracking_salary 
-			VALUES(NULL, $did, '$formula', $amount, '$date', 0, 0, 0, $emp_type)";
+			VALUES(NULL, $did, '$formula', $amount, '$date', 0, 0, 0, $emp_type, 0, 0, 0, 0, 0)";
 	return uquery($sql);
 }
 
@@ -1323,6 +1353,17 @@ function set_salary_3rdform($sid, $trdform) {
 	$trdform = (float)$trdform;
 
 	$sql = "UPDATE tracking_salary SET s_3rdform=$trdform WHERE s_id=$sid LIMIT 1";
+	return uquery($sql);
+}
+
+#---------------------------------------------------------------------------------------------------
+## Updates salary 3rdform
+function set_salary_fr($sid, $col, $val) {
+	$sid = (int)$sid;
+	$col = addslashes($col);
+	$val = (float)$val;
+
+	$sql = "UPDATE tracking_salary SET s_$col=$val WHERE s_id=$sid LIMIT 1";
 	return uquery($sql);
 }
 
@@ -1446,7 +1487,7 @@ function get_mechanics_info() {
 	$sql = "SELECT * FROM tracking_mechanics";
 	$res = uquery($sql);
 
-	for($result=array(); $row=mysql_fetch_array($res); $result[$row['m_id']]=$row);
+	for($result=array(); $row=mysqli_fetch_array($res); $result[$row['m_id']]=upd_arr_val($row));
 	return $result;
 }
 
@@ -1606,7 +1647,7 @@ function set_mechanic_insurance($mid, $insurance) {
 function get_mechanic_children_count() {
 	$sql = "SELECT sum(m_children) FROM tracking_mechanics WHERE m_state=".STATE_ACTUAL;
 	$res = uquery($sql);
-	return $res ? mysql_result($res, 0, 0) : 0;
+	return $res ? mysqli_result($res, 0, 0) : 0;
 }
 
 #---------------------------------------------------------------------------------------------------

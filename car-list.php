@@ -13,14 +13,15 @@
                 <TD> &nbsp; Машини поки що не додано! &nbsp; </TD>
             </TR>";
     } else {
-        echo "<TR><TD class='list-content-header' style='width:30px;'> &nbsp; # &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Номер &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Модель &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Страхівка &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Тех.огляд &nbsp; </TD>
+        echo "<TR><TD class='list-content-header' style='width:30px;'>  #  </TD>
+                <TD class='list-content-header'>  Номер  </TD>
+                <TD class='list-content-header'>  Модель  </TD>
+                <TD class='list-content-header'>  Страхування пасажирів  </TD>
+                <TD class='list-content-header'>  Страхівка  </TD>
+                <TD class='list-content-header'>  Тех.огляд  </TD>
                 <TD class='list-content-header'>  Місць  </TD>
-                <TD class='list-content-header'> &nbsp; Власник &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; Водії &nbsp; </TD>
+                <TD class='list-content-header'>  Власник  </TD>
+                <TD class='list-content-header'>  Водії  </TD>
                 </TR>";
         $i = 1;
         foreach($cars as $car) {
@@ -34,6 +35,9 @@
             $istyle = !checkDateDMYFormat($car['c_insurance']) ? "background:#FDFFC8;" :
                         (checkDMYDateExpired($car['c_insurance']) ? "background:#FF9797;" :
                         (checkDMYDateExpireIn($car['c_insurance']) ? "background:#ffff00;" : ""));
+            $pstyle = !checkDateDMYFormat($car['c_pass_insur']) ? "background:#FDFFC8;" :
+                        (checkDMYDateExpired($car['c_pass_insur']) ? "background:#FF9797;" :
+                        (checkDMYDateExpireIn($car['c_pass_insur']) ? "background:#ffff00;" : ""));
             $to_style = !checkDateDMYFormat($car['c_sto']) ? "background:#FDFFC8;" :
                         (checkDMYDateExpired($car['c_sto']) ? "background:#FF9797;" :
                         (checkDMYDateExpireIn($car['c_sto']) ? "background:#ffff00;" : ""));
@@ -44,6 +48,7 @@
                     <TD class='list-content' id='$prefix{$car['c_id']}'> $i </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_plate']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> {$car['c_model']} </TD>
+                    <TD class='list-content' id='$prefix{$car['c_id']}' style='$pstyle'> {$car['c_pass_insur']} </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}' style='$istyle'> {$car['c_insurance']} </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}' style='$to_style'> &nbsp; {$car['c_sto']} &nbsp; </TD>
                     <TD class='list-content' id='$prefix{$car['c_id']}'> &nbsp; {$car['c_places']} &nbsp; </TD>

@@ -6,7 +6,8 @@
 
     if (isset($_POST['name']) && isset($_POST['phone']) && isset($_POST['address']) 
         && isset($_POST['idcode']) && isset($_POST['passport']) && isset($_POST['birthday'])
-        && isset($_POST['wbirthday']) && isset($_POST['children']) && isset($_POST['insurance'])) {
+        && isset($_POST['wbirthday']) && isset($_POST['children']) && isset($_POST['insurance'])
+        && isset($_POST['drv_insur'])) {
         $name = addslashes($_POST['name']);
         strlen($name) > 6 or show_error("Надто коротке ім'я. Повинно бути не менше 7 символів.");
 
@@ -18,9 +19,10 @@
         $wbirthday = addslashes($_POST['wbirthday']);
         $children = addslashes($_POST['children']);
         $insurance = addslashes($_POST['insurance']);
+        $drv_insur = addslashes($_POST['drv_insur']);
 
         if (add_driver($name, $address, $phone, $idcode, $passport, "0",
-            $birthday, $wbirthday, $children, $insurance)) {
+            $birthday, $wbirthday, $children, $insurance, $drv_insur )) {
             show_message("Водій доданий!");
             load('driver.php?did='.last_insert_id(), 'main_space');
         } else {
@@ -41,6 +43,7 @@
     <tr><td>День народж.дружини: &nbsp;</td><td><input type='text' name='wbirthday' style='width:250px;'></td></tr>
     <tr><td>Кількість дітей: &nbsp;</td><td><input type='text' name='children' style='width:250px;'></td></tr>
     <tr><td>Страхівка: &nbsp;</td><td><input type='text' name='insurance' style='width:250px;'></td></tr>
+    <tr><td>Страхівка водія: &nbsp;</td><td><input type='text' name='drv_insur' style='width:250px;'></td></tr>
     <tr><td>Адреса: &nbsp;</td><td><input type='text' name='address' style='width:250px;'></td></tr>
     <tr><td>Ідент.код: &nbsp;</td><td><input type='text' name='idcode' style='width:250px;'></td></tr>
     <tr><td>Паспорт: &nbsp;</td><td><input type='text' name='passport' style='width:250px;'></td></tr>

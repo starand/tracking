@@ -38,6 +38,7 @@
     } else {
         $i = 1;
         foreach($mechanics as $mechanic) {
+            if ($mechanic['m_id'] == 1) continue; // skip me
             //$rid = $mechanic['rate_rid'];
 
             $sstyle = checkDateMYFormat($mechanic['m_stag']) ? "" : "background:#FF9797";

@@ -56,11 +56,11 @@
     }
 
     $iframe_begin = "<iframe src='https://www.google.com/maps/d/embed?mid=";
-    $iframe_end = "' width='850' height='600'></iframe>";
+    $iframe_end = "' width='1050' height='600'></iframe>";
 ?>
 </TABLE>
 <BR>
-<div id='map-data' style='width:850px;'>
+<div id='map-data' style='width:1050px;'>
 <?
     if (count($datas)) {
         echo "$iframe_begin{$datas[0]['rd_url']}$iframe_end";

@@ -1,6 +1,8 @@
 <?
     include_once "common/headers.php";
-
+    include_once "common/config.php";
+    include_once "common/db.php";
+    
     // Login
     if (isset($_POST['t_login']) && isset($_POST['t_pswd'])) {
         $login = addslashes($_POST['t_login']);
@@ -23,7 +25,7 @@
     }
 ?><center>
 <div id='main' style='width:100%;'>
-    <TABLE cellspacing='0' cellpadding='0' style='width:1024px;'>
+    <TABLE cellspacing='0' cellpadding='0' style='width:1200px;'>
         <TR>
             <TD class='top-title' id='top-menu'>
                 <? include_once "top-panel.php"; ?>

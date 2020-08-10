@@ -6,7 +6,7 @@
 
     if (isset($_POST['plate']) && isset($_POST['model']) && isset($_POST['type']) &&
         isset($_POST['insurance']) && isset($_POST['sto']) && isset($_POST['places']) &&
-        isset($_POST['owner']) && isset($_POST['color'])) {
+        isset($_POST['owner']) && isset($_POST['color']) && isset($_POST['pass_insur'])) {
         $plate = addslashes($_POST['plate']);
         strlen($plate) >= 7 or show_error("Надто короткий номер. Повинно бути не менше 7 символів.");
         $model = addslashes($_POST['model']);
@@ -16,11 +16,12 @@
         $insurance = addslashes($_POST['insurance']);
         $sto = addslashes($_POST['sto']);
         $places = (int)$_POST['places'];
+        $pass_insur = addslashes($_POST['pass_insur']);
 
         $owner = addslashes($_POST['owner']);
         $color = addslashes($_POST['color']);
 
-        if (add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color)) {
+        if (add_car($plate, $model, $type, $places, $insurance, $sto, $owner, $color, '', $pass_insur)) {
             show_message("Машина додана!");
             load('car.php?cid='.last_insert_id(), 'main_space');
         } else {
@@ -46,6 +47,7 @@
         </SELECT>
     </td></tr>
     <tr><td>Страхівка: &nbsp;</td><td><input type='text' name='insurance' style='width:250px;'></td></tr>
+    <tr><td>Страхування водія: &nbsp;</td><td><input type='text' name='pass_insur' style='width:250px;'></td></tr>
     <tr><td>Тех.огляд: &nbsp;</td><td><input type='text' name='sto' style='width:250px;'></td></tr>
     <tr><td>Місць: &nbsp;</td><td><input type='text' name='places' style='width:250px;'></td></tr>
     <tr><td>Власник: &nbsp;</td><td><input type='text' name='owner' style='width:250px;'></td></tr>

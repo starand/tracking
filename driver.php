@@ -42,6 +42,9 @@
         <TD class='edit-item'> &nbsp; <b>Медична довідка</b>: &nbsp; </TD>
         <TD class='edit-item' id='insurance' style='width:350px;'>&nbsp; <?=$driver['d_insurance'];?> &nbsp; </TD>
     </TR><TR class='list-content' style='height:22px;'>
+        <TD class='edit-item'> &nbsp; <b>Страхівка водія</b>: &nbsp; </TD>
+        <TD class='edit-item' id='drv_insur' style='width:350px;'>&nbsp; <?=$driver['d_drv_insur'];?> &nbsp; </TD>        
+    </TR><TR class='list-content' style='height:22px;'>
         <TD class='edit-item'> &nbsp; <b>Підприємець</b>: &nbsp; </TD>
         <TD class='edit-item' id='poid' style='width:350px;'>&nbsp; <? echo "{$po['po_name']} - {$po['po_phone']}"; ?> &nbsp; </TD>
     </TR>
@@ -87,7 +90,7 @@
     }
 
     $editables = hasPermission(EDIT.DRIVER)
-        ? "'name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday', 'wbirthday', 'children', 'insurance', 'poid'"
+        ? "'name', 'phone', 'stag', 'address', 'passport', 'idcode', 'birthday', 'wbirthday', 'children', 'insurance', 'poid', 'drv_insur'"
         : "'nopermission'";
 ?>
 

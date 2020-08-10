@@ -44,6 +44,7 @@ CREATE TABLE tracking_drivers (
     d_insurance varchar(10) NOT NULL,
     d_children tinyint NOT NULL default 0,
     d_state tinyint NOT NULL default 0,
+    d_drv_insur varchar(10) NOT NULL,
     UNIQUE(d_phone),
     UNIQUE(d_name, d_address),
     PRIMARY KEY(d_id)
@@ -71,6 +72,7 @@ CREATE TABLE tracking_cars (
     c_color varchar(16) NOT NULL,
     c_state tinyint NOT NULL default 0,
     c_driver varchar(32) NOT NULL,
+    c_pass_insur varchar(10) NOT NULL,
     UNIQUE(c_plate),
     PRIMARY KEY(c_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -146,6 +148,11 @@ CREATE TABLE tracking_salary (
     s_salary decimal(7,2) unsigned NOT NULL,
     s_3rdform decimal(7,2) unsigned NOT NULL,
     s_emp_type tinyint unsigned NOT NULL default 0,
+    s_fr1 decimal(7,2) unsigned NOT NULL,
+    s_fr2 decimal(7,2) unsigned NOT NULL,
+    s_fr3 decimal(7,2) unsigned NOT NULL,
+    s_fr4 decimal(7,2) unsigned NOT NULL,
+    s_fr5 decimal(7,2) unsigned NOT NULL,
     UNIQUE(s_eid, s_date, s_emp_type),
     PRIMARY KEY(s_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

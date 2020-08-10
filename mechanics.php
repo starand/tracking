@@ -23,7 +23,7 @@
 <center>
 <h2>Автослюсарі</h2>
 
-<TABLE cellspacing='0' cellpadding='2' style='width:850px;' class='menu'>
+<TABLE cellspacing='0' cellpadding='2' style='width:1050px;' class='menu'>
 <TR>
     <TD>
         Пошук: <input type='text' id='query' style='width:300px;'/>
@@ -38,7 +38,7 @@
 </TR>
 </TABLE>
 
-<TABLE class='list-content' style='width:850px;' id='tbl_mechanics'>
+<TABLE class='list-content' style='width:1050px;' id='tbl_mechanics'>
 <?
     $mechanics = get_all_mechanics($type);
     $prefix = hasPermission(VIEW.MECHANIC) ? "d" : "";

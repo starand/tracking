@@ -14,7 +14,7 @@
 ?>
 <center>
 <h2>Зарплатна відомість за <?=getPrevMonthName($month);?></h2>
-<TABLE class='list-content' style='width:850px;' id='tbl-month-salary'>
+<TABLE class='list-content' style='width:1050px;' id='tbl-month-salary'>
 <?
     $infos = get_month_salary($month);
     $stats = get_month_salarн_stats($month);
@@ -25,14 +25,20 @@
     if (!count($infos)) {
         echo "<TR class='list-content'><TD class='list-content'> &nbsp; Даних не знайдено! &nbsp; </TD></TR>";
     } else {
-        echo "<TR><TH class='list-content-header'> &nbsp; # &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Водій &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Дата нарах. &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Сума &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Аванс &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; Зарплата &nbsp; </TD>
-                <TH class='list-content-header'> &nbsp; 3тя форма &nbsp; </TD>";
-        echo hasPermission(DEL.SALARY) ? "<TD class='list-content-header'> &nbsp; X &nbsp; </TD>" : "";
+        echo "<TR><TH class='list-content-header'>  #  </TD>
+                <TH class='list-content-header'>  Водій  </TD>
+                <TH class='list-content-header'>  Дата нарах.  </TD>
+                <TH class='list-content-header'>  Сума  </TD>
+                <TH class='list-content-header'>  Аванс  </TD>
+                <TH class='list-content-header'>  Зарплата  </TD>
+                <TH class='list-content-header'>  3тя форма  </TD>
+                <TH class='list-content-header'> Ф/р 1 </TD>
+                <TH class='list-content-header'> Ф/р 2 </TD>
+                <TH class='list-content-header'> Ф/р 3 </TD>
+                <TH class='list-content-header'> Ф/р 4 </TD>
+                <TH class='list-content-header'> Ф/р 5 </TD>
+                ";
+        echo hasPermission(DEL.SALARY) ? "<TD class='list-content-header'>  X  </TD>" : "";
         echo "</TR>";
 
         $i = 1;
@@ -46,34 +52,48 @@
 
             $sum = $info['s_advance'] + $info['s_salary'] + $info['s_3rdform'];
             $style = abs($sum - $info['s_amount']) < 0.01 ? "background:#E9FFE7;" : "";
+
+            $fr_style = abs($info['s_3rdform'] - $info['s_fr1'] - $info['s_fr2'] - $info['s_fr3'] - $info['s_fr4'] - $info['s_fr5']) < 0.02 ? "" : "background:#FFEFD9;";
+
             echo "<TR class='list-content' style='$style'>";
             if ($driver) {
-                echo "<TD class='list-content' id='d{$driver['d_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$driver['d_name']} &nbsp; </TD>
-                    <TD class='list-content' id='d{$driver['d_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>";
+                echo "<TD class='list-content' id='d{$driver['d_id']}'>  $i  </TD>
+                    <TD class='list-content' id='d{$driver['d_id']}'>  {$driver['d_name']}  </TD>
+                    <TD class='list-content' id='d{$driver['d_id']}'>  {$info['s_date']}  </TD>";
             } elseif ($mechanic) {
-                echo "<TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; $i &nbsp; </TD>
-                    <TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; {$mechanic['m_name']} &nbsp; </TD>
-                    <TD class='list-content' id='m{$mechanic['m_id']}'> &nbsp; {$info['s_date']} &nbsp; </TD>";
+                echo "<TD class='list-content' id='m{$mechanic['m_id']}'>  $i  </TD>
+                    <TD class='list-content' id='m{$mechanic['m_id']}'>  {$mechanic['m_name']}  </TD>
+                    <TD class='list-content' id='m{$mechanic['m_id']}'>  {$info['s_date']}  </TD>";
             }
-            echo"   <TD class='list-content' id='{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_amount']} &nbsp; </TD>
-                    <TD class='edit-item' id='{$prefix}a{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_advance']} &nbsp; </TD>
-                    <TD class='edit-item' id='{$prefix}s{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_salary']} &nbsp; </TD>
-                    <TD class='edit-item' id='{$prefix}3{$info['s_id']}' style='width:90px;'> &nbsp; {$info['s_3rdform']} &nbsp; </TD>
+            echo"   <TD class='list-content' id='{$info['s_id']}' style='width:90px;'>  {$info['s_amount']}  </TD>
+                    <TD class='edit-item' id='{$prefix}-advance-{$info['s_id']}' style='width:90px;'>  {$info['s_advance']}  </TD>
+                    <TD class='edit-item' id='{$prefix}-salary-{$info['s_id']}' style='width:90px;'>  {$info['s_salary']}  </TD>
+                    <TD class='edit-item' id='{$prefix}-3rdform-{$info['s_id']}' style='width:90px;'>  {$info['s_3rdform']}  </TD>
+                    <TD class='edit-item' id='{$prefix}-fr1-{$info['s_id']}' style='$fr_style'> {$info['s_fr1']} </TD>
+                    <TD class='edit-item' id='{$prefix}-fr2-{$info['s_id']}' style='$fr_style'> {$info['s_fr2']} </TD>
+                    <TD class='edit-item' id='{$prefix}-fr3-{$info['s_id']}' style='$fr_style'> {$info['s_fr3']} </TD>
+                    <TD class='edit-item' id='{$prefix}-fr4-{$info['s_id']}' style='$fr_style'> {$info['s_fr4']} </TD>
+                    <TD class='edit-item' id='{$prefix}-fr5-{$info['s_id']}' style='$fr_style'> {$info['s_fr5']} </TD>
                     ";
                     
             echo hasPermission(DEL.SALARY) ? "
-                    <TD class='edit-item'> &nbsp; <img id='dds{$info['s_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити водія'> &nbsp; </TD>" : "";
+                    <TD class='edit-item'>  <img id='dds{$info['s_id']}' class='icon' src='$PATH/themes/light/trash.png' title='Видалити водія'>  </TD>" : "";
             echo "</TR>";
             $i++;
         }
 
         echo "<TR><TD class='list-content-header' colspan='3'> &nbsp; Разом &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; ${stats['amount']} &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; ${stats['advance']} &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; ${stats['salary']} &nbsp; </TD>
-                <TD class='list-content-header'> &nbsp; ${stats['3rdform']} &nbsp; </TD>
-                <TD class='list-content-header'> </TD>";
+                <TD class='list-content-header'>  ${stats['amount']}  </TD>
+                <TD class='list-content-header'>  ${stats['advance']}  </TD>
+                <TD class='list-content-header'>  ${stats['salary']}  </TD>
+                <TD class='list-content-header'>  ${stats['3rdform']}  </TD>
+                <TD class='list-content-header'> </TD>
+                <TD class='list-content-header'> </TD>
+                <TD class='list-content-header'> </TD>
+                <TD class='list-content-header'> </TD>
+                <TD class='list-content-header'> </TD>
+                <TD class='list-content-header'> </TD>
+                ";
         echo "</TR>";
     }
 ?>
@@ -81,16 +101,16 @@
 
 <?
     $editables = hasPermission(EDIT.SALARY)
-        ? "'esa', 'ess', 'es3'"
+        ? "'advance', 'salary', '3rdform', 'fr1', 'fr2', 'fr3', 'fr4', 'fr5'"
         : "'nopermission'";
 ?>
 <script>
 $(document).ready(function() {
     var edittables = [<?=$editables;?>];
     $(".edit-item").click(function() {
-        id = $(this).attr('id');
-        if (edittables.indexOf(id.substr(0, 3)) >= 0) {
-            url = "edit-salary.php?sid=" + id.substr(3) + "=&editId=" + id + "&edit=";
+        id = $(this).attr('id'); p = id.split('-')
+        if (edittables.indexOf(p[1]) >= 0) {
+            url = "edit-salary.php?sid=" + p[2] + "=&editId=" + p[1] + "&edit=";
             $('#' + id).load(url);
         }
     });
